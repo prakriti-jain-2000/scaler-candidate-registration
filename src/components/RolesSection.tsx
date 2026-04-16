@@ -7,13 +7,13 @@ const roles = [
     tag: "Fresher friendly",
     tagColor: "bg-scaler-green/15 text-scaler-green border-scaler-green/30",
     title: "Business Development Associate",
-    ctc: "₹7 LPA fixed + ₹3 LPA variable",
+    ctc: "Competitive CTC + variable",
     eligibility: "2024 / 2025 MBA or BBA passout · No prior sales exp required",
     highlights: [
-      { icon: "🎯", text: "Own the full sales cycle — from first call to enrolment" },
-      { icon: "📞", text: "Engage with working professionals exploring career transitions" },
-      { icon: "📈", text: "Hit monthly targets with full team support and coaching" },
-      { icon: "🚀", text: "Fast track to Senior BDA within 6–9 months based on performance" },
+      { text: "Own the full sales cycle — from first call to enrolment" },
+      { text: "Engage with working professionals exploring career transitions" },
+      { text: "Work with AI-powered tools that make every rep more effective" },
+      { text: "Fast track to Senior BDA within 6–9 months based on performance" },
     ],
     cta: "Apply for BDA →",
   },
@@ -21,13 +21,13 @@ const roles = [
     tag: "1–2 yrs experience",
     tagColor: "bg-scaler-blue/15 text-scaler-blue border-scaler-blue/30",
     title: "Senior Business Development Associate",
-    ctc: "₹9–11 LPA fixed + variable",
+    ctc: "Competitive CTC + variable",
     eligibility: "1–2 yrs EdTech or B2C sales experience · Strong conversion track record",
     highlights: [
-      { icon: "🎯", text: "Handle high-intent leads with larger deal sizes" },
-      { icon: "🧠", text: "Mentor and support junior BDAs on the floor" },
-      { icon: "📊", text: "Own monthly revenue targets independently" },
-      { icon: "💼", text: "Direct path to Team Lead and BDM roles" },
+      { text: "Handle high-intent leads with larger deal sizes" },
+      { text: "Mentor and support junior BDAs on the floor" },
+      { text: "Leverage proprietary AI dashboards to drive revenue" },
+      { text: "Direct path to Team Lead and BDM roles" },
     ],
     cta: "Apply for Sr. BDA →",
   },
@@ -81,7 +81,7 @@ const RolesSection = () => {
                 <div className="space-y-3 mb-8">
                   {role.highlights.map((h) => (
                     <div key={h.text} className="flex items-start gap-3 text-sm text-foreground/80">
-                      <span className="text-base mt-0.5 shrink-0">{h.icon}</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
                       <span>{h.text}</span>
                     </div>
                   ))}

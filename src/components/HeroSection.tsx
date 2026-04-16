@@ -23,7 +23,7 @@ const HeroSection = () => {
           className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/15 border border-primary/30 mb-8"
         >
           <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-          <span className="text-sm font-medium text-primary">Now hiring · Bangalore · FY26</span>
+          <span className="text-sm font-medium text-primary">Now hiring · FY26 · AI-first EdTech</span>
         </motion.div>
 
         {/* Main heading - word by word */}
@@ -48,7 +48,7 @@ const HeroSection = () => {
           transition={{ delay: 1.1 }}
           className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed"
         >
-          Join Scaler Academy as a Business Development Associate. Help working professionals find their next breakthrough in tech.
+          Join an AI-first company backed by Sequoia and Tiger Global. We build technology that changes how people learn — and we need people who can tell that story.
         </motion.p>
 
         {/* Stat pills */}
@@ -59,15 +59,14 @@ const HeroSection = () => {
           className="flex flex-wrap items-center justify-center gap-3 mb-10"
         >
           {[
-            { icon: "💰", label: "₹7–11 LPA" },
-            { icon: "📍", label: "Bangalore" },
-            { icon: "🎓", label: "2025 Batch" },
+            { label: "AI-first culture" },
+            { label: "Sequoia backed" },
+            { label: "2025 Batch" },
           ].map((stat) => (
             <div
               key={stat.label}
               className="flex items-center gap-2 px-4 py-2 rounded-full card-surface text-sm font-medium text-foreground"
             >
-              <span>{stat.icon}</span>
               <span>{stat.label}</span>
             </div>
           ))}
