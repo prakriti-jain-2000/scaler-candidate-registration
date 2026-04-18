@@ -1,8 +1,24 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { z } from "zod";
+import { toast } from "sonner";
 
-const APPS_SCRIPT_URL = "YOUR_APPS_SCRIPT_URL_HERE";
+/**
+ * ============================================================
+ * SETUP REQUIRED — Google Sheets integration via Apps Script
+ * ============================================================
+ * 1. Open the target Google Sheet:
+ *    https://docs.google.com/spreadsheets/d/1BfQakI2i87vdQO5Jruka-Mq8os2gsVA2dQB59Bd6eEY/edit
+ * 2. Extensions → Apps Script → paste the FULL script from the
+ *    comment block at the BOTTOM of this file.
+ * 3. Deploy → New deployment → Type: Web app
+ *    - Execute as: Me
+ *    - Who has access: Anyone
+ * 4. Copy the deployment URL and paste it below in APPS_SCRIPT_URL.
+ * 5. Re-deploy after any script change (or use "Manage deployments").
+ * ------------------------------------------------------------
+ */
+const APPS_SCRIPT_URL = "PASTE_DEPLOYED_URL_HERE";
 
 interface FormData {
   // Step 1
