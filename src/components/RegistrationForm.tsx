@@ -114,6 +114,8 @@ const RegistrationForm = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [rejected, setRejected] = useState(false);
+  const [generatedPassword, setGeneratedPassword] = useState<string>("");
+  const [submitEligible, setSubmitEligible] = useState<boolean>(true);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
