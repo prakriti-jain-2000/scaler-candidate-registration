@@ -186,22 +186,50 @@ const RegistrationForm = () => {
       setErrors({ resumeFileName: "Resume is required" });
       return;
     }
+    if (APPS_SCRIPT_URL === "PASTE_DEPLOYED_URL_HERE") {
+      toast.error("Setup incomplete: deploy Apps Script and set APPS_SCRIPT_URL.");
+      return;
+    }
     setLoading(true);
     try {
-      await fetch(APPS_SCRIPT_URL, {
+      // Apps Script web apps don't honour preflight; use text/plain to bypass CORS preflight.
+      const res = await fetch(APPS_SCRIPT_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, submittedAt: new Date().toISOString() }),
-        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "register",
+          ...formData,
+          submittedAt: new Date().toISOString(),
+        }),
       });
+      const json = await res.json();
+
+      if (json.status === "duplicate") {
+        setErrors({ personalEmail: "This email has already been used to apply." });
+        setStep(1);
+        setLoading(false);
+        return;
+      }
+
+      if (json.status !== "success") {
+        throw new Error(json.message || "Unknown error");
+      }
+
+      setSubmitEligible(!!json.eligible);
+      setGeneratedPassword(json.password || "");
+
+      if (!json.eligible) {
+        setRejected(true);
+      } else {
+        setSubmitted(true);
+        localStorage.removeItem(STORAGE_KEY);
+      }
     } catch (e) {
       console.error("Submission error:", e);
-    }
-    setTimeout(() => {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
       setLoading(false);
-      setSubmitted(true);
-      localStorage.removeItem(STORAGE_KEY);
-    }, 1500);
+    }
   };
 
   const inputClasses = "w-full px-4 py-3.5 rounded-xl bg-input border border-border text-foreground text-base placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all";
