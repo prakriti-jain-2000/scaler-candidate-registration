@@ -55,14 +55,8 @@ function _genPassword() {
   return s;
 }
 function _isEligible(data) {
-  var noBacklogs = String(data.hasBacklogs).toLowerCase() === 'no';
-  var immediate  = String(data.immediateJoining).toLowerCase() === 'yes';
-  var locs = data.joiningLocations || [];
-  var validLoc = locs.some(function(l){
-    var v = String(l).toLowerCase();
-    return v === 'delhi' || v === 'bangalore' || v === 'both';
-  });
-  return noBacklogs && immediate && validLoc;
+  // Only validation: candidate must have NO active backlogs.
+  return String(data.hasBacklogs).toLowerCase() === 'no';
 }
 
 function doPost(e) {
