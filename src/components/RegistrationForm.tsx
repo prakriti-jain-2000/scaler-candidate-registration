@@ -293,10 +293,28 @@ const RegistrationForm = () => {
                 className="animate-draw-check" />
             </svg>
           </motion.div>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4">You're in the pipeline.</h2>
-          <p className="text-muted-foreground mb-10">
-            We've received your application. If shortlisted, you'll get an email with your dashboard access within 48 hours. Check your spam folder too.
+          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4">You're shortlisted!</h2>
+          <p className="text-muted-foreground mb-6">
+            Your login credentials have been sent to your college email. Use them to access your candidate dashboard.
           </p>
+
+          {generatedPassword && (
+            <div className="card-surface rounded-xl p-5 mb-8 text-left max-w-md mx-auto">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Your dashboard credentials</p>
+              <div className="space-y-1.5 text-sm">
+                <p className="text-foreground"><span className="text-muted-foreground">Email:</span> <span className="font-mono">{formData.collegeEmail}</span></p>
+                <p className="text-foreground"><span className="text-muted-foreground">Password:</span> <span className="font-mono font-bold text-primary">{generatedPassword}</span></p>
+              </div>
+              <p className="text-xs text-muted-foreground mt-3">Save this password — you'll need it to log in.</p>
+            </div>
+          )}
+
+          <a
+            href="https://candidate-dashboard-campus.lovable.app/login"
+            className="inline-block px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-bold mb-10 glow-orange-hover transition-all"
+          >
+            Open candidate dashboard →
+          </a>
           <div className="flex items-center justify-center gap-2 flex-wrap">
             {["Apply", "Dashboard", "AI Assessment", "Interview", "Offer"].map((s, i) => (
               <div key={s} className="flex items-center gap-2">
