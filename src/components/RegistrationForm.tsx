@@ -18,7 +18,8 @@ import { toast } from "sonner";
  * 5. Re-deploy after any script change (or use "Manage deployments").
  * ------------------------------------------------------------
  */
-const APPS_SCRIPT_URL = "PASTE_DEPLOYED_URL_HERE";
+const APPS_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbxZg3tGvxjq3oRZ29MrfY4UuS7tmwRWlRveFMQNTY3a-aasn3Wr7RavhRCCwyU_9GcP/exec";
 
 interface FormData {
   // Step 1
@@ -46,10 +47,22 @@ interface FormData {
 }
 
 const initialFormData: FormData = {
-  fullName: "", personalEmail: "", collegeEmail: "", mobile: "",
-  college: "", degree: "", specialisation: "", scoreType: "CGPA", score: "", graduationYear: "",
-  yearsExperience: "", hasSalesExp: "", salesExpDetails: "",
-  hasBacklogs: "", joiningLocations: [], immediateJoining: "",
+  fullName: "",
+  personalEmail: "",
+  collegeEmail: "",
+  mobile: "",
+  college: "",
+  degree: "",
+  specialisation: "",
+  scoreType: "CGPA",
+  score: "",
+  graduationYear: "",
+  yearsExperience: "",
+  hasSalesExp: "",
+  salesExpDetails: "",
+  hasBacklogs: "",
+  joiningLocations: [],
+  immediateJoining: "",
   resumeFileName: "",
 };
 
@@ -60,7 +73,9 @@ const nameRegex = /^[A-Za-z]+(?:\s+[A-Za-z]+)+$/;
 const mobileRegex = /^[6-9]\d{9}$/;
 
 const step1Schema = z.object({
-  fullName: z.string().trim()
+  fullName: z
+    .string()
+    .trim()
     .min(1, "Full name is required")
     .max(80, "Name too long")
     .regex(nameRegex, "Enter at least 2 words; letters only, no numbers or symbols"),
@@ -69,26 +84,28 @@ const step1Schema = z.object({
   mobile: z.string().regex(mobileRegex, "Enter a valid 10-digit Indian mobile number"),
 });
 
-const step2Schema = z.object({
-  college: z.string().trim().min(2, "College name is required").max(120),
-  degree: z.string().min(1, "Select a degree"),
-  specialisation: z.string().trim().min(2, "Specialisation is required").max(80),
-  scoreType: z.enum(["CGPA", "Percentage"]),
-  score: z.string().min(1, "Score is required"),
-  graduationYear: z.string().min(1, "Select graduation year"),
-}).superRefine((data, ctx) => {
-  const n = Number(data.score);
-  if (Number.isNaN(n)) {
-    ctx.addIssue({ code: "custom", path: ["score"], message: "Must be a number" });
-    return;
-  }
-  if (data.scoreType === "CGPA" && (n < 0 || n > 10)) {
-    ctx.addIssue({ code: "custom", path: ["score"], message: "CGPA must be between 0 and 10" });
-  }
-  if (data.scoreType === "Percentage" && (n < 0 || n > 100)) {
-    ctx.addIssue({ code: "custom", path: ["score"], message: "Percentage must be between 0 and 100" });
-  }
-});
+const step2Schema = z
+  .object({
+    college: z.string().trim().min(2, "College name is required").max(120),
+    degree: z.string().min(1, "Select a degree"),
+    specialisation: z.string().trim().min(2, "Specialisation is required").max(80),
+    scoreType: z.enum(["CGPA", "Percentage"]),
+    score: z.string().min(1, "Score is required"),
+    graduationYear: z.string().min(1, "Select graduation year"),
+  })
+  .superRefine((data, ctx) => {
+    const n = Number(data.score);
+    if (Number.isNaN(n)) {
+      ctx.addIssue({ code: "custom", path: ["score"], message: "Must be a number" });
+      return;
+    }
+    if (data.scoreType === "CGPA" && (n < 0 || n > 10)) {
+      ctx.addIssue({ code: "custom", path: ["score"], message: "CGPA must be between 0 and 10" });
+    }
+    if (data.scoreType === "Percentage" && (n < 0 || n > 100)) {
+      ctx.addIssue({ code: "custom", path: ["score"], message: "Percentage must be between 0 and 100" });
+    }
+  });
 
 const step3Schema = z.object({
   yearsExperience: z.string().min(1, "Select your experience"),
@@ -108,7 +125,9 @@ const RegistrationForm = () => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       return saved ? { ...initialFormData, ...JSON.parse(saved) } : initialFormData;
-    } catch { return initialFormData; }
+    } catch {
+      return initialFormData;
+    }
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
@@ -134,11 +153,16 @@ const RegistrationForm = () => {
   const toggleLocation = (loc: string) => {
     setFormData((prev) => {
       const has = prev.joiningLocations.includes(loc);
-      return { ...prev, joiningLocations: has ? prev.joiningLocations.filter(l => l !== loc) : [...prev.joiningLocations, loc] };
+      return {
+        ...prev,
+        joiningLocations: has ? prev.joiningLocations.filter((l) => l !== loc) : [...prev.joiningLocations, loc],
+      };
     });
     setErrors((prev) => {
       if (!prev.joiningLocations) return prev;
-      const next = { ...prev }; delete next.joiningLocations; return next;
+      const next = { ...prev };
+      delete next.joiningLocations;
+      return next;
     });
   };
 
@@ -146,11 +170,12 @@ const RegistrationForm = () => {
     let result;
     if (s === 1) result = step1Schema.safeParse(formData);
     else if (s === 2) result = step2Schema.safeParse(formData);
-    else if (s === 3) result = step3Schema.safeParse({
-      yearsExperience: formData.yearsExperience,
-      hasSalesExp: formData.hasSalesExp,
-      salesExpDetails: formData.salesExpDetails,
-    });
+    else if (s === 3)
+      result = step3Schema.safeParse({
+        yearsExperience: formData.yearsExperience,
+        hasSalesExp: formData.hasSalesExp,
+        salesExpDetails: formData.salesExpDetails,
+      });
     else if (s === 4) result = step4Schema.safeParse(formData);
     else return true;
 
@@ -232,7 +257,8 @@ const RegistrationForm = () => {
     }
   };
 
-  const inputClasses = "w-full px-4 py-3.5 rounded-xl bg-input border border-border text-foreground text-base placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all";
+  const inputClasses =
+    "w-full px-4 py-3.5 rounded-xl bg-input border border-border text-foreground text-base placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all";
   const errorInputClasses = "border-destructive focus:ring-destructive/40 focus:border-destructive";
   const labelClasses = "block text-sm font-medium text-foreground/70 mb-1.5";
   const errorTextClasses = "text-destructive text-xs mt-1.5";
@@ -240,7 +266,15 @@ const RegistrationForm = () => {
   const FieldError = ({ name }: { name: string }) =>
     errors[name] ? <p className={errorTextClasses}>{errors[name]}</p> : null;
 
-  const ToggleButton = ({ value, selected, onSelect }: { value: string; selected: string; onSelect: (v: string) => void }) => (
+  const ToggleButton = ({
+    value,
+    selected,
+    onSelect,
+  }: {
+    value: string;
+    selected: string;
+    onSelect: (v: string) => void;
+  }) => (
     <button
       type="button"
       onClick={() => onSelect(value)}
@@ -285,12 +319,35 @@ const RegistrationForm = () => {
         <div className="max-w-2xl mx-auto text-center">
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", damping: 15 }}>
             <svg className="w-24 h-24 mx-auto mb-8" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="45" fill="none" stroke="hsl(var(--scaler-orange))" strokeWidth="3" opacity="0.2" />
-              <circle cx="50" cy="50" r="45" fill="none" stroke="hsl(var(--scaler-orange))" strokeWidth="3"
-                strokeDasharray="283" strokeDashoffset="0"
-                style={{ animation: "draw-check 0.8s ease-out forwards" }} />
-              <path d="M30 52 L45 67 L72 35" fill="none" stroke="hsl(var(--scaler-orange))" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"
-                className="animate-draw-check" />
+              <circle
+                cx="50"
+                cy="50"
+                r="45"
+                fill="none"
+                stroke="hsl(var(--scaler-orange))"
+                strokeWidth="3"
+                opacity="0.2"
+              />
+              <circle
+                cx="50"
+                cy="50"
+                r="45"
+                fill="none"
+                stroke="hsl(var(--scaler-orange))"
+                strokeWidth="3"
+                strokeDasharray="283"
+                strokeDashoffset="0"
+                style={{ animation: "draw-check 0.8s ease-out forwards" }}
+              />
+              <path
+                d="M30 52 L45 67 L72 35"
+                fill="none"
+                stroke="hsl(var(--scaler-orange))"
+                strokeWidth="4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="animate-draw-check"
+              />
             </svg>
           </motion.div>
           <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4">You're shortlisted!</h2>
@@ -302,8 +359,14 @@ const RegistrationForm = () => {
             <div className="card-surface rounded-xl p-5 mb-8 text-left max-w-md mx-auto">
               <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Your dashboard credentials</p>
               <div className="space-y-1.5 text-sm">
-                <p className="text-foreground"><span className="text-muted-foreground">Email:</span> <span className="font-mono">{formData.collegeEmail}</span></p>
-                <p className="text-foreground"><span className="text-muted-foreground">Password:</span> <span className="font-mono font-bold text-primary">{generatedPassword}</span></p>
+                <p className="text-foreground">
+                  <span className="text-muted-foreground">Email:</span>{" "}
+                  <span className="font-mono">{formData.collegeEmail}</span>
+                </p>
+                <p className="text-foreground">
+                  <span className="text-muted-foreground">Password:</span>{" "}
+                  <span className="font-mono font-bold text-primary">{generatedPassword}</span>
+                </p>
               </div>
               <p className="text-xs text-muted-foreground mt-3">Save this password — you'll need it to log in.</p>
             </div>
@@ -318,9 +381,11 @@ const RegistrationForm = () => {
           <div className="flex items-center justify-center gap-2 flex-wrap">
             {["Apply", "Dashboard", "AI Assessment", "Interview", "Offer"].map((s, i) => (
               <div key={s} className="flex items-center gap-2">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
-                  i === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-                }`}>
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
+                    i === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                  }`}
+                >
                   {i === 0 ? "✓" : i + 1}
                 </div>
                 <span className="text-xs text-muted-foreground hidden sm:inline">{s}</span>
@@ -341,7 +406,8 @@ const RegistrationForm = () => {
           <div className="card-surface rounded-2xl p-8 border-l-4 border-l-primary text-left">
             <h2 className="text-2xl md:text-3xl font-extrabold text-foreground mb-3">Thanks for applying.</h2>
             <p className="text-muted-foreground">
-              Based on your responses, this role isn't the right fit at the moment. We'll keep your profile on file for future openings that match your background.
+              Based on your responses, this role isn't the right fit at the moment. We'll keep your profile on file for
+              future openings that match your background.
             </p>
           </div>
         </div>
@@ -361,7 +427,9 @@ const RegistrationForm = () => {
 
         <div className="mb-10">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-muted-foreground">Step {Math.min(step, TOTAL_STEPS)} of {TOTAL_STEPS}</span>
+            <span className="text-sm text-muted-foreground">
+              Step {Math.min(step, TOTAL_STEPS)} of {TOTAL_STEPS}
+            </span>
           </div>
           <div className="h-1 bg-muted rounded-full overflow-hidden">
             <motion.div
@@ -376,7 +444,13 @@ const RegistrationForm = () => {
         <AnimatePresence mode="wait">
           {/* Step 1 — Personal Details */}
           {step === 1 && (
-            <motion.div key="s1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-5">
+            <motion.div
+              key="s1"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-5"
+            >
               <div>
                 <label className={labelClasses}>Full name</label>
                 <input
@@ -399,7 +473,10 @@ const RegistrationForm = () => {
                 <FieldError name="personalEmail" />
               </div>
               <div>
-                <label className={labelClasses}>College email <span className="text-muted-foreground font-normal">(used as login post-shortlisting)</span></label>
+                <label className={labelClasses}>
+                  College email{" "}
+                  <span className="text-muted-foreground font-normal">(used as login post-shortlisting)</span>
+                </label>
                 <input
                   className={`${inputClasses} ${errors.collegeEmail ? errorInputClasses : ""}`}
                   type="email"
@@ -420,8 +497,10 @@ const RegistrationForm = () => {
                 />
                 <FieldError name="mobile" />
               </div>
-              <button onClick={() => handleNext(1)}
-                className="w-full py-4 rounded-xl bg-primary text-primary-foreground font-bold text-base glow-orange-hover transition-all">
+              <button
+                onClick={() => handleNext(1)}
+                className="w-full py-4 rounded-xl bg-primary text-primary-foreground font-bold text-base glow-orange-hover transition-all"
+              >
                 Continue →
               </button>
             </motion.div>
@@ -429,7 +508,13 @@ const RegistrationForm = () => {
 
           {/* Step 2 — Academic Details */}
           {step === 2 && (
-            <motion.div key="s2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-5">
+            <motion.div
+              key="s2"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-5"
+            >
               <div>
                 <label className={labelClasses}>College name</label>
                 <input
@@ -448,7 +533,11 @@ const RegistrationForm = () => {
                   onChange={(e) => update("degree", e.target.value)}
                 >
                   <option value="">Select degree</option>
-                  {["BBA", "MBA", "B.Tech", "B.Com", "Other"].map(d => <option key={d} value={d}>{d}</option>)}
+                  {["BBA", "MBA", "B.Tech", "B.Com", "Other"].map((d) => (
+                    <option key={d} value={d}>
+                      {d}
+                    </option>
+                  ))}
                 </select>
                 <FieldError name="degree" />
               </div>
@@ -466,7 +555,12 @@ const RegistrationForm = () => {
                 <label className={labelClasses}>Current score</label>
                 <div className="flex gap-3 mb-3">
                   {(["CGPA", "Percentage"] as const).map((t) => (
-                    <ToggleButton key={t} value={t} selected={formData.scoreType} onSelect={(v) => update("scoreType", v as "CGPA" | "Percentage")} />
+                    <ToggleButton
+                      key={t}
+                      value={t}
+                      selected={formData.scoreType}
+                      onSelect={(v) => update("scoreType", v as "CGPA" | "Percentage")}
+                    />
                   ))}
                 </div>
                 <input
@@ -483,15 +577,27 @@ const RegistrationForm = () => {
                 <label className={labelClasses}>Graduation year</label>
                 <div className="flex gap-3">
                   {["2024", "2025", "2026"].map((y) => (
-                    <ToggleButton key={y} value={y} selected={formData.graduationYear} onSelect={(v) => update("graduationYear", v)} />
+                    <ToggleButton
+                      key={y}
+                      value={y}
+                      selected={formData.graduationYear}
+                      onSelect={(v) => update("graduationYear", v)}
+                    />
                   ))}
                 </div>
                 <FieldError name="graduationYear" />
               </div>
               <div className="flex gap-3">
-                <button onClick={() => setStep(1)} className="px-6 py-4 rounded-xl card-surface text-foreground font-bold">← Back</button>
-                <button onClick={() => handleNext(2)}
-                  className="flex-1 py-4 rounded-xl bg-primary text-primary-foreground font-bold glow-orange-hover transition-all">
+                <button
+                  onClick={() => setStep(1)}
+                  className="px-6 py-4 rounded-xl card-surface text-foreground font-bold"
+                >
+                  ← Back
+                </button>
+                <button
+                  onClick={() => handleNext(2)}
+                  className="flex-1 py-4 rounded-xl bg-primary text-primary-foreground font-bold glow-orange-hover transition-all"
+                >
                   Continue →
                 </button>
               </div>
@@ -500,7 +606,13 @@ const RegistrationForm = () => {
 
           {/* Step 3 — Professional Background */}
           {step === 3 && (
-            <motion.div key="s3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-5">
+            <motion.div
+              key="s3"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-5"
+            >
               <div>
                 <label className={labelClasses}>Years of experience</label>
                 <select
@@ -509,14 +621,22 @@ const RegistrationForm = () => {
                   onChange={(e) => update("yearsExperience", e.target.value)}
                 >
                   <option value="">Select experience</option>
-                  {["Fresher (0)", "Less than 1 year", "1–2 years", "2+ years"].map(o => <option key={o} value={o}>{o}</option>)}
+                  {["Fresher (0)", "Less than 1 year", "1–2 years", "2+ years"].map((o) => (
+                    <option key={o} value={o}>
+                      {o}
+                    </option>
+                  ))}
                 </select>
                 <FieldError name="yearsExperience" />
               </div>
               <YesNoCard question="Any prior BD or sales experience?" field="hasSalesExp" />
               <AnimatePresence>
                 {formData.hasSalesExp === "Yes" && (
-                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                  >
                     <textarea
                       className={`${inputClasses} min-h-[100px] ${errors.salesExpDetails ? errorInputClasses : ""}`}
                       value={formData.salesExpDetails}
@@ -525,15 +645,24 @@ const RegistrationForm = () => {
                     />
                     <div className="flex justify-between">
                       <FieldError name="salesExpDetails" />
-                      <p className="text-xs text-muted-foreground mt-1.5 ml-auto">{formData.salesExpDetails.length}/200</p>
+                      <p className="text-xs text-muted-foreground mt-1.5 ml-auto">
+                        {formData.salesExpDetails.length}/200
+                      </p>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
               <div className="flex gap-3 pt-2">
-                <button onClick={() => setStep(2)} className="px-6 py-4 rounded-xl card-surface text-foreground font-bold">← Back</button>
-                <button onClick={() => handleNext(3)}
-                  className="flex-1 py-4 rounded-xl bg-primary text-primary-foreground font-bold glow-orange-hover transition-all">
+                <button
+                  onClick={() => setStep(2)}
+                  className="px-6 py-4 rounded-xl card-surface text-foreground font-bold"
+                >
+                  ← Back
+                </button>
+                <button
+                  onClick={() => handleNext(3)}
+                  className="flex-1 py-4 rounded-xl bg-primary text-primary-foreground font-bold glow-orange-hover transition-all"
+                >
                   Continue →
                 </button>
               </div>
@@ -542,7 +671,13 @@ const RegistrationForm = () => {
 
           {/* Step 4 — Eligibility */}
           {step === 4 && !rejected && (
-            <motion.div key="s4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
+            <motion.div
+              key="s4"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-4"
+            >
               <YesNoCard question="Do you have any active backlogs?" field="hasBacklogs" />
               <div>
                 <label className={labelClasses}>Preferred joining location</label>
@@ -555,7 +690,9 @@ const RegistrationForm = () => {
                         type="button"
                         onClick={() => toggleLocation(loc)}
                         className={`px-6 py-3 rounded-xl font-semibold text-sm transition-all ${
-                          active ? "bg-primary text-primary-foreground" : "card-surface text-foreground hover:border-primary/50"
+                          active
+                            ? "bg-primary text-primary-foreground"
+                            : "card-surface text-foreground hover:border-primary/50"
                         }`}
                       >
                         {loc}
@@ -567,9 +704,16 @@ const RegistrationForm = () => {
               </div>
               <YesNoCard question="Available for immediate joining?" field="immediateJoining" />
               <div className="flex gap-3 pt-2">
-                <button onClick={() => setStep(3)} className="px-6 py-4 rounded-xl card-surface text-foreground font-bold">← Back</button>
-                <button onClick={() => handleNext(4)}
-                  className="flex-1 py-4 rounded-xl bg-primary text-primary-foreground font-bold glow-orange-hover transition-all">
+                <button
+                  onClick={() => setStep(3)}
+                  className="px-6 py-4 rounded-xl card-surface text-foreground font-bold"
+                >
+                  ← Back
+                </button>
+                <button
+                  onClick={() => handleNext(4)}
+                  className="flex-1 py-4 rounded-xl bg-primary text-primary-foreground font-bold glow-orange-hover transition-all"
+                >
                   Continue →
                 </button>
               </div>
@@ -578,20 +722,33 @@ const RegistrationForm = () => {
 
           {/* Rejected */}
           {step === 4 && rejected && (
-            <motion.div key="rejected" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-              className="card-surface rounded-2xl p-6 border-l-4 border-l-primary">
+            <motion.div
+              key="rejected"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="card-surface rounded-2xl p-6 border-l-4 border-l-primary"
+            >
               <p className="text-foreground">
-                Thanks for your interest — this role requires candidates without active backlogs. We'll keep your profile on file for future openings.
+                Thanks for your interest — this role requires candidates without active backlogs. We'll keep your
+                profile on file for future openings.
               </p>
             </motion.div>
           )}
 
           {/* Step 5 — Resume */}
           {step === 5 && (
-            <motion.div key="s5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-5">
+            <motion.div
+              key="s5"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-5"
+            >
               <div>
                 <label className={labelClasses}>Upload resume (PDF only, max 10MB)</label>
-                <label className={`flex flex-col items-center justify-center w-full h-40 rounded-2xl border-2 border-dashed cursor-pointer transition-colors card-surface ${errors.resumeFileName ? "border-destructive" : "border-border hover:border-primary/50"}`}>
+                <label
+                  className={`flex flex-col items-center justify-center w-full h-40 rounded-2xl border-2 border-dashed cursor-pointer transition-colors card-surface ${errors.resumeFileName ? "border-destructive" : "border-border hover:border-primary/50"}`}
+                >
                   {formData.resumeFileName ? (
                     <div className="flex items-center gap-2 text-foreground">
                       <span className="text-scaler-green text-xl">✓</span>
@@ -602,33 +759,50 @@ const RegistrationForm = () => {
                       <span className="text-sm text-muted-foreground">Drag & drop or click to upload PDF</span>
                     </div>
                   )}
-                  <input type="file" accept="application/pdf,.pdf" className="hidden" onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
-                    if (file.type !== "application/pdf") {
-                      setErrors({ resumeFileName: "Only PDF files are allowed" });
-                      return;
-                    }
-                    if (file.size > 10 * 1024 * 1024) {
-                      setErrors({ resumeFileName: "File must be under 10MB" });
-                      return;
-                    }
-                    update("resumeFileName", file.name);
-                  }} />
+                  <input
+                    type="file"
+                    accept="application/pdf,.pdf"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      if (file.type !== "application/pdf") {
+                        setErrors({ resumeFileName: "Only PDF files are allowed" });
+                        return;
+                      }
+                      if (file.size > 10 * 1024 * 1024) {
+                        setErrors({ resumeFileName: "File must be under 10MB" });
+                        return;
+                      }
+                      update("resumeFileName", file.name);
+                    }}
+                  />
                 </label>
                 <FieldError name="resumeFileName" />
-                <p className="text-xs text-muted-foreground mt-2">Your resume will be requested again post-shortlisting via email.</p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Your resume will be requested again post-shortlisting via email.
+                </p>
               </div>
               <div className="flex gap-3">
-                <button onClick={() => setStep(4)} className="px-6 py-4 rounded-xl card-surface text-foreground font-bold">← Back</button>
-                <button onClick={handleSubmit} disabled={!formData.resumeFileName || loading}
-                  className="flex-1 py-4 rounded-xl bg-primary text-primary-foreground font-bold disabled:opacity-40 disabled:cursor-not-allowed glow-orange-hover transition-all">
+                <button
+                  onClick={() => setStep(4)}
+                  className="px-6 py-4 rounded-xl card-surface text-foreground font-bold"
+                >
+                  ← Back
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  disabled={!formData.resumeFileName || loading}
+                  className="flex-1 py-4 rounded-xl bg-primary text-primary-foreground font-bold disabled:opacity-40 disabled:cursor-not-allowed glow-orange-hover transition-all"
+                >
                   {loading ? (
                     <span className="inline-flex items-center gap-2">
                       <span className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                       Submitting...
                     </span>
-                  ) : "Submit application →"}
+                  ) : (
+                    "Submit application →"
+                  )}
                 </button>
               </div>
             </motion.div>
