@@ -333,6 +333,22 @@ const RegistrationForm = () => {
     );
   }
 
+  // Top-level disqualification screen (triggered by backend eligibility check OR backlogs gate after submit attempt)
+  if (rejected && step === 5) {
+    return (
+      <section id="apply" className="py-24 md:py-32 px-6">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="card-surface rounded-2xl p-8 border-l-4 border-l-primary text-left">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-foreground mb-3">Thanks for applying.</h2>
+            <p className="text-muted-foreground">
+              Based on your responses, this role isn't the right fit at the moment. We'll keep your profile on file for future openings that match your background.
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   const TOTAL_STEPS = 5;
 
   return (
