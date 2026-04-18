@@ -1,8 +1,24 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { z } from "zod";
+import { toast } from "sonner";
 
-const APPS_SCRIPT_URL = "YOUR_APPS_SCRIPT_URL_HERE";
+/**
+ * ============================================================
+ * SETUP REQUIRED — Google Sheets integration via Apps Script
+ * ============================================================
+ * 1. Open the target Google Sheet:
+ *    https://docs.google.com/spreadsheets/d/1BfQakI2i87vdQO5Jruka-Mq8os2gsVA2dQB59Bd6eEY/edit
+ * 2. Extensions → Apps Script → paste the FULL script from the
+ *    comment block at the BOTTOM of this file.
+ * 3. Deploy → New deployment → Type: Web app
+ *    - Execute as: Me
+ *    - Who has access: Anyone
+ * 4. Copy the deployment URL and paste it below in APPS_SCRIPT_URL.
+ * 5. Re-deploy after any script change (or use "Manage deployments").
+ * ------------------------------------------------------------
+ */
+const APPS_SCRIPT_URL = "PASTE_DEPLOYED_URL_HERE";
 
 interface FormData {
   // Step 1
@@ -98,6 +114,8 @@ const RegistrationForm = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [rejected, setRejected] = useState(false);
+  const [generatedPassword, setGeneratedPassword] = useState<string>("");
+  const [submitEligible, setSubmitEligible] = useState<boolean>(true);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
@@ -168,22 +186,50 @@ const RegistrationForm = () => {
       setErrors({ resumeFileName: "Resume is required" });
       return;
     }
+    if (APPS_SCRIPT_URL === "PASTE_DEPLOYED_URL_HERE") {
+      toast.error("Setup incomplete: deploy Apps Script and set APPS_SCRIPT_URL.");
+      return;
+    }
     setLoading(true);
     try {
-      await fetch(APPS_SCRIPT_URL, {
+      // Apps Script web apps don't honour preflight; use text/plain to bypass CORS preflight.
+      const res = await fetch(APPS_SCRIPT_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, submittedAt: new Date().toISOString() }),
-        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "register",
+          ...formData,
+          submittedAt: new Date().toISOString(),
+        }),
       });
+      const json = await res.json();
+
+      if (json.status === "duplicate") {
+        setErrors({ personalEmail: "This email has already been used to apply." });
+        setStep(1);
+        setLoading(false);
+        return;
+      }
+
+      if (json.status !== "success") {
+        throw new Error(json.message || "Unknown error");
+      }
+
+      setSubmitEligible(!!json.eligible);
+      setGeneratedPassword(json.password || "");
+
+      if (!json.eligible) {
+        setRejected(true);
+      } else {
+        setSubmitted(true);
+        localStorage.removeItem(STORAGE_KEY);
+      }
     } catch (e) {
       console.error("Submission error:", e);
-    }
-    setTimeout(() => {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
       setLoading(false);
-      setSubmitted(true);
-      localStorage.removeItem(STORAGE_KEY);
-    }, 1500);
+    }
   };
 
   const inputClasses = "w-full px-4 py-3.5 rounded-xl bg-input border border-border text-foreground text-base placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all";
@@ -247,10 +293,28 @@ const RegistrationForm = () => {
                 className="animate-draw-check" />
             </svg>
           </motion.div>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4">You're in the pipeline.</h2>
-          <p className="text-muted-foreground mb-10">
-            We've received your application. If shortlisted, you'll get an email with your dashboard access within 48 hours. Check your spam folder too.
+          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4">You're shortlisted!</h2>
+          <p className="text-muted-foreground mb-6">
+            Your login credentials have been sent to your college email. Use them to access your candidate dashboard.
           </p>
+
+          {generatedPassword && (
+            <div className="card-surface rounded-xl p-5 mb-8 text-left max-w-md mx-auto">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Your dashboard credentials</p>
+              <div className="space-y-1.5 text-sm">
+                <p className="text-foreground"><span className="text-muted-foreground">Email:</span> <span className="font-mono">{formData.collegeEmail}</span></p>
+                <p className="text-foreground"><span className="text-muted-foreground">Password:</span> <span className="font-mono font-bold text-primary">{generatedPassword}</span></p>
+              </div>
+              <p className="text-xs text-muted-foreground mt-3">Save this password — you'll need it to log in.</p>
+            </div>
+          )}
+
+          <a
+            href="https://candidate-dashboard-campus.lovable.app/login"
+            className="inline-block px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-bold mb-10 glow-orange-hover transition-all"
+          >
+            Open candidate dashboard →
+          </a>
           <div className="flex items-center justify-center gap-2 flex-wrap">
             {["Apply", "Dashboard", "AI Assessment", "Interview", "Offer"].map((s, i) => (
               <div key={s} className="flex items-center gap-2">
@@ -263,6 +327,22 @@ const RegistrationForm = () => {
                 {i < 4 && <div className="w-4 h-0.5 bg-border" />}
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Top-level disqualification screen (triggered by backend eligibility check OR backlogs gate after submit attempt)
+  if (rejected && step === 5) {
+    return (
+      <section id="apply" className="py-24 md:py-32 px-6">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="card-surface rounded-2xl p-8 border-l-4 border-l-primary text-left">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-foreground mb-3">Thanks for applying.</h2>
+            <p className="text-muted-foreground">
+              Based on your responses, this role isn't the right fit at the moment. We'll keep your profile on file for future openings that match your background.
+            </p>
           </div>
         </div>
       </section>
@@ -561,35 +641,176 @@ const RegistrationForm = () => {
 
 export default RegistrationForm;
 
-/*
-=== GOOGLE APPS SCRIPT CODE ===
+/* ============================================================
+ * COMPLETE GOOGLE APPS SCRIPT — paste into Apps Script editor
+ * Sheet ID: 1BfQakI2i87vdQO5Jruka-Mq8os2gsVA2dQB59Bd6eEY
+ * Tabs used (auto-created if missing): Candidates, Attempts, Verdicts
+ * Deploy as: Web app | Execute as: Me | Who has access: Anyone
+ * ============================================================
 
-function doPost(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+const SHEET_ID = '1BfQakI2i87vdQO5Jruka-Mq8os2gsVA2dQB59Bd6eEY';
 
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow([
-      'Timestamp', 'Full Name', 'Personal Email', 'College Email', 'Mobile',
-      'College', 'Degree', 'Specialisation', 'Score Type', 'Score', 'Graduation Year',
-      'Years Experience', 'Has Sales Exp', 'Sales Exp Details',
-      'Has Backlogs', 'Joining Locations', 'Immediate Joining',
-      'Resume File Name', 'Submitted At'
-    ]);
-  }
+const CANDIDATE_HEADERS = [
+  'Timestamp','Full Name','Personal Email','College Email','Mobile',
+  'College','Degree','Specialisation','CGPA','Graduation Year',
+  'Years of Experience','Has Sales Experience','Sales Experience Details',
+  'Has Active Backlogs','Preferred Location','Available for Immediate Joining',
+  'Resume Filename','Eligible','Stage','Dashboard Password'
+];
+const ATTEMPT_HEADERS  = ['Timestamp','Email','Attempt Number'];
+const VERDICT_HEADERS  = ['Timestamp','Email','Stage','Verdict','Notes'];
 
-  var data = JSON.parse(e.postData.contents);
-
-  sheet.appendRow([
-    new Date(),
-    data.fullName, data.personalEmail, data.collegeEmail, data.mobile,
-    data.college, data.degree, data.specialisation, data.scoreType, data.score, data.graduationYear,
-    data.yearsExperience, data.hasSalesExp, data.salesExpDetails,
-    data.hasBacklogs, (data.joiningLocations || []).join(', '), data.immediateJoining,
-    data.resumeFileName, data.submittedAt
-  ]);
-
-  return ContentService
-    .createTextOutput(JSON.stringify({ status: 'success' }))
+function _ss() { return SpreadsheetApp.openById(SHEET_ID); }
+function _sheet(name, headers) {
+  var ss = _ss();
+  var sh = ss.getSheetByName(name);
+  if (!sh) sh = ss.insertSheet(name);
+  if (sh.getLastRow() === 0) sh.appendRow(headers);
+  return sh;
+}
+function _json(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }
-*/
+function _rows(sh) {
+  var values = sh.getDataRange().getValues();
+  if (values.length < 2) return [];
+  var headers = values[0];
+  return values.slice(1).map(function(r){
+    var o = {}; headers.forEach(function(h,i){ o[h] = r[i]; }); return o;
+  });
+}
+function _genPassword() {
+  var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var s = ''; for (var i=0;i<6;i++) s += chars.charAt(Math.floor(Math.random()*chars.length));
+  return s;
+}
+function _isEligible(data) {
+  var noBacklogs = String(data.hasBacklogs).toLowerCase() === 'no';
+  var immediate  = String(data.immediateJoining).toLowerCase() === 'yes';
+  var locs = data.joiningLocations || [];
+  var validLoc = locs.some(function(l){
+    var v = String(l).toLowerCase();
+    return v === 'delhi' || v === 'bangalore' || v === 'both';
+  });
+  return noBacklogs && immediate && validLoc;
+}
+
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var action = data.action || 'register';
+
+    if (action === 'register') {
+      var sh = _sheet('Candidates', CANDIDATE_HEADERS);
+      // Duplicate check on personal email
+      var rows = _rows(sh);
+      var dup = rows.some(function(r){
+        return String(r['Personal Email']).toLowerCase() === String(data.personalEmail).toLowerCase();
+      });
+      if (dup) return _json({ status: 'duplicate' });
+
+      var eligible = _isEligible(data);
+      var password = eligible ? _genPassword() : '';
+      var stage = eligible ? 'Dashboard Unlocked' : 'Disqualified';
+      var locs = (data.joiningLocations || []).join(', ');
+
+      sh.appendRow([
+        new Date(),
+        data.fullName, data.personalEmail, data.collegeEmail, data.mobile,
+        data.college, data.degree, data.specialisation, data.score, data.graduationYear,
+        data.yearsExperience, data.hasSalesExp, data.salesExpDetails || '',
+        data.hasBacklogs, locs, data.immediateJoining,
+        data.resumeFileName, eligible ? 'Yes' : 'No', stage, password
+      ]);
+      return _json({ status: 'success', eligible: eligible, password: password });
+    }
+
+    if (action === 'logAttempt') {
+      var sh = _sheet('Attempts', ATTEMPT_HEADERS);
+      sh.appendRow([new Date(), data.email, data.attemptNumber]);
+      return _json({ status: 'success' });
+    }
+
+    if (action === 'logVerdict') {
+      var sh = _sheet('Verdicts', VERDICT_HEADERS);
+      sh.appendRow([new Date(), data.email, data.stage, data.verdict, data.notes || '']);
+      return _json({ status: 'success' });
+    }
+
+    if (action === 'updateStage') {
+      var sh = _sheet('Candidates', CANDIDATE_HEADERS);
+      var values = sh.getDataRange().getValues();
+      var headers = values[0];
+      var emailCol = headers.indexOf('College Email');
+      var stageCol = headers.indexOf('Stage');
+      for (var i = 1; i < values.length; i++) {
+        if (String(values[i][emailCol]).toLowerCase() === String(data.email).toLowerCase()) {
+          sh.getRange(i + 1, stageCol + 1).setValue(data.stage);
+          return _json({ status: 'success' });
+        }
+      }
+      return _json({ status: 'error', message: 'Candidate not found' });
+    }
+
+    return _json({ status: 'error', message: 'Unknown action: ' + action });
+  } catch (err) {
+    return _json({ status: 'error', message: err.toString() });
+  }
+}
+
+function doGet(e) {
+  try {
+    var action = e.parameter.action;
+
+    if (action === 'login') {
+      var sh = _sheet('Candidates', CANDIDATE_HEADERS);
+      var rows = _rows(sh);
+      var match = rows.find(function(r){
+        return String(r['College Email']).toLowerCase() === String(e.parameter.email).toLowerCase()
+            && String(r['Dashboard Password']) === String(e.parameter.password);
+      });
+      if (!match) return _json({ status: 'error', message: 'Invalid credentials' });
+      return _json({ status: 'success', candidate: match });
+    }
+
+    if (action === 'getCandidate') {
+      var sh = _sheet('Candidates', CANDIDATE_HEADERS);
+      var rows = _rows(sh);
+      var match = rows.find(function(r){
+        return String(r['College Email']).toLowerCase() === String(e.parameter.email).toLowerCase();
+      });
+      if (!match) return _json({ status: 'error', message: 'Not found' });
+      return _json({ status: 'success', candidate: match });
+    }
+
+    if (action === 'getAllCandidates') {
+      var sh = _sheet('Candidates', CANDIDATE_HEADERS);
+      return _json({ status: 'success', candidates: _rows(sh) });
+    }
+
+    if (action === 'getAttempts') {
+      var sh = _sheet('Attempts', ATTEMPT_HEADERS);
+      var rows = _rows(sh).filter(function(r){
+        return String(r['Email']).toLowerCase() === String(e.parameter.email).toLowerCase();
+      });
+      return _json({ status: 'success', count: rows.length, attempts: rows });
+    }
+
+    if (action === 'getPassword') {
+      var sh = _sheet('Candidates', CANDIDATE_HEADERS);
+      var rows = _rows(sh);
+      var match = rows.find(function(r){
+        return String(r['College Email']).toLowerCase() === String(e.parameter.email).toLowerCase();
+      });
+      if (!match) return _json({ status: 'error', message: 'No account found for this email' });
+      return _json({ status: 'success', password: match['Dashboard Password'] });
+    }
+
+    return _json({ status: 'error', message: 'Unknown action: ' + action });
+  } catch (err) {
+    return _json({ status: 'error', message: err.toString() });
+  }
+}
+
+* ============================================================ */

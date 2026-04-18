@@ -6,7 +6,7 @@ const Navbar = () => {
         <span className="w-2 h-2 rounded-full bg-primary -mt-2" />
       </div>
       <a
-        href="#apply"
+        href="https://candidate-dashboard-campus.lovable.app/login"
         className="text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
         Already applied? Check status →
