@@ -211,7 +211,7 @@ const RegistrationForm = () => {
       setErrors({ resumeFileName: "Resume is required" });
       return;
     }
-    if (APPS_SCRIPT_URL === "PASTE_DEPLOYED_URL_HERE") {
+    if ((APPS_SCRIPT_URL as string) === "PASTE_DEPLOYED_URL_HERE") {
       toast.error("Setup incomplete: deploy Apps Script and set APPS_SCRIPT_URL.");
       return;
     }
