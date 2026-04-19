@@ -5,16 +5,13 @@
  *
  * DEPLOY:
  *   1. Open the sheet → Extensions → Apps Script
- *   2. Replace Code.gs with the contents of this file
- *   3. Deploy → New deployment → Type: Web app
- *      Execute as: Me   |   Who has access: Anyone
- *   4. Authorise on first run
- *   5. Copy the /exec URL and paste it into:
- *        - Registration site:  src/components/RegistrationForm.tsx → APPS_SCRIPT_URL
- *        - Candidate dashboard: APPS_SCRIPT_URL constant
- *        - Ops dashboard:      APPS_SCRIPT_URL constant
+ *   2. Replace Code.gs with the contents of this file (DO NOT keep duplicate doPost/doGet)
+ *   3. Deploy → Manage deployments → pencil → Version: New version → Deploy
+ *   4. Keep the same /exec URL
  *
  * Tabs (auto-created with headers if missing): Candidates, Attempts, Verdicts
+ * Colleges tab must be created manually with headers:
+ *   id | name | city | driveDate | pocName | pocContact | status | applicationsReceived | notes | createdAt
  */
 
 const SHEET_ID = '1BfQakI2i87vdQO5Jruka-Mq8os2gsVA2dQB59Bd6eEY';
@@ -26,8 +23,10 @@ const CANDIDATE_HEADERS = [
   'Has Active Backlogs','Preferred Location','Available for Immediate Joining',
   'Resume Filename','Eligible','Stage','Dashboard Password'
 ];
-const ATTEMPT_HEADERS  = ['Timestamp','Email','Attempt Number'];
-const VERDICT_HEADERS  = ['Timestamp','Email','Stage','Verdict','Notes'];
+const ATTEMPT_HEADERS = ['Timestamp','Email','Attempt Number'];
+const VERDICT_HEADERS = ['Timestamp','Email','Stage','Verdict','Notes'];
+const COLLEGES_SHEET_NAME = 'Colleges';
+const CANDIDATES_SHEET_NAME = 'Candidates';
 
 function _ss() { return SpreadsheetApp.openById(SHEET_ID); }
 function _sheet(name, headers) {
@@ -55,7 +54,6 @@ function _genPassword() {
   return s;
 }
 function _isEligible(data) {
-  // Only validation: candidate must have NO active backlogs.
   return String(data.hasBacklogs).toLowerCase() === 'no';
 }
 
@@ -115,6 +113,10 @@ function doPost(e) {
       return _json({ status: 'error', message: 'Candidate not found' });
     }
 
+    if (action === 'addCollege')    return _json(addCollege_(data));
+    if (action === 'updateCollege') return _json(updateCollege_(data));
+    if (action === 'deleteCollege') return _json(deleteCollege_(data));
+
     return _json({ status: 'error', message: 'Unknown action: ' + action });
   } catch (err) {
     return _json({ status: 'error', message: err.toString() });
@@ -127,8 +129,7 @@ function doGet(e) {
 
     if (action === 'login') {
       var sh = _sheet('Candidates', CANDIDATE_HEADERS);
-      var rows = _rows(sh);
-      var match = rows.find(function(r){
+      var match = _rows(sh).find(function(r){
         return String(r['College Email']).toLowerCase() === String(e.parameter.email).toLowerCase()
             && String(r['Dashboard Password']) === String(e.parameter.password);
       });
@@ -138,8 +139,7 @@ function doGet(e) {
 
     if (action === 'getCandidate') {
       var sh = _sheet('Candidates', CANDIDATE_HEADERS);
-      var rows = _rows(sh);
-      var match = rows.find(function(r){
+      var match = _rows(sh).find(function(r){
         return String(r['College Email']).toLowerCase() === String(e.parameter.email).toLowerCase();
       });
       if (!match) return _json({ status: 'error', message: 'Not found' });
@@ -161,16 +161,128 @@ function doGet(e) {
 
     if (action === 'getPassword') {
       var sh = _sheet('Candidates', CANDIDATE_HEADERS);
-      var rows = _rows(sh);
-      var match = rows.find(function(r){
+      var match = _rows(sh).find(function(r){
         return String(r['College Email']).toLowerCase() === String(e.parameter.email).toLowerCase();
       });
       if (!match) return _json({ status: 'error', message: 'No account found for this email' });
       return _json({ status: 'success', password: match['Dashboard Password'] });
     }
 
+    if (action === 'getColleges') return _json(getColleges_());
+
     return _json({ status: 'error', message: 'Unknown action: ' + action });
   } catch (err) {
     return _json({ status: 'error', message: err.toString() });
   }
+}
+
+// ============================================================
+// COLLEGES MODULE
+// ============================================================
+
+function getCollegesSheet_() {
+  const sheet = _ss().getSheetByName(COLLEGES_SHEET_NAME);
+  if (!sheet) throw new Error('Colleges sheet not found');
+  return sheet;
+}
+
+function rowsToObjects_(sheet) {
+  const values = sheet.getDataRange().getValues();
+  if (values.length < 2) return [];
+  const headers = values[0];
+  return values.slice(1)
+    .filter(row => row.some(cell => cell !== '' && cell !== null))
+    .map(row => {
+      const obj = {};
+      headers.forEach((h, i) => { obj[h] = row[i]; });
+      return obj;
+    });
+}
+
+function countApplicationsByCollege_(collegeName) {
+  const sheet = _ss().getSheetByName(CANDIDATES_SHEET_NAME);
+  if (!sheet) return 0;
+  const values = sheet.getDataRange().getValues();
+  if (values.length < 2) return 0;
+  const headers = values[0];
+  const collegeIdx = headers.indexOf('College');
+  if (collegeIdx === -1) return 0;
+  let count = 0;
+  for (let i = 1; i < values.length; i++) {
+    if (String(values[i][collegeIdx]).trim().toLowerCase() === String(collegeName).trim().toLowerCase()) {
+      count++;
+    }
+  }
+  return count;
+}
+
+function getColleges_() {
+  const sheet = getCollegesSheet_();
+  const colleges = rowsToObjects_(sheet).map(c => ({
+    id: String(c.id || ''),
+    name: String(c.name || ''),
+    city: String(c.city || ''),
+    driveDate: c.driveDate instanceof Date
+      ? Utilities.formatDate(c.driveDate, Session.getScriptTimeZone(), 'yyyy-MM-dd')
+      : String(c.driveDate || ''),
+    pocName: String(c.pocName || ''),
+    pocContact: String(c.pocContact || ''),
+    status: String(c.status || 'Targeted'),
+    applicationsReceived: countApplicationsByCollege_(c.name),
+    notes: String(c.notes || ''),
+  }));
+  return { status: 'success', colleges: colleges };
+}
+
+function addCollege_(payload) {
+  const sheet = getCollegesSheet_();
+  const id = 'col_' + new Date().getTime();
+  const createdAt = new Date().toISOString();
+  sheet.appendRow([
+    id, payload.name || '', payload.city || '', payload.driveDate || '',
+    payload.pocName || '', payload.pocContact || '', payload.status || 'Targeted',
+    0, payload.notes || '', createdAt,
+  ]);
+  return {
+    status: 'success',
+    college: {
+      id: id, name: payload.name || '', city: payload.city || '',
+      driveDate: payload.driveDate || '', pocName: payload.pocName || '',
+      pocContact: payload.pocContact || '', status: payload.status || 'Targeted',
+      applicationsReceived: 0, notes: payload.notes || '',
+    },
+  };
+}
+
+function updateCollege_(payload) {
+  const sheet = getCollegesSheet_();
+  const values = sheet.getDataRange().getValues();
+  const headers = values[0];
+  const idIdx = headers.indexOf('id');
+  for (let i = 1; i < values.length; i++) {
+    if (String(values[i][idIdx]) === String(payload.id)) {
+      ['name','city','driveDate','pocName','pocContact','status','notes'].forEach(field => {
+        if (payload[field] !== undefined) {
+          const colIdx = headers.indexOf(field);
+          if (colIdx !== -1) sheet.getRange(i + 1, colIdx + 1).setValue(payload[field]);
+        }
+      });
+      return { status: 'success' };
+    }
+  }
+  return { status: 'error', message: 'College not found' };
+}
+
+function deleteCollege_(payload) {
+  const sheet = getCollegesSheet_();
+  const values = sheet.getDataRange().getValues();
+  const headers = values[0];
+  const idIdx = headers.indexOf('id');
+  for (let i = 1; i < values.length; i++) {
+    if (String(values[i][idIdx]) === String(payload.id)) {
+      sheet.deleteRow(i + 1);
+      return { status: 'success' };
+    }
+  }
+  return { status: 'error', message: 'College not found' };
 }
