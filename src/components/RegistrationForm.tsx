@@ -194,16 +194,8 @@ const RegistrationForm = () => {
 
   const handleNext = (s: number) => {
     if (!validateStep(s)) return;
-    if (s === 4) {
-      // Eligibility gate
-      if (formData.hasBacklogs === "Yes") {
-        setRejected(true);
-        return;
-      }
-      setStep(5);
-    } else {
-      setStep(s + 1);
-    }
+    // Always advance — eligibility is decided server-side after submit so every lead is recorded.
+    setStep(s + 1);
   };
 
   const handleSubmit = async () => {
@@ -227,7 +219,17 @@ const RegistrationForm = () => {
           submittedAt: new Date().toISOString(),
         }),
       });
-      const json = await res.json();
+      const rawText = await res.text();
+      console.log("Apps Script raw response:", rawText);
+
+      let json: { status?: string; eligible?: boolean; password?: string; message?: string };
+      try {
+        json = JSON.parse(rawText);
+      } catch {
+        throw new Error(
+          `Apps Script returned non-JSON (HTTP ${res.status}). Likely the deployment URL is stale or access isn't set to "Anyone". First 120 chars: ${rawText.slice(0, 120)}`
+        );
+      }
 
       if (json.status === "duplicate") {
         setErrors({ personalEmail: "This email has already been used to apply." });
@@ -237,7 +239,7 @@ const RegistrationForm = () => {
       }
 
       if (json.status !== "success") {
-        throw new Error(json.message || "Unknown error");
+        throw new Error(json.message || "Unknown error from Apps Script");
       }
 
       setSubmitEligible(!!json.eligible);
@@ -250,8 +252,9 @@ const RegistrationForm = () => {
         localStorage.removeItem(STORAGE_KEY);
       }
     } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
       console.error("Submission error:", e);
-      toast.error("Something went wrong. Please try again.");
+      toast.error(msg, { duration: 10000 });
     } finally {
       setLoading(false);
     }
