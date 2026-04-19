@@ -194,16 +194,8 @@ const RegistrationForm = () => {
 
   const handleNext = (s: number) => {
     if (!validateStep(s)) return;
-    if (s === 4) {
-      // Eligibility gate
-      if (formData.hasBacklogs === "Yes") {
-        setRejected(true);
-        return;
-      }
-      setStep(5);
-    } else {
-      setStep(s + 1);
-    }
+    // Always advance — eligibility is decided server-side after submit so every lead is recorded.
+    setStep(s + 1);
   };
 
   const handleSubmit = async () => {
