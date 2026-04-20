@@ -698,7 +698,7 @@ const RegistrationForm = () => {
               <div>
                 <label className={labelClasses}>Preferred joining location</label>
                 <div className="flex flex-wrap gap-3">
-                  {["Delhi", "Bangalore", "Both"].map((loc) => {
+                  {["Gurugram", "Bangalore", "Both"].map((loc) => {
                     const active = formData.joiningLocations.includes(loc);
                     return (
                       <button
@@ -790,7 +790,28 @@ const RegistrationForm = () => {
                         setErrors({ resumeFileName: "File must be under 10MB" });
                         return;
                       }
-                      update("resumeFileName", file.name);
+                      const reader = new FileReader();
+                      reader.onload = () => {
+                        const result = String(reader.result || "");
+                        // result is "data:application/pdf;base64,XXXX" — strip prefix
+                        const base64 = result.includes(",") ? result.split(",")[1] : result;
+                        setFormData((prev) => ({
+                          ...prev,
+                          resumeFileName: file.name,
+                          resumeBase64: base64,
+                          resumeMimeType: file.type,
+                        }));
+                        setErrors((prev) => {
+                          if (!prev.resumeFileName) return prev;
+                          const n = { ...prev };
+                          delete n.resumeFileName;
+                          return n;
+                        });
+                      };
+                      reader.onerror = () => {
+                        setErrors({ resumeFileName: "Could not read file. Try again." });
+                      };
+                      reader.readAsDataURL(file);
                     }}
                   />
                 </label>
