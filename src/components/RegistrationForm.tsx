@@ -44,6 +44,8 @@ interface FormData {
   immediateJoining: string;
   // Step 5
   resumeFileName: string;
+  resumeBase64: string; // not persisted to localStorage (stripped on save)
+  resumeMimeType: string;
 }
 
 const initialFormData: FormData = {
