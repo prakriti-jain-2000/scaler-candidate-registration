@@ -66,6 +66,8 @@ const initialFormData: FormData = {
   joiningLocations: [],
   immediateJoining: "",
   resumeFileName: "",
+  resumeBase64: "",
+  resumeMimeType: "",
 };
 
 const STORAGE_KEY = "scaler_registration_form_v2";
