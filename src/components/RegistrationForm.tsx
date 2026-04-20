@@ -44,6 +44,8 @@ interface FormData {
   immediateJoining: string;
   // Step 5
   resumeFileName: string;
+  resumeBase64: string; // not persisted to localStorage (stripped on save)
+  resumeMimeType: string;
 }
 
 const initialFormData: FormData = {
@@ -64,6 +66,8 @@ const initialFormData: FormData = {
   joiningLocations: [],
   immediateJoining: "",
   resumeFileName: "",
+  resumeBase64: "",
+  resumeMimeType: "",
 };
 
 const STORAGE_KEY = "scaler_registration_form_v2";
@@ -137,7 +141,9 @@ const RegistrationForm = () => {
   const [submitEligible, setSubmitEligible] = useState<boolean>(true);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+    // Don't persist the heavy base64 resume payload to localStorage
+    const { resumeBase64: _b, resumeMimeType: _m, ...persistable } = formData;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(persistable));
   }, [formData]);
 
   const update = useCallback(<K extends keyof FormData>(field: K, value: FormData[K]) => {
@@ -153,10 +159,17 @@ const RegistrationForm = () => {
   const toggleLocation = (loc: string) => {
     setFormData((prev) => {
       const has = prev.joiningLocations.includes(loc);
-      return {
-        ...prev,
-        joiningLocations: has ? prev.joiningLocations.filter((l) => l !== loc) : [...prev.joiningLocations, loc],
-      };
+      let next: string[];
+      if (has) {
+        next = prev.joiningLocations.filter((l) => l !== loc);
+      } else if (loc === "Both") {
+        // Selecting "Both" clears Gurugram/Bangalore
+        next = ["Both"];
+      } else {
+        // Selecting Gurugram or Bangalore clears "Both"
+        next = [...prev.joiningLocations.filter((l) => l !== "Both"), loc];
+      }
+      return { ...prev, joiningLocations: next };
     });
     setErrors((prev) => {
       if (!prev.joiningLocations) return prev;
@@ -685,7 +698,7 @@ const RegistrationForm = () => {
               <div>
                 <label className={labelClasses}>Preferred joining location</label>
                 <div className="flex flex-wrap gap-3">
-                  {["Delhi", "Bangalore", "Both"].map((loc) => {
+                  {["Gurugram", "Bangalore", "Both"].map((loc) => {
                     const active = formData.joiningLocations.includes(loc);
                     return (
                       <button
@@ -777,7 +790,28 @@ const RegistrationForm = () => {
                         setErrors({ resumeFileName: "File must be under 10MB" });
                         return;
                       }
-                      update("resumeFileName", file.name);
+                      const reader = new FileReader();
+                      reader.onload = () => {
+                        const result = String(reader.result || "");
+                        // result is "data:application/pdf;base64,XXXX" — strip prefix
+                        const base64 = result.includes(",") ? result.split(",")[1] : result;
+                        setFormData((prev) => ({
+                          ...prev,
+                          resumeFileName: file.name,
+                          resumeBase64: base64,
+                          resumeMimeType: file.type,
+                        }));
+                        setErrors((prev) => {
+                          if (!prev.resumeFileName) return prev;
+                          const n = { ...prev };
+                          delete n.resumeFileName;
+                          return n;
+                        });
+                      };
+                      reader.onerror = () => {
+                        setErrors({ resumeFileName: "Could not read file. Try again." });
+                      };
+                      reader.readAsDataURL(file);
                     }}
                   />
                 </label>

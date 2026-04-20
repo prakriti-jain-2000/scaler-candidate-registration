@@ -30,6 +30,7 @@ On dashboard mount, GET `${APPS_SCRIPT_URL}?action=getAllCandidates`. Response s
       "Has Sales Experience": "...", "Sales Experience Details": "...",
       "Has Active Backlogs": "...", "Preferred Location": "...",
       "Available for Immediate Joining": "...", "Resume Filename": "...",
+      "Resume Link": "https://drive.google.com/...",
       "Eligible": "Yes" | "No",
       "Stage": "Dashboard Unlocked" | "Assessment In Progress" | "Interview — BDM" | "Interview — AVP" | "Offer Rolled" | "Rejected" | "Disqualified",
       "Dashboard Password": "..."

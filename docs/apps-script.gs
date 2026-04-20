@@ -16,12 +16,16 @@
 
 const SHEET_ID = '1BfQakI2i87vdQO5Jruka-Mq8os2gsVA2dQB59Bd6eEY';
 
+// Folder in your Drive where uploaded resumes will be stored.
+// First run will auto-create a folder named "Scaler Campus Resumes" at the root of My Drive.
+const RESUME_FOLDER_NAME = 'Scaler Campus Resumes';
+
 const CANDIDATE_HEADERS = [
   'Timestamp','Full Name','Personal Email','College Email','Mobile',
   'College','Degree','Specialisation','CGPA','Graduation Year',
   'Years of Experience','Has Sales Experience','Sales Experience Details',
   'Has Active Backlogs','Preferred Location','Available for Immediate Joining',
-  'Resume Filename','Eligible','Stage','Dashboard Password'
+  'Resume Filename','Resume Link','Eligible','Stage','Dashboard Password'
 ];
 const ATTEMPT_HEADERS = ['Timestamp','Email','Attempt Number'];
 const VERDICT_HEADERS = ['Timestamp','Email','Stage','Verdict','Notes'];
@@ -57,6 +61,31 @@ function _isEligible(data) {
   return String(data.hasBacklogs).toLowerCase() === 'no';
 }
 
+// Returns the (auto-created if needed) Drive folder used to store uploaded resumes.
+function _resumeFolder() {
+  var folders = DriveApp.getFoldersByName(RESUME_FOLDER_NAME);
+  if (folders.hasNext()) return folders.next();
+  return DriveApp.createFolder(RESUME_FOLDER_NAME);
+}
+
+// Saves a base64-encoded PDF to Drive and returns a publicly viewable URL, or '' if no payload.
+function _uploadResume(base64, fileName, mimeType, candidateName) {
+  if (!base64) return '';
+  try {
+    var bytes = Utilities.base64Decode(base64);
+    var safeName = (candidateName || 'candidate').replace(/[^\w\-]+/g, '_');
+    var stamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyyMMdd-HHmmss');
+    var finalName = safeName + '_' + stamp + '_' + (fileName || 'resume.pdf');
+    var blob = Utilities.newBlob(bytes, mimeType || 'application/pdf', finalName);
+    var file = _resumeFolder().createFile(blob);
+    // Anyone with the link can view (so ops dashboard / sheet click-through works without sharing manually).
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    return file.getUrl();
+  } catch (err) {
+    return 'UPLOAD_FAILED: ' + err.toString();
+  }
+}
+
 function doPost(e) {
   try {
     var data = JSON.parse(e.postData.contents);
@@ -75,15 +104,19 @@ function doPost(e) {
       var stage = eligible ? 'Dashboard Unlocked' : 'Disqualified';
       var locs = (data.joiningLocations || []).join(', ');
 
+      var resumeUrl = _uploadResume(
+        data.resumeBase64, data.resumeFileName, data.resumeMimeType, data.fullName
+      );
+
       sh.appendRow([
         new Date(),
         data.fullName, data.personalEmail, data.collegeEmail, data.mobile,
         data.college, data.degree, data.specialisation, data.score, data.graduationYear,
         data.yearsExperience, data.hasSalesExp, data.salesExpDetails || '',
         data.hasBacklogs, locs, data.immediateJoining,
-        data.resumeFileName, eligible ? 'Yes' : 'No', stage, password
+        data.resumeFileName, resumeUrl, eligible ? 'Yes' : 'No', stage, password
       ]);
-      return _json({ status: 'success', eligible: eligible, password: password });
+      return _json({ status: 'success', eligible: eligible, password: password, resumeUrl: resumeUrl });
     }
 
     if (action === 'logAttempt') {
