@@ -104,15 +104,19 @@ function doPost(e) {
       var stage = eligible ? 'Dashboard Unlocked' : 'Disqualified';
       var locs = (data.joiningLocations || []).join(', ');
 
+      var resumeUrl = _uploadResume(
+        data.resumeBase64, data.resumeFileName, data.resumeMimeType, data.fullName
+      );
+
       sh.appendRow([
         new Date(),
         data.fullName, data.personalEmail, data.collegeEmail, data.mobile,
         data.college, data.degree, data.specialisation, data.score, data.graduationYear,
         data.yearsExperience, data.hasSalesExp, data.salesExpDetails || '',
         data.hasBacklogs, locs, data.immediateJoining,
-        data.resumeFileName, eligible ? 'Yes' : 'No', stage, password
+        data.resumeFileName, resumeUrl, eligible ? 'Yes' : 'No', stage, password
       ]);
-      return _json({ status: 'success', eligible: eligible, password: password });
+      return _json({ status: 'success', eligible: eligible, password: password, resumeUrl: resumeUrl });
     }
 
     if (action === 'logAttempt') {
