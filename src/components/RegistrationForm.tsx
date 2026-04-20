@@ -141,7 +141,9 @@ const RegistrationForm = () => {
   const [submitEligible, setSubmitEligible] = useState<boolean>(true);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+    // Don't persist the heavy base64 resume payload to localStorage
+    const { resumeBase64: _b, resumeMimeType: _m, ...persistable } = formData;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(persistable));
   }, [formData]);
 
   const update = useCallback(<K extends keyof FormData>(field: K, value: FormData[K]) => {
