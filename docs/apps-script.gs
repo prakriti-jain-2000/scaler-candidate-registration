@@ -61,6 +61,31 @@ function _isEligible(data) {
   return String(data.hasBacklogs).toLowerCase() === 'no';
 }
 
+// Returns the (auto-created if needed) Drive folder used to store uploaded resumes.
+function _resumeFolder() {
+  var folders = DriveApp.getFoldersByName(RESUME_FOLDER_NAME);
+  if (folders.hasNext()) return folders.next();
+  return DriveApp.createFolder(RESUME_FOLDER_NAME);
+}
+
+// Saves a base64-encoded PDF to Drive and returns a publicly viewable URL, or '' if no payload.
+function _uploadResume(base64, fileName, mimeType, candidateName) {
+  if (!base64) return '';
+  try {
+    var bytes = Utilities.base64Decode(base64);
+    var safeName = (candidateName || 'candidate').replace(/[^\w\-]+/g, '_');
+    var stamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyyMMdd-HHmmss');
+    var finalName = safeName + '_' + stamp + '_' + (fileName || 'resume.pdf');
+    var blob = Utilities.newBlob(bytes, mimeType || 'application/pdf', finalName);
+    var file = _resumeFolder().createFile(blob);
+    // Anyone with the link can view (so ops dashboard / sheet click-through works without sharing manually).
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    return file.getUrl();
+  } catch (err) {
+    return 'UPLOAD_FAILED: ' + err.toString();
+  }
+}
+
 function doPost(e) {
   try {
     var data = JSON.parse(e.postData.contents);
