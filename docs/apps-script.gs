@@ -16,12 +16,16 @@
 
 const SHEET_ID = '1BfQakI2i87vdQO5Jruka-Mq8os2gsVA2dQB59Bd6eEY';
 
+// Folder in your Drive where uploaded resumes will be stored.
+// First run will auto-create a folder named "Scaler Campus Resumes" at the root of My Drive.
+const RESUME_FOLDER_NAME = 'Scaler Campus Resumes';
+
 const CANDIDATE_HEADERS = [
   'Timestamp','Full Name','Personal Email','College Email','Mobile',
   'College','Degree','Specialisation','CGPA','Graduation Year',
   'Years of Experience','Has Sales Experience','Sales Experience Details',
   'Has Active Backlogs','Preferred Location','Available for Immediate Joining',
-  'Resume Filename','Eligible','Stage','Dashboard Password'
+  'Resume Filename','Resume Link','Eligible','Stage','Dashboard Password'
 ];
 const ATTEMPT_HEADERS = ['Timestamp','Email','Attempt Number'];
 const VERDICT_HEADERS = ['Timestamp','Email','Stage','Verdict','Notes'];
