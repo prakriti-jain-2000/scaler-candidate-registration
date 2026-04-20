@@ -159,10 +159,17 @@ const RegistrationForm = () => {
   const toggleLocation = (loc: string) => {
     setFormData((prev) => {
       const has = prev.joiningLocations.includes(loc);
-      return {
-        ...prev,
-        joiningLocations: has ? prev.joiningLocations.filter((l) => l !== loc) : [...prev.joiningLocations, loc],
-      };
+      let next: string[];
+      if (has) {
+        next = prev.joiningLocations.filter((l) => l !== loc);
+      } else if (loc === "Both") {
+        // Selecting "Both" clears Gurugram/Bangalore
+        next = ["Both"];
+      } else {
+        // Selecting Gurugram or Bangalore clears "Both"
+        next = [...prev.joiningLocations.filter((l) => l !== "Both"), loc];
+      }
+      return { ...prev, joiningLocations: next };
     });
     setErrors((prev) => {
       if (!prev.joiningLocations) return prev;
