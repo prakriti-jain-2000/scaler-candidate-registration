@@ -27,18 +27,21 @@ const HeroSection = () => {
         </motion.div>
 
         {/* Main heading - word by word */}
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold leading-[1.05] tracking-tight mb-6">
-          {words.map((word, i) => (
-            <motion.span
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 + i * 0.15, duration: 0.5, ease: "easeOut" }}
-              className={`inline-block mr-3 md:mr-5 ${word === "careers." ? "text-gradient-orange" : "text-foreground"}`}
-            >
-              {word}
-            </motion.span>
-          ))}
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight mb-6">
+          {words.map((word, i) => {
+            const isAccent = word === "story.";
+            return (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + i * 0.1, duration: 0.5, ease: "easeOut" }}
+                className={`inline-block mr-2 md:mr-3 ${isAccent ? "text-gradient-orange" : "text-foreground"}`}
+              >
+                {word}
+              </motion.span>
+            );
+          })}
         </h1>
 
         {/* Subheading */}
@@ -48,7 +51,7 @@ const HeroSection = () => {
           transition={{ delay: 1.1 }}
           className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed"
         >
-          Join an AI-first company backed by Sequoia and Tiger Global. We build technology that changes how people learn — and we need people who can tell that story.
+          At Scaler, we're preparing learners for an AI-first world — and we need sharp, driven people to bring that mission to every conversation. If you can sell a vision that actually changes careers, you belong here.
         </motion.p>
 
         {/* Stat pills */}
