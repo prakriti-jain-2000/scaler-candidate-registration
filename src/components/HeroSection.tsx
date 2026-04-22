@@ -63,8 +63,8 @@ const HeroSection = () => {
         >
           {[
             { label: "AI-first culture" },
-            { label: "Sequoia backed" },
-            { label: "2025 Batch" },
+            { label: "Peak XV Partners (fka Sequoia India) backed" },
+            { label: "2026 Batch" },
           ].map((stat) => (
             <div
               key={stat.label}
