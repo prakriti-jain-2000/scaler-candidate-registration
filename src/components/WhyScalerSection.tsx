@@ -2,10 +2,10 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 
 const stats = [
-  { value: 900, suffix: "+", label: "Companies hiring from Scaler" },
+  { value: 1200, suffix: "+", label: "Companies hire from Scaler" },
   { value: 126, suffix: "%", label: "Average salary hike for learners" },
-  { value: 710, prefix: "₹", suffix: "M", label: "Valuation (Sequoia, Tiger Global backed)" },
-  { value: 1, label: "in 5 IIT grads in our learner community", displayAs: "1 in 5" },
+  { value: 710, prefix: "₹", suffix: "M", label: "Valuation (Peak XV Partners, Tiger Global backed)" },
+  { value: 0, label: "Industry-best compensation and incentives", displayAs: "₹" },
 ];
 
 const culturePoints = [
