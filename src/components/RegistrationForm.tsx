@@ -94,20 +94,13 @@ const step2Schema = z
     degree: z.string().min(1, "Select a degree"),
     specialisation: z.string().trim().min(2, "Specialisation is required").max(80),
     scoreType: z.enum(["CGPA", "Percentage"]),
-    score: z.string().min(1, "Score is required"),
+    score: z.string().min(1, "Please enter your CGPA / percentage"),
     graduationYear: z.string().min(1, "Select graduation year"),
   })
   .superRefine((data, ctx) => {
-    const n = Number(data.score);
-    if (Number.isNaN(n)) {
-      ctx.addIssue({ code: "custom", path: ["score"], message: "Must be a number" });
-      return;
-    }
-    if (data.scoreType === "CGPA" && (n < 0 || n > 10)) {
-      ctx.addIssue({ code: "custom", path: ["score"], message: "CGPA must be between 0 and 10" });
-    }
-    if (data.scoreType === "Percentage" && (n < 0 || n > 100)) {
-      ctx.addIssue({ code: "custom", path: ["score"], message: "Percentage must be between 0 and 100" });
+    // score is now formatted "X / Y" — just ensure both halves present
+    if (!/^\S+\s*\/\s*\S+$/.test(data.score)) {
+      ctx.addIssue({ code: "custom", path: ["score"], message: "Please enter your CGPA / percentage" });
     }
   });
 
