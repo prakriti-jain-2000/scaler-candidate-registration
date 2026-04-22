@@ -1,6 +1,5 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
-import { Trophy } from "lucide-react";
 
 type Stat = { value: number; label: string; prefix?: string; suffix?: string };
 const stats: Stat[] = [
