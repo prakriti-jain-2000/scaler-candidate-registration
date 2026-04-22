@@ -51,7 +51,7 @@ const HeroSection = () => {
           transition={{ delay: 1.1 }}
           className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed"
         >
-          At Scaler, we're preparing learners for an AI-first world — and we need sharp, driven people to bring that mission to every conversation. If you can sell a vision that actually changes careers, you belong here.
+          Join Scaler — one of India's leading EdTech platforms. We are building for an AI-first world and empowering learners with future-ready skills, and we are looking for people who can help tell that story.
         </motion.p>
 
         {/* Stat pills */}
