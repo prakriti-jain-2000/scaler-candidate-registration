@@ -2,11 +2,12 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { Trophy } from "lucide-react";
 
-const stats = [
+type Stat = { value: number; label: string; prefix?: string; suffix?: string; icon?: "trophy" };
+const stats: Stat[] = [
   { value: 1200, suffix: "+", label: "Companies hire from Scaler" },
   { value: 126, suffix: "%", label: "Average salary hike for learners" },
   { value: 710, prefix: "₹", suffix: "M", label: "Valuation (Peak XV Partners, Tiger Global backed)" },
-  { value: 0, label: "Industry-best compensation and incentives", icon: "trophy" as const },
+  { value: 0, label: "Industry-best compensation and incentives", icon: "trophy" },
 ];
 
 const culturePoints = [
