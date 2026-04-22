@@ -2,10 +2,10 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 
 const stats = [
-  { value: 900, suffix: "+", label: "Companies hiring from Scaler" },
+  { value: 1200, suffix: "+", label: "Companies hire from Scaler" },
   { value: 126, suffix: "%", label: "Average salary hike for learners" },
-  { value: 710, prefix: "₹", suffix: "M", label: "Valuation (Sequoia, Tiger Global backed)" },
-  { value: 1, label: "in 5 IIT grads in our learner community", displayAs: "1 in 5" },
+  { value: 710, prefix: "₹", suffix: "M", label: "Valuation (Peak XV Partners, Tiger Global backed)" },
+  { value: 0, label: "Industry-best compensation and incentives", displayAs: "₹" },
 ];
 
 const culturePoints = [
@@ -90,17 +90,29 @@ const WhyScalerSection = () => {
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.8 }}
-          className="max-w-3xl mx-auto card-surface rounded-2xl p-6 md:p-8 border-l-4 border-l-primary"
-        >
-          <p className="text-lg italic text-foreground/90 mb-4">
-            "This is the rare company where a sales role actually feels like a product role. You're not pushing — you're solving."
-          </p>
-          <p className="text-sm text-muted-foreground">— BDA, Batch 2024</p>
-        </motion.div>
+        <div className="grid md:grid-cols-2 gap-5 max-w-4xl mx-auto">
+          {[
+            {
+              quote: "Scaler being my first company gave me a lot of exposure to sales.",
+              author: "BDA, Batch 2024",
+            },
+            {
+              quote: "There is a leadership mindset here of not committing anything false to customers.",
+              author: "Senior BDA, Batch 2023",
+            },
+          ].map((t, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.8 + i * 0.1 }}
+              className="card-surface rounded-2xl p-6 md:p-8 border-l-4 border-l-primary"
+            >
+              <p className="text-base md:text-lg italic text-foreground/90 mb-4">"{t.quote}"</p>
+              <p className="text-sm text-muted-foreground">— {t.author}</p>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );

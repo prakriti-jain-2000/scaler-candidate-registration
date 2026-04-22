@@ -72,6 +72,11 @@ const initialFormData: FormData = {
 
 const STORAGE_KEY = "scaler_registration_form_v2";
 
+// Score dropdown options
+const CGPA_DECIMAL_OPTIONS = Array.from({ length: 19 }, (_, i) => (1 + i * 0.5).toFixed(1)); // 1.0 .. 10.0
+const PERCENTAGE_OPTIONS = Array.from({ length: 91 }, (_, i) => String(10 + i)); // 10 .. 100
+const OUT_OF_OPTIONS = ["4.0", "10.0", "100"];
+
 // Validation schemas per step
 const nameRegex = /^[A-Za-z]+(?:\s+[A-Za-z]+)+$/;
 const mobileRegex = /^[6-9]\d{9}$/;
@@ -94,20 +99,13 @@ const step2Schema = z
     degree: z.string().min(1, "Select a degree"),
     specialisation: z.string().trim().min(2, "Specialisation is required").max(80),
     scoreType: z.enum(["CGPA", "Percentage"]),
-    score: z.string().min(1, "Score is required"),
+    score: z.string().min(1, "Please enter your CGPA / percentage"),
     graduationYear: z.string().min(1, "Select graduation year"),
   })
   .superRefine((data, ctx) => {
-    const n = Number(data.score);
-    if (Number.isNaN(n)) {
-      ctx.addIssue({ code: "custom", path: ["score"], message: "Must be a number" });
-      return;
-    }
-    if (data.scoreType === "CGPA" && (n < 0 || n > 10)) {
-      ctx.addIssue({ code: "custom", path: ["score"], message: "CGPA must be between 0 and 10" });
-    }
-    if (data.scoreType === "Percentage" && (n < 0 || n > 100)) {
-      ctx.addIssue({ code: "custom", path: ["score"], message: "Percentage must be between 0 and 100" });
+    // score is now formatted "X / Y" — just ensure both halves present
+    if (!/^\S+\s*\/\s*\S+$/.test(data.score)) {
+      ctx.addIssue({ code: "custom", path: ["score"], message: "Please enter your CGPA / percentage" });
     }
   });
 
@@ -568,25 +566,66 @@ const RegistrationForm = () => {
                 <FieldError name="specialisation" />
               </div>
               <div>
-                <label className={labelClasses}>Current score</label>
-                <div className="flex gap-3 mb-3">
-                  {(["CGPA", "Percentage"] as const).map((t) => (
-                    <ToggleButton
-                      key={t}
-                      value={t}
-                      selected={formData.scoreType}
-                      onSelect={(v) => update("scoreType", v as "CGPA" | "Percentage")}
-                    />
-                  ))}
-                </div>
-                <input
-                  className={`${inputClasses} ${errors.score ? errorInputClasses : ""}`}
-                  type="number"
-                  step="0.01"
-                  value={formData.score}
-                  onChange={(e) => update("score", e.target.value)}
-                  placeholder={formData.scoreType === "CGPA" ? "e.g. 8.4 (out of 10)" : "e.g. 78 (out of 100)"}
-                />
+                <label className={labelClasses}>Your score</label>
+                {(() => {
+                  const parts = formData.score.split("/").map((p) => p.trim());
+                  const scoreValue = parts[0] || "";
+                  const outOf = parts[1] || "";
+                  const isPercent = outOf === "100";
+                  const leftOptions = isPercent ? PERCENTAGE_OPTIONS : CGPA_DECIMAL_OPTIONS;
+                  const setScore = (val: string, out: string) => {
+                    if (val && out) update("score", `${val} / ${out}`);
+                    else if (val || out) update("score", `${val} / ${out}`.trim());
+                    else update("score", "");
+                  };
+                  return (
+                    <div className="flex items-end gap-2">
+                      <div className="flex-1">
+                        <select
+                          className={`${inputClasses} ${errors.score ? errorInputClasses : ""}`}
+                          value={scoreValue}
+                          onChange={(e) => {
+                            setScore(e.target.value, outOf);
+                            update("scoreType", isPercent ? "Percentage" : "CGPA");
+                          }}
+                          aria-label="Your score"
+                        >
+                          <option value="">Score</option>
+                          {leftOptions.map((o) => (
+                            <option key={o} value={o}>
+                              {o}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <span className="pb-3 text-sm text-muted-foreground">out of</span>
+                      <div className="flex-1">
+                        <select
+                          className={`${inputClasses} ${errors.score ? errorInputClasses : ""}`}
+                          value={outOf}
+                          onChange={(e) => {
+                            const newOut = e.target.value;
+                            const newIsPercent = newOut === "100";
+                            // If switching scale, clear left value to avoid invalid combos
+                            const stillValid =
+                              (newIsPercent && PERCENTAGE_OPTIONS.includes(scoreValue)) ||
+                              (!newIsPercent && CGPA_DECIMAL_OPTIONS.includes(scoreValue));
+                            setScore(stillValid ? scoreValue : "", newOut);
+                            update("scoreType", newIsPercent ? "Percentage" : "CGPA");
+                          }}
+                          aria-label="Out of"
+                        >
+                          <option value="">Out of</option>
+                          {OUT_OF_OPTIONS.map((o) => (
+                            <option key={o} value={o}>
+                              {o}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  );
+                })()}
                 <FieldError name="score" />
               </div>
               <div>
@@ -694,7 +733,35 @@ const RegistrationForm = () => {
               exit={{ opacity: 0, x: -20 }}
               className="space-y-4"
             >
-              <YesNoCard question="Do you have any active backlogs?" field="hasBacklogs" />
+              <div>
+                <div className="card-surface rounded-xl p-4 flex flex-col gap-3">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <p className="text-sm text-foreground">Do you have any active backlogs?</p>
+                      <p className="text-xs text-muted-foreground mt-1.5">
+                        A backlog means a subject or paper you have not yet cleared from a previous semester. If all your exams are cleared, select No.
+                      </p>
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                      {["Yes", "No"].map((v) => (
+                        <button
+                          key={v}
+                          type="button"
+                          onClick={() => update("hasBacklogs", v)}
+                          className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
+                            formData.hasBacklogs === v
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-muted text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          {v}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <FieldError name="hasBacklogs" />
+              </div>
               <div>
                 <label className={labelClasses}>Preferred joining location</label>
                 <div className="flex flex-wrap gap-3">
