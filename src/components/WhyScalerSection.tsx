@@ -2,18 +2,18 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { Trophy } from "lucide-react";
 
-type Stat = { value: number; label: string; prefix?: string; suffix?: string; icon?: "trophy" };
+type Stat = { value: number; label: string; prefix?: string; suffix?: string };
 const stats: Stat[] = [
   { value: 1200, suffix: "+", label: "Companies hire from Scaler" },
   { value: 126, suffix: "%", label: "Average salary hike for learners" },
   { value: 710, prefix: "₹", suffix: "M", label: "Valuation (Peak XV Partners, Tiger Global backed)" },
-  { value: 0, label: "Industry-best compensation and incentives", icon: "trophy" },
 ];
 
 const culturePoints = [
   { title: "AI-native workflows", desc: "From lead scoring to pitch practice — AI isn't a buzzword here, it's the operating system." },
   { title: "Engineering-grade sales", desc: "We build internal tools most startups dream of. Data dashboards, real-time coaching, smart CRMs." },
   { title: "Learn like a founder", desc: "Weekly deep-dives, product walkthroughs, and direct access to leadership. Growth isn't optional." },
+  { title: "Industry-best compensation", desc: "Top-of-market base, uncapped incentives, and rewards that recognise real impact — not just hours logged." },
 ];
 
 const CountUp = ({ target, prefix, suffix }: { target: number; prefix?: string; suffix?: string }) => {
