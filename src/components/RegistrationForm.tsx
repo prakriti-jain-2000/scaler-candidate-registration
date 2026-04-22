@@ -72,10 +72,8 @@ const initialFormData: FormData = {
 
 const STORAGE_KEY = "scaler_registration_form_v2";
 
-// Score dropdown options
-const CGPA_DECIMAL_OPTIONS = Array.from({ length: 19 }, (_, i) => (1 + i * 0.5).toFixed(1)); // 1.0 .. 10.0
+// Score dropdown options — percentage only
 const PERCENTAGE_OPTIONS = Array.from({ length: 91 }, (_, i) => String(10 + i)); // 10 .. 100
-const OUT_OF_OPTIONS = ["4.0", "10.0", "100"];
 
 // Validation schemas per step
 const nameRegex = /^[A-Za-z]+(?:\s+[A-Za-z]+)+$/;
@@ -93,21 +91,21 @@ const step1Schema = z.object({
   mobile: z.string().regex(mobileRegex, "Enter a valid 10-digit Indian mobile number"),
 });
 
-const step2Schema = z
-  .object({
-    college: z.string().trim().min(2, "College name is required").max(120),
-    degree: z.string().min(1, "Select a degree"),
-    specialisation: z.string().trim().min(2, "Specialisation is required").max(80),
-    scoreType: z.enum(["CGPA", "Percentage"]),
-    score: z.string().min(1, "Please enter your CGPA / percentage"),
-    graduationYear: z.string().min(1, "Select graduation year"),
-  })
-  .superRefine((data, ctx) => {
-    // score is now formatted "X / Y" — just ensure both halves present
-    if (!/^\S+\s*\/\s*\S+$/.test(data.score)) {
-      ctx.addIssue({ code: "custom", path: ["score"], message: "Please enter your CGPA / percentage" });
-    }
-  });
+const step2Schema = z.object({
+  college: z.string().trim().min(2, "College name is required").max(120),
+  degree: z.string().min(1, "Select a degree"),
+  specialisation: z.string().trim().min(2, "Specialisation is required").max(80),
+  scoreType: z.enum(["CGPA", "Percentage"]),
+  score: z
+    .string()
+    .min(1, "Please enter your percentage")
+    .regex(/^\d{1,3}$/, "Please enter your percentage")
+    .refine((v) => {
+      const n = Number(v);
+      return n >= 10 && n <= 100;
+    }, "Percentage must be between 10 and 100"),
+  graduationYear: z.string().min(1, "Select graduation year"),
+});
 
 const step3Schema = z.object({
   yearsExperience: z.string().min(1, "Select your experience"),
