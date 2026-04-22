@@ -566,25 +566,66 @@ const RegistrationForm = () => {
                 <FieldError name="specialisation" />
               </div>
               <div>
-                <label className={labelClasses}>Current score</label>
-                <div className="flex gap-3 mb-3">
-                  {(["CGPA", "Percentage"] as const).map((t) => (
-                    <ToggleButton
-                      key={t}
-                      value={t}
-                      selected={formData.scoreType}
-                      onSelect={(v) => update("scoreType", v as "CGPA" | "Percentage")}
-                    />
-                  ))}
-                </div>
-                <input
-                  className={`${inputClasses} ${errors.score ? errorInputClasses : ""}`}
-                  type="number"
-                  step="0.01"
-                  value={formData.score}
-                  onChange={(e) => update("score", e.target.value)}
-                  placeholder={formData.scoreType === "CGPA" ? "e.g. 8.4 (out of 10)" : "e.g. 78 (out of 100)"}
-                />
+                <label className={labelClasses}>Your score</label>
+                {(() => {
+                  const parts = formData.score.split("/").map((p) => p.trim());
+                  const scoreValue = parts[0] || "";
+                  const outOf = parts[1] || "";
+                  const isPercent = outOf === "100";
+                  const leftOptions = isPercent ? PERCENTAGE_OPTIONS : CGPA_DECIMAL_OPTIONS;
+                  const setScore = (val: string, out: string) => {
+                    if (val && out) update("score", `${val} / ${out}`);
+                    else if (val || out) update("score", `${val} / ${out}`.trim());
+                    else update("score", "");
+                  };
+                  return (
+                    <div className="flex items-end gap-2">
+                      <div className="flex-1">
+                        <select
+                          className={`${inputClasses} ${errors.score ? errorInputClasses : ""}`}
+                          value={scoreValue}
+                          onChange={(e) => {
+                            setScore(e.target.value, outOf);
+                            update("scoreType", isPercent ? "Percentage" : "CGPA");
+                          }}
+                          aria-label="Your score"
+                        >
+                          <option value="">Score</option>
+                          {leftOptions.map((o) => (
+                            <option key={o} value={o}>
+                              {o}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <span className="pb-3 text-sm text-muted-foreground">out of</span>
+                      <div className="flex-1">
+                        <select
+                          className={`${inputClasses} ${errors.score ? errorInputClasses : ""}`}
+                          value={outOf}
+                          onChange={(e) => {
+                            const newOut = e.target.value;
+                            const newIsPercent = newOut === "100";
+                            // If switching scale, clear left value to avoid invalid combos
+                            const stillValid =
+                              (newIsPercent && PERCENTAGE_OPTIONS.includes(scoreValue)) ||
+                              (!newIsPercent && CGPA_DECIMAL_OPTIONS.includes(scoreValue));
+                            setScore(stillValid ? scoreValue : "", newOut);
+                            update("scoreType", newIsPercent ? "Percentage" : "CGPA");
+                          }}
+                          aria-label="Out of"
+                        >
+                          <option value="">Out of</option>
+                          {OUT_OF_OPTIONS.map((o) => (
+                            <option key={o} value={o}>
+                              {o}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  );
+                })()}
                 <FieldError name="score" />
               </div>
               <div>
