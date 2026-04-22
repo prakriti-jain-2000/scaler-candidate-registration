@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import ParticleBackground from "./ParticleBackground";
 
-const words = ["Join", "the", "team", "telling", "India's", "biggest", "upskilling", "story."];
+const words = ["Turn", "conversations", "into", "careers."];
 
 const HeroSection = () => {
   return (
