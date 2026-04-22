@@ -1,11 +1,12 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
+import { Trophy } from "lucide-react";
 
 const stats = [
   { value: 1200, suffix: "+", label: "Companies hire from Scaler" },
   { value: 126, suffix: "%", label: "Average salary hike for learners" },
   { value: 710, prefix: "₹", suffix: "M", label: "Valuation (Peak XV Partners, Tiger Global backed)" },
-  { value: 0, label: "Industry-best compensation and incentives", displayAs: "₹" },
+  { value: 0, label: "Industry-best compensation and incentives", icon: "trophy" as const },
 ];
 
 const culturePoints = [
