@@ -22,7 +22,7 @@ const RESUME_FOLDER_NAME = 'Scaler Campus Resumes';
 
 const CANDIDATE_HEADERS = [
   'Timestamp','Full Name','Personal Email','College Email','Mobile',
-  'College','Degree','Specialisation','CGPA','Graduation Year',
+  'College','Degree','Specialisation','Percentage','Graduation Year',
   'Years of Experience','Has Sales Experience','Sales Experience Details',
   'Has Active Backlogs','Preferred Location','Available for Immediate Joining',
   'Resume Filename','Resume Link','Eligible','Stage','Dashboard Password'

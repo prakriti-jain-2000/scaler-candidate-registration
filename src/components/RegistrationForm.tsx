@@ -72,10 +72,8 @@ const initialFormData: FormData = {
 
 const STORAGE_KEY = "scaler_registration_form_v2";
 
-// Score dropdown options
-const CGPA_DECIMAL_OPTIONS = Array.from({ length: 19 }, (_, i) => (1 + i * 0.5).toFixed(1)); // 1.0 .. 10.0
+// Score dropdown options — percentage only
 const PERCENTAGE_OPTIONS = Array.from({ length: 91 }, (_, i) => String(10 + i)); // 10 .. 100
-const OUT_OF_OPTIONS = ["4.0", "10.0", "100"];
 
 // Validation schemas per step
 const nameRegex = /^[A-Za-z]+(?:\s+[A-Za-z]+)+$/;
@@ -93,21 +91,21 @@ const step1Schema = z.object({
   mobile: z.string().regex(mobileRegex, "Enter a valid 10-digit Indian mobile number"),
 });
 
-const step2Schema = z
-  .object({
-    college: z.string().trim().min(2, "College name is required").max(120),
-    degree: z.string().min(1, "Select a degree"),
-    specialisation: z.string().trim().min(2, "Specialisation is required").max(80),
-    scoreType: z.enum(["CGPA", "Percentage"]),
-    score: z.string().min(1, "Please enter your CGPA / percentage"),
-    graduationYear: z.string().min(1, "Select graduation year"),
-  })
-  .superRefine((data, ctx) => {
-    // score is now formatted "X / Y" — just ensure both halves present
-    if (!/^\S+\s*\/\s*\S+$/.test(data.score)) {
-      ctx.addIssue({ code: "custom", path: ["score"], message: "Please enter your CGPA / percentage" });
-    }
-  });
+const step2Schema = z.object({
+  college: z.string().trim().min(2, "College name is required").max(120),
+  degree: z.string().min(1, "Select a degree"),
+  specialisation: z.string().trim().min(2, "Specialisation is required").max(80),
+  scoreType: z.enum(["CGPA", "Percentage"]),
+  score: z
+    .string()
+    .min(1, "Please enter your percentage")
+    .regex(/^\d{1,3}$/, "Please enter your percentage")
+    .refine((v) => {
+      const n = Number(v);
+      return n >= 10 && n <= 100;
+    }, "Percentage must be between 10 and 100"),
+  graduationYear: z.string().min(1, "Select graduation year"),
+});
 
 const step3Schema = z.object({
   yearsExperience: z.string().min(1, "Select your experience"),
@@ -566,66 +564,28 @@ const RegistrationForm = () => {
                 <FieldError name="specialisation" />
               </div>
               <div>
-                <label className={labelClasses}>Your score</label>
-                {(() => {
-                  const parts = formData.score.split("/").map((p) => p.trim());
-                  const scoreValue = parts[0] || "";
-                  const outOf = parts[1] || "";
-                  const isPercent = outOf === "100";
-                  const leftOptions = isPercent ? PERCENTAGE_OPTIONS : CGPA_DECIMAL_OPTIONS;
-                  const setScore = (val: string, out: string) => {
-                    if (val && out) update("score", `${val} / ${out}`);
-                    else if (val || out) update("score", `${val} / ${out}`.trim());
-                    else update("score", "");
-                  };
-                  return (
-                    <div className="flex items-end gap-2">
-                      <div className="flex-1">
-                        <select
-                          className={`${inputClasses} ${errors.score ? errorInputClasses : ""}`}
-                          value={scoreValue}
-                          onChange={(e) => {
-                            setScore(e.target.value, outOf);
-                            update("scoreType", isPercent ? "Percentage" : "CGPA");
-                          }}
-                          aria-label="Your score"
-                        >
-                          <option value="">Score</option>
-                          {leftOptions.map((o) => (
-                            <option key={o} value={o}>
-                              {o}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <span className="pb-3 text-sm text-muted-foreground">out of</span>
-                      <div className="flex-1">
-                        <select
-                          className={`${inputClasses} ${errors.score ? errorInputClasses : ""}`}
-                          value={outOf}
-                          onChange={(e) => {
-                            const newOut = e.target.value;
-                            const newIsPercent = newOut === "100";
-                            // If switching scale, clear left value to avoid invalid combos
-                            const stillValid =
-                              (newIsPercent && PERCENTAGE_OPTIONS.includes(scoreValue)) ||
-                              (!newIsPercent && CGPA_DECIMAL_OPTIONS.includes(scoreValue));
-                            setScore(stillValid ? scoreValue : "", newOut);
-                            update("scoreType", newIsPercent ? "Percentage" : "CGPA");
-                          }}
-                          aria-label="Out of"
-                        >
-                          <option value="">Out of</option>
-                          {OUT_OF_OPTIONS.map((o) => (
-                            <option key={o} value={o}>
-                              {o}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  );
-                })()}
+                <label className={labelClasses}>Your percentage</label>
+                <div className="flex items-center gap-2">
+                  <select
+                    className={`${inputClasses} ${errors.score ? errorInputClasses : ""}`}
+                    value={formData.score}
+                    onChange={(e) => {
+                      update("score", e.target.value);
+                      update("scoreType", "Percentage");
+                    }}
+                    aria-label="Your percentage"
+                  >
+                    <option value="">Select percentage</option>
+                    {PERCENTAGE_OPTIONS.map((o) => (
+                      <option key={o} value={o}>
+                        {o}%
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1.5">
+                  If your score is in CGPA, convert to percentage (e.g. CGPA × 9.5 for CBSE / engineering norms).
+                </p>
                 <FieldError name="score" />
               </div>
               <div>

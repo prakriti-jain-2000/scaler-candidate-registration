@@ -1,11 +1,13 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
+import { Trophy } from "lucide-react";
 
-const stats = [
+type Stat = { value: number; label: string; prefix?: string; suffix?: string; icon?: "trophy" };
+const stats: Stat[] = [
   { value: 1200, suffix: "+", label: "Companies hire from Scaler" },
   { value: 126, suffix: "%", label: "Average salary hike for learners" },
   { value: 710, prefix: "₹", suffix: "M", label: "Valuation (Peak XV Partners, Tiger Global backed)" },
-  { value: 0, label: "Industry-best compensation and incentives", displayAs: "₹" },
+  { value: 0, label: "Industry-best compensation and incentives", icon: "trophy" },
 ];
 
 const culturePoints = [
@@ -14,14 +16,13 @@ const culturePoints = [
   { title: "Learn like a founder", desc: "Weekly deep-dives, product walkthroughs, and direct access to leadership. Growth isn't optional." },
 ];
 
-const CountUp = ({ target, prefix, suffix, displayAs }: { target: number; prefix?: string; suffix?: string; displayAs?: string }) => {
+const CountUp = ({ target, prefix, suffix }: { target: number; prefix?: string; suffix?: string }) => {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
 
   useEffect(() => {
     if (!isInView) return;
-    if (displayAs) { setCount(target); return; }
     let start = 0;
     const duration = 1500;
     const step = (timestamp: number) => {
@@ -31,11 +32,11 @@ const CountUp = ({ target, prefix, suffix, displayAs }: { target: number; prefix
       if (progress < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
-  }, [isInView, target, displayAs]);
+  }, [isInView, target]);
 
   return (
     <span ref={ref} className="text-4xl md:text-5xl font-extrabold text-primary">
-      {displayAs || `${prefix || ""}${count}${suffix || ""}`}
+      {`${prefix || ""}${count}${suffix || ""}`}
     </span>
   );
 };
@@ -84,7 +85,15 @@ const WhyScalerSection = () => {
               transition={{ delay: 0.5 + i * 0.1 }}
               className="text-center"
             >
-              <CountUp target={stat.value} prefix={stat.prefix} suffix={stat.suffix} displayAs={stat.displayAs} />
+              {stat.icon === "trophy" ? (
+                <div className="flex justify-center">
+                  <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-primary/15 border border-primary/30 flex items-center justify-center glow-orange">
+                    <Trophy className="w-7 h-7 md:w-8 md:h-8 text-primary" strokeWidth={2.5} />
+                  </div>
+                </div>
+              ) : (
+                <CountUp target={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
+              )}
               <p className="text-sm text-muted-foreground mt-2">{stat.label}</p>
             </motion.div>
           ))}
