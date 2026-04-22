@@ -24,10 +24,10 @@ const roles = [
     ctc: "Competitive CTC + variable",
     eligibility: "1–2 yrs EdTech or B2C sales experience · Strong conversion track record",
     highlights: [
-      { text: "Handle high-intent leads with larger deal sizes" },
+      { text: "Handle high quality and high-intent leads" },
       { text: "Mentor and support junior BDAs on the floor" },
       { text: "Leverage proprietary AI dashboards to drive revenue" },
-      { text: "Direct path to Team Lead and BDM roles" },
+      { text: "Direct path to Manager role" },
     ],
     cta: "Apply for Sr. BDA →",
   },
