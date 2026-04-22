@@ -733,7 +733,35 @@ const RegistrationForm = () => {
               exit={{ opacity: 0, x: -20 }}
               className="space-y-4"
             >
-              <YesNoCard question="Do you have any active backlogs?" field="hasBacklogs" />
+              <div>
+                <div className="card-surface rounded-xl p-4 flex flex-col gap-3">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <p className="text-sm text-foreground">Do you have any active backlogs?</p>
+                      <p className="text-xs text-muted-foreground mt-1.5">
+                        A backlog means a subject or paper you have not yet cleared from a previous semester. If all your exams are cleared, select No.
+                      </p>
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                      {["Yes", "No"].map((v) => (
+                        <button
+                          key={v}
+                          type="button"
+                          onClick={() => update("hasBacklogs", v)}
+                          className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
+                            formData.hasBacklogs === v
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-muted text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          {v}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <FieldError name="hasBacklogs" />
+              </div>
               <div>
                 <label className={labelClasses}>Preferred joining location</label>
                 <div className="flex flex-wrap gap-3">
