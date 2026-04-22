@@ -15,14 +15,13 @@ const culturePoints = [
   { title: "Learn like a founder", desc: "Weekly deep-dives, product walkthroughs, and direct access to leadership. Growth isn't optional." },
 ];
 
-const CountUp = ({ target, prefix, suffix, displayAs }: { target: number; prefix?: string; suffix?: string; displayAs?: string }) => {
+const CountUp = ({ target, prefix, suffix }: { target: number; prefix?: string; suffix?: string }) => {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
 
   useEffect(() => {
     if (!isInView) return;
-    if (displayAs) { setCount(target); return; }
     let start = 0;
     const duration = 1500;
     const step = (timestamp: number) => {
@@ -32,11 +31,11 @@ const CountUp = ({ target, prefix, suffix, displayAs }: { target: number; prefix
       if (progress < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
-  }, [isInView, target, displayAs]);
+  }, [isInView, target]);
 
   return (
     <span ref={ref} className="text-4xl md:text-5xl font-extrabold text-primary">
-      {displayAs || `${prefix || ""}${count}${suffix || ""}`}
+      {`${prefix || ""}${count}${suffix || ""}`}
     </span>
   );
 };
