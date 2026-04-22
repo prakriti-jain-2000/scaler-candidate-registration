@@ -72,6 +72,11 @@ const initialFormData: FormData = {
 
 const STORAGE_KEY = "scaler_registration_form_v2";
 
+// Score dropdown options
+const CGPA_DECIMAL_OPTIONS = Array.from({ length: 19 }, (_, i) => (1 + i * 0.5).toFixed(1)); // 1.0 .. 10.0
+const PERCENTAGE_OPTIONS = Array.from({ length: 91 }, (_, i) => String(10 + i)); // 10 .. 100
+const OUT_OF_OPTIONS = ["4.0", "10.0", "100"];
+
 // Validation schemas per step
 const nameRegex = /^[A-Za-z]+(?:\s+[A-Za-z]+)+$/;
 const mobileRegex = /^[6-9]\d{9}$/;
