@@ -29,7 +29,7 @@ const HeroSection = () => {
         {/* Main heading - word by word */}
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight mb-6">
           {words.map((word, i) => {
-            const isAccent = word === "story.";
+            const isAccent = word === "careers.";
             return (
               <motion.span
                 key={i}
