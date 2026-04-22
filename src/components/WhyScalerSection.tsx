@@ -84,7 +84,15 @@ const WhyScalerSection = () => {
               transition={{ delay: 0.5 + i * 0.1 }}
               className="text-center"
             >
-              <CountUp target={stat.value} prefix={stat.prefix} suffix={stat.suffix} displayAs={stat.displayAs} />
+              {stat.icon === "trophy" ? (
+                <div className="flex justify-center">
+                  <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-primary/15 border border-primary/30 flex items-center justify-center glow-orange">
+                    <Trophy className="w-7 h-7 md:w-8 md:h-8 text-primary" strokeWidth={2.5} />
+                  </div>
+                </div>
+              ) : (
+                <CountUp target={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
+              )}
               <p className="text-sm text-muted-foreground mt-2">{stat.label}</p>
             </motion.div>
           ))}
