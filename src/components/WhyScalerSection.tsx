@@ -59,7 +59,7 @@ const WhyScalerSection = () => {
         </motion.div>
 
         {/* Culture points */}
-        <div className="grid md:grid-cols-3 gap-5 mb-16 mt-12">
+        <div className="grid md:grid-cols-2 gap-5 mb-16 mt-12">
           {culturePoints.map((point, i) => (
             <motion.div
               key={point.title}
@@ -75,7 +75,7 @@ const WhyScalerSection = () => {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-16">
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -84,15 +84,7 @@ const WhyScalerSection = () => {
               transition={{ delay: 0.5 + i * 0.1 }}
               className="text-center"
             >
-              {stat.icon === "trophy" ? (
-                <div className="flex justify-center">
-                  <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-primary/15 border border-primary/30 flex items-center justify-center glow-orange">
-                    <Trophy className="w-7 h-7 md:w-8 md:h-8 text-primary" strokeWidth={2.5} />
-                  </div>
-                </div>
-              ) : (
-                <CountUp target={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
-              )}
+              <CountUp target={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
               <p className="text-sm text-muted-foreground mt-2">{stat.label}</p>
             </motion.div>
           ))}
