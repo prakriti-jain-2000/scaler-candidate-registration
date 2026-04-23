@@ -2,7 +2,7 @@ import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import RolesSection from "@/components/RolesSection";
 import WhyScalerSection from "@/components/WhyScalerSection";
-import ProcessSection from "@/components/ProcessSection";
+
 import RegistrationForm from "@/components/RegistrationForm";
 import FloatingApplyButton from "@/components/FloatingApplyButton";
 
