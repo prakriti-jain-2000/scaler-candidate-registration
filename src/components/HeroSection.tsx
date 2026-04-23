@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import ParticleBackground from "./ParticleBackground";
+import ProcessSection from "./ProcessSection";
 
 const words = ["Turn", "conversations", "into", "careers."];
 
