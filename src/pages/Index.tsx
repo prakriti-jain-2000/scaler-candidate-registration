@@ -2,7 +2,7 @@ import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import RolesSection from "@/components/RolesSection";
 import WhyScalerSection from "@/components/WhyScalerSection";
-import ProcessSection from "@/components/ProcessSection";
+
 import RegistrationForm from "@/components/RegistrationForm";
 import FloatingApplyButton from "@/components/FloatingApplyButton";
 
@@ -13,7 +13,7 @@ const Index = () => {
       <HeroSection />
       <RolesSection />
       <WhyScalerSection />
-      <ProcessSection />
+      
       <RegistrationForm />
       <FloatingApplyButton />
       <footer className="py-12 px-6 text-center border-t border-border">

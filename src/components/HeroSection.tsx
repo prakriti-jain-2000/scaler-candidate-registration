@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import ParticleBackground from "./ParticleBackground";
+import ProcessSection from "./ProcessSection";
 
 const words = ["Turn", "conversations", "into", "careers."];
 
@@ -75,28 +76,8 @@ const HeroSection = () => {
           ))}
         </motion.div>
 
-        {/* How it works - compact */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.4 }}
-          className="mb-10"
-        >
-          <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4">How it works</p>
-          <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 max-w-3xl mx-auto">
-            {["Apply", "Dashboard access", "AI Pitch Lab", "Interview rounds", "Offer"].map((step, i, arr) => (
-              <div key={step} className="flex items-center gap-2 md:gap-3">
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full card-surface">
-                  <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
-                    {i + 1}
-                  </span>
-                  <span className="text-xs md:text-sm font-medium text-foreground">{step}</span>
-                </div>
-                {i < arr.length - 1 && <span className="text-muted-foreground text-xs">→</span>}
-              </div>
-            ))}
-          </div>
-        </motion.div>
+        {/* How it works */}
+        <ProcessSection />
 
         {/* CTA */}
         <motion.div
