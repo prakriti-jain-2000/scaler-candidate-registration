@@ -13,7 +13,7 @@ const Index = () => {
       <HeroSection />
       <RolesSection />
       <WhyScalerSection />
-      <ProcessSection />
+      
       <RegistrationForm />
       <FloatingApplyButton />
       <footer className="py-12 px-6 text-center border-t border-border">
