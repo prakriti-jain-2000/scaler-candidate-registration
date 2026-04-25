@@ -6,53 +6,57 @@
 
 @layer base {
   :root {
-    --background: 216 28% 7%;
-    --foreground: 0 0% 100%;
+    /* Scaler brand: light background, deep navy text, blue accents */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
 
-    --card: 215 19% 11%;
-    --card-foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
 
-    --popover: 215 19% 11%;
-    --popover-foreground: 0 0% 100%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 19 93% 47%;
+    /* Scaler primary blue #0041CA */
+    --primary: 220 100% 40%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 219 47% 19%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 214 32% 95%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 220 10% 15%;
-    --muted-foreground: 222 7% 56%;
+    --muted: 214 32% 95%;
+    --muted-foreground: 215 16% 40%;
 
-    --accent: 219 47% 19%;
+    --accent: 213 100% 53%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 215 14% 15%;
-    --input: 215 19% 11%;
-    --ring: 19 93% 47%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 220 100% 40%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 216 28% 7%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 19 93% 47%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 220 100% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 219 47% 19%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 215 14% 15%;
-    --sidebar-ring: 19 93% 47%;
+    --sidebar-accent: 214 32% 95%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 220 100% 40%;
 
-    --scaler-orange: 19 93% 47%;
-    --scaler-dark: 216 28% 7%;
-    --scaler-navy: 219 47% 19%;
-    --scaler-card: 215 19% 11%;
-    --scaler-border: 215 14% 15%;
-    --scaler-muted: 222 7% 56%;
+    /* Scaler brand palette (from logo) */
+    --scaler-orange: 220 100% 40%;   /* alias kept for legacy refs -> primary blue */
+    --scaler-dark: 222 47% 11%;       /* deep navy text */
+    --scaler-navy: 220 100% 40%;      /* #0041CA */
+    --scaler-card: 0 0% 100%;
+    --scaler-border: 214 32% 91%;
+    --scaler-muted: 215 16% 40%;
     --scaler-green: 142 71% 45%;
-    --scaler-blue: 217 91% 60%;
+    --scaler-blue: 213 100% 53%;      /* #0F8CFF bright */
+    --scaler-blue-mid: 211 100% 43%;  /* #006ADA */
   }
 }
 
@@ -76,15 +80,15 @@
 @layer utilities {
   .text-gradient-orange {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--scaler-orange)), hsl(25, 100%, 60%));
+    background-image: linear-gradient(135deg, hsl(var(--scaler-navy)), hsl(var(--scaler-blue)));
   }
 
   .glow-orange {
-    box-shadow: 0 0 30px -5px hsl(var(--scaler-orange) / 0.4);
+    box-shadow: 0 0 30px -5px hsl(var(--scaler-navy) / 0.35);
   }
 
   .glow-orange-hover:hover {
-    box-shadow: 0 0 40px -5px hsl(var(--scaler-orange) / 0.6);
+    box-shadow: 0 0 40px -5px hsl(var(--scaler-navy) / 0.55);
   }
 
   .card-surface {

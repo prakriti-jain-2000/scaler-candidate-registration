@@ -5,6 +5,7 @@ import WhyScalerSection from "@/components/WhyScalerSection";
 
 import RegistrationForm from "@/components/RegistrationForm";
 import FloatingApplyButton from "@/components/FloatingApplyButton";
+import scalerLogo from "@/assets/scaler-logo.svg";
 
 const Index = () => {
   return (
@@ -18,16 +19,9 @@ const Index = () => {
       <FloatingApplyButton />
       <footer className="py-12 px-6 text-center border-t border-border">
         <img
-          src="https://www.scaler.com/static/images/scaler-logo-white.svg"
+          src={scalerLogo}
           alt="Scaler"
           className="h-10 w-auto mx-auto mb-4"
-          onError={(e) => {
-            const img = e.currentTarget;
-            const fallback = document.createElement("span");
-            fallback.textContent = "SCALER";
-            fallback.className = "text-2xl font-extrabold text-foreground block mb-4";
-            img.replaceWith(fallback);
-          }}
         />
         <p className="text-sm text-muted-foreground">
           © 2025 Scaler Academy. All rights reserved.
