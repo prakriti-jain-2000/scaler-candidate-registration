@@ -33,7 +33,7 @@ const RolesSection = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4">
-            The role
+            The Role
           </h2>
           <p className="text-lg text-muted-foreground">
             One mission. Built for fresh grads ready to own the sales floor.
