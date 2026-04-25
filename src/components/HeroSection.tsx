@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import ParticleBackground from "./ParticleBackground";
+import scalerLogo from "@/assets/scaler-logo.svg";
 
 const words = ["Turn", "conversations", "into", "careers."];
 
