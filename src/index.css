@@ -80,7 +80,7 @@
 @layer utilities {
   .text-gradient-orange {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--scaler-navy)), hsl(var(--scaler-blue)));
+    background-image: linear-gradient(135deg, hsl(var(--scaler-blue)), #ffffff);
   }
 
   .glow-orange {
