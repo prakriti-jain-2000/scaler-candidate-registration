@@ -17,20 +17,6 @@ const roles = [
     ],
     cta: "Apply for BDA →",
   },
-  {
-    tag: "1–2 yrs experience",
-    tagColor: "bg-scaler-blue/15 text-scaler-blue border-scaler-blue/30",
-    title: "Senior Business Development Associate",
-    ctc: "Competitive CTC + variable",
-    eligibility: "1–2 yrs EdTech or B2C sales experience · Strong conversion track record",
-    highlights: [
-      { text: "Handle high quality and high-intent leads" },
-      { text: "Mentor and support junior BDAs on the floor" },
-      { text: "Leverage proprietary AI dashboards to drive revenue" },
-      { text: "Direct path to Manager role" },
-    ],
-    cta: "Apply for Sr. BDA →",
-  },
 ];
 
 const RolesSection = () => {
@@ -47,14 +33,14 @@ const RolesSection = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4">
-            Two roles. One mission.
+            The role
           </h2>
           <p className="text-lg text-muted-foreground">
-            We're hiring across experience levels — find the role that fits you.
+            One mission. Built for fresh grads ready to own the sales floor.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-1 gap-6 max-w-2xl mx-auto">
           {roles.map((role, i) => (
             <motion.div
               key={role.title}

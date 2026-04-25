@@ -72,8 +72,6 @@ const initialFormData: FormData = {
 
 const STORAGE_KEY = "scaler_registration_form_v2";
 
-// Score dropdown options — percentage only
-const PERCENTAGE_OPTIONS = Array.from({ length: 91 }, (_, i) => String(10 + i)); // 10 .. 100
 
 // Validation schemas per step
 const nameRegex = /^[A-Za-z]+(?:\s+[A-Za-z]+)+$/;
@@ -99,7 +97,7 @@ const step2Schema = z.object({
   score: z
     .string()
     .min(1, "Please enter your percentage")
-    .regex(/^\d{1,3}$/, "Please enter your percentage")
+    .regex(/^\d{1,3}(\.\d{1,2})?$/, "Enter a valid percentage (up to 2 decimals)")
     .refine((v) => {
       const n = Number(v);
       return n >= 10 && n <= 100;
@@ -565,23 +563,24 @@ const RegistrationForm = () => {
               </div>
               <div>
                 <label className={labelClasses}>Your percentage</label>
-                <div className="flex items-center gap-2">
-                  <select
-                    className={`${inputClasses} ${errors.score ? errorInputClasses : ""}`}
+                <div className="relative">
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    className={`${inputClasses} pr-10 ${errors.score ? errorInputClasses : ""}`}
                     value={formData.score}
                     onChange={(e) => {
-                      update("score", e.target.value);
-                      update("scoreType", "Percentage");
+                      const v = e.target.value;
+                      // Allow empty, or digits with up to 2 decimal places
+                      if (v === "" || /^\d{0,3}(\.\d{0,2})?$/.test(v)) {
+                        update("score", v);
+                        update("scoreType", "Percentage");
+                      }
                     }}
+                    placeholder="e.g. 78.50"
                     aria-label="Your percentage"
-                  >
-                    <option value="">Select percentage</option>
-                    {PERCENTAGE_OPTIONS.map((o) => (
-                      <option key={o} value={o}>
-                        {o}%
-                      </option>
-                    ))}
-                  </select>
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">%</span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1.5">
                   If your score is in CGPA, convert to percentage (e.g. CGPA × 9.5 for CBSE / engineering norms).
