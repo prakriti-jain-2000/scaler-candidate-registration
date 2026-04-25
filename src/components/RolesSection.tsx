@@ -33,14 +33,14 @@ const RolesSection = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4">
-            Two roles. One mission.
+            The role
           </h2>
           <p className="text-lg text-muted-foreground">
-            We're hiring across experience levels — find the role that fits you.
+            One mission. Built for fresh grads ready to own the sales floor.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-1 gap-6 max-w-2xl mx-auto">
           {roles.map((role, i) => (
             <motion.div
               key={role.title}
