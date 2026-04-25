@@ -5,6 +5,7 @@ import WhyScalerSection from "@/components/WhyScalerSection";
 
 import RegistrationForm from "@/components/RegistrationForm";
 import FloatingApplyButton from "@/components/FloatingApplyButton";
+import scalerLogo from "@/assets/scaler-logo.svg";
 
 const Index = () => {
   return (
@@ -18,7 +19,7 @@ const Index = () => {
       <FloatingApplyButton />
       <footer className="py-12 px-6 text-center border-t border-border">
         <img
-          src={(await import("@/assets/scaler-logo.svg")).default}
+          src={scalerLogo}
           alt="Scaler"
           className="h-10 w-auto mx-auto mb-4"
         />
