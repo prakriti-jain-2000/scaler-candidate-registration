@@ -88,7 +88,7 @@ const HeroSection = () => {
           ].map((stat) => (
             <div
               key={stat.label}
-              className="flex items-center gap-2 px-4 py-2 rounded-full card-surface text-sm font-medium text-foreground"
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/15 backdrop-blur-md text-sm font-medium text-white"
             >
               <span>{stat.label}</span>
             </div>
