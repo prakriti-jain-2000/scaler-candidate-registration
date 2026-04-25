@@ -6,7 +6,7 @@ const words = ["Turn", "conversations", "into", "careers."];
 const steps = [
   { num: 1, title: "Apply", desc: "Fill a 3-minute form. Tell us about yourself.", badge: null as string | null },
   { num: 2, title: "Dashboard access", desc: "Get instant access to training material and the assessment guide.", badge: null },
-  { num: 3, title: "AI Pitch Lab", desc: "Sell to our AI — it listens, scores, and sharpens your pitch. 4 shots. Best one counts.", badge: "AI-native" },
+  { num: 3, title: "AI based assessment", desc: "Sell to our AI — it listens, scores, and sharpens your pitch. 4 shots. Best one counts.", badge: "AI-native" },
   { num: 4, title: "Interview rounds", desc: "1:1 with a BDM, then an AVP. Structured, fair, two-way.", badge: null },
   { num: 5, title: "Offer", desc: "Receive your offer letter and join the team.", badge: null },
 ];
