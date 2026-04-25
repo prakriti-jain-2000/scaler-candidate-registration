@@ -13,25 +13,37 @@ const steps = [
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden">
+    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden hero-dark">
       {/* Gradient mesh blobs */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full bg-scaler-navy/20 blur-[120px] animate-mesh" />
-        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px] animate-mesh" style={{ animationDelay: "-7s" }} />
+        <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full bg-primary/25 blur-[120px] animate-mesh" />
+        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-scaler-blue/20 blur-[120px] animate-mesh" style={{ animationDelay: "-7s" }} />
       </div>
 
-      <ParticleBackground />
+      <div className="starfield" />
 
       <div className="relative z-10 text-center max-w-4xl mx-auto">
+        {/* Powered by Scaler pill */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/5 border border-white/15 backdrop-blur-md mb-6"
+        >
+          <span className="text-xs md:text-sm font-semibold tracking-[0.25em] text-white/80">POWERED BY</span>
+          <span className="w-px h-5 bg-white/20" />
+          <img src={scalerLogo} alt="Scaler School of Technology" className="h-5 w-auto brightness-0 invert" />
+        </motion.div>
+
         {/* Pill badge */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/15 border border-primary/30 mb-8"
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/20 border border-primary/40 mb-8 ml-0 md:ml-3"
         >
           <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-          <span className="text-sm font-medium text-primary">Now hiring · FY26 · AI-first EdTech</span>
+          <span className="text-sm font-medium text-white">Now hiring · FY26 · AI-first EdTech</span>
         </motion.div>
 
         {/* Main heading - word by word */}
