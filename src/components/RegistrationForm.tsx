@@ -89,21 +89,31 @@ const step1Schema = z.object({
   mobile: z.string().regex(mobileRegex, "Enter a valid 10-digit Indian mobile number"),
 });
 
-const step2Schema = z.object({
-  college: z.string().trim().min(2, "College name is required").max(120),
-  degree: z.string().min(1, "Select a degree"),
-  specialisation: z.string().trim().min(2, "Specialisation is required").max(80),
-  scoreType: z.enum(["CGPA", "Percentage"]),
-  score: z
-    .string()
-    .min(1, "Please enter your percentage")
-    .regex(/^\d{1,3}(\.\d{1,2})?$/, "Enter a valid percentage (up to 2 decimals)")
-    .refine((v) => {
-      const n = Number(v);
-      return n >= 10 && n <= 100;
-    }, "Percentage must be between 10 and 100"),
-  graduationYear: z.string().min(1, "Select graduation year"),
-});
+const step2Schema = z
+  .object({
+    college: z.string().trim().min(2, "College name is required").max(120),
+    degree: z.string().min(1, "Select a degree"),
+    specialisation: z.string().trim().min(2, "Specialisation is required").max(80),
+    scoreType: z.enum(["CGPA", "Percentage"]),
+    score: z.string().min(1, "Please enter your score"),
+    graduationYear: z.string().min(1, "Select graduation year"),
+  })
+  .superRefine((val, ctx) => {
+    const n = Number(val.score);
+    if (Number.isNaN(n)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["score"], message: "Enter a valid number" });
+      return;
+    }
+    if (val.scoreType === "CGPA") {
+      if (!/^\d{1,2}(\.\d{1,2})?$/.test(val.score) || n < 1 || n > 10) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["score"], message: "CGPA must be between 1 and 10" });
+      }
+    } else {
+      if (!/^\d{1,3}(\.\d{1,2})?$/.test(val.score) || n < 10 || n > 100) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["score"], message: "Percentage must be between 10 and 100" });
+      }
+    }
+  });
 
 const step3Schema = z.object({
   yearsExperience: z.string().min(1, "Select your experience"),
@@ -562,35 +572,53 @@ const RegistrationForm = () => {
                 <FieldError name="specialisation" />
               </div>
               <div>
-                <label className={labelClasses}>Your percentage</label>
+                <label className={labelClasses}>Your academic score</label>
+                <div className="flex gap-2 mb-3">
+                  {(["CGPA", "Percentage"] as const).map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      onClick={() => {
+                        update("scoreType", t);
+                        update("score", "");
+                      }}
+                      className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
+                        formData.scoreType === t
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {t}
+                    </button>
+                  ))}
+                </div>
                 <div className="relative">
                   <input
                     type="text"
                     inputMode="decimal"
-                    className={`${inputClasses} pr-10 ${errors.score ? errorInputClasses : ""}`}
+                    className={`${inputClasses} pr-14 ${errors.score ? errorInputClasses : ""}`}
                     value={formData.score}
                     onChange={(e) => {
                       const v = e.target.value;
-                      // Allow empty, or digits with up to 2 decimal places
-                      if (v === "" || /^\d{0,3}(\.\d{0,2})?$/.test(v)) {
-                        update("score", v);
-                        update("scoreType", "Percentage");
+                      if (formData.scoreType === "CGPA") {
+                        if (v === "" || /^\d{0,2}(\.\d{0,2})?$/.test(v)) update("score", v);
+                      } else {
+                        if (v === "" || /^\d{0,3}(\.\d{0,2})?$/.test(v)) update("score", v);
                       }
                     }}
-                    placeholder="e.g. 78.50"
-                    aria-label="Your percentage"
+                    placeholder={formData.scoreType === "CGPA" ? "e.g. 8.5" : "e.g. 78.50"}
+                    aria-label="Your academic score"
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">%</span>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
+                    {formData.scoreType === "CGPA" ? "/10" : "%"}
+                  </span>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1.5">
-                  If your score is in CGPA, convert to percentage (e.g. CGPA × 9.5 for CBSE / engineering norms).
-                </p>
                 <FieldError name="score" />
               </div>
               <div>
                 <label className={labelClasses}>Graduation year</label>
                 <div className="flex gap-3">
-                  {["2024", "2025", "2026"].map((y) => (
+                  {["2025", "2026"].map((y) => (
                     <ToggleButton
                       key={y}
                       value={y}
