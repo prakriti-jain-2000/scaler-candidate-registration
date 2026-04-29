@@ -6,16 +6,14 @@ const roles = [
   {
     tag: "Fresher friendly",
     tagColor: "bg-scaler-green/15 text-scaler-green border-scaler-green/30",
-    title: "Business Development Associate",
-    ctc: "Competitive CTC + variable",
-    eligibility: "2024 / 2025 MBA or BBA passout · No prior sales exp required",
+    title: "Revenue Generation Associate",
+    ctc: "7+3 LPA",
     highlights: [
       { text: "Own the full sales cycle — from first call to enrolment" },
       { text: "Engage with working professionals exploring career transitions" },
       { text: "Work with AI-powered tools that make every rep more effective" },
-      { text: "Fast track to Senior BDA within 6–9 months based on performance" },
     ],
-    cta: "Apply for BDA →",
+    cta: "Apply for the role →",
   },
 ];
 
