@@ -1,8 +1,8 @@
-import scalerLogo from "@/assets/scaler-logo.svg";
+import scalerLogo from "@/assets/scaler-logo-white.png";
 
 const Navbar = () => {
   return (
-    <nav className="surface-light fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 md:px-12 border-b border-border shadow-sm">
+    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 h-16 bg-background/80 backdrop-blur-xl border-b border-border">
       <a href="#" className="flex items-center" aria-label="Scaler">
         <img src={scalerLogo} alt="Scaler" className="h-8 w-auto" />
       </a>
