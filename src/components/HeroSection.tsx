@@ -14,13 +14,15 @@ const steps = [
 const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden hero-dark">
-      {/* Gradient mesh blobs */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full bg-primary/25 blur-[120px] animate-mesh" />
-        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-scaler-blue/20 blur-[120px] animate-mesh" style={{ animationDelay: "-7s" }} />
-      </div>
-
+      {/* Aurora + drifting starfield (inspired by Scaler hackathon hero) */}
+      <div className="aurora" />
       <div className="starfield" />
+
+      {/* Soft mesh blobs for depth */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full bg-primary/20 blur-[120px] animate-mesh" />
+        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-scaler-blue/15 blur-[120px] animate-mesh" style={{ animationDelay: "-7s" }} />
+      </div>
 
       <div className="relative z-10 text-center max-w-4xl mx-auto">
         {/* Powered by Scaler pill */}
