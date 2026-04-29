@@ -14,7 +14,7 @@ const steps = [
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden hero-dark">
+    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-32 md:pt-36 pb-16 overflow-hidden hero-dark">
       {/* Aurora + drifting starfield (constellation network is global) */}
       <div className="aurora" />
       <div className="starfield" />
