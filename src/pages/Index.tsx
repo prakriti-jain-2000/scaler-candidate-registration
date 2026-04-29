@@ -5,7 +5,7 @@ import WhyScalerSection from "@/components/WhyScalerSection";
 
 import RegistrationForm from "@/components/RegistrationForm";
 import FloatingApplyButton from "@/components/FloatingApplyButton";
-import scalerLogo from "@/assets/scaler-logo-white.png";
+import scalerLogo from "@/assets/scaler-logo.svg";
 
 import ParticleBackground from "@/components/ParticleBackground";
 
@@ -35,7 +35,7 @@ const Index = () => {
         <img
           src={scalerLogo}
           alt="Scaler"
-          className="h-10 w-auto mx-auto mb-4"
+          className="h-10 w-auto mx-auto mb-4 brightness-0 invert"
         />
         <p className="text-sm text-muted-foreground">
           © 2025 Scaler Academy. All rights reserved.
