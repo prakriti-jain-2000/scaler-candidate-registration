@@ -590,7 +590,7 @@ const RegistrationForm = () => {
               <div>
                 <label className={labelClasses}>Graduation year</label>
                 <div className="flex gap-3">
-                  {["2024", "2025", "2026"].map((y) => (
+                  {["2025", "2026"].map((y) => (
                     <ToggleButton
                       key={y}
                       value={y}
