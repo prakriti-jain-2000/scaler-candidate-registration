@@ -60,7 +60,7 @@ const RolesSection = () => {
 
                 <p className="text-2xl md:text-3xl font-extrabold text-primary mb-3">{role.ctc}</p>
 
-                <p className="text-sm text-muted-foreground mb-6">{role.eligibility}</p>
+                
 
                 <div className="space-y-3 mb-8">
                   {role.highlights.map((h) => (
