@@ -1,62 +1,81 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 
+@font-face {
+  font-family: 'Clash Grotesk';
+  src: url('/fonts/ClashGrotesk-Variable.woff2') format('woff2-variations'),
+       url('/fonts/ClashGrotesk-Variable.woff') format('woff-variations');
+  font-weight: 200 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* Scaler brand: light background, deep navy text, blue accents */
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    /* Dark global theme */
+    --background: 222 47% 5%;
+    --foreground: 0 0% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 222 40% 8%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 222 40% 8%;
+    --popover-foreground: 0 0% 98%;
 
-    /* Scaler primary blue #0041CA */
-    --primary: 220 100% 40%;
+    /* Scaler primary blue */
+    --primary: 220 100% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 214 32% 95%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 222 30% 12%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 214 32% 95%;
-    --muted-foreground: 215 16% 40%;
+    --muted: 222 30% 12%;
+    --muted-foreground: 215 16% 70%;
 
-    --accent: 213 100% 53%;
+    --accent: 213 100% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 220 100% 40%;
+    --border: 222 25% 18%;
+    --input: 222 25% 18%;
+    --ring: 220 100% 50%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222 47% 11%;
-    --sidebar-primary: 220 100% 40%;
+    --sidebar-background: 222 47% 5%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 220 100% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 214 32% 95%;
-    --sidebar-accent-foreground: 222 47% 11%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 220 100% 40%;
+    --sidebar-accent: 222 30% 12%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 222 25% 18%;
+    --sidebar-ring: 220 100% 50%;
 
-    /* Scaler brand palette (from logo) */
-    --scaler-orange: 220 100% 40%;   /* alias kept for legacy refs -> primary blue */
-    --scaler-dark: 222 47% 11%;       /* deep navy text */
-    --scaler-navy: 220 100% 40%;      /* #0041CA */
-    --scaler-card: 0 0% 100%;
-    --scaler-border: 214 32% 91%;
-    --scaler-muted: 215 16% 40%;
+    /* Scaler brand palette */
+    --scaler-orange: 220 100% 40%;
+    --scaler-dark: 0 0% 98%;
+    --scaler-navy: 220 100% 40%;
+    --scaler-card: 222 40% 8%;
+    --scaler-border: 222 25% 18%;
+    --scaler-muted: 215 16% 70%;
     --scaler-green: 142 71% 45%;
-    --scaler-blue: 213 100% 53%;      /* #0F8CFF bright */
-    --scaler-blue-mid: 211 100% 43%;  /* #006ADA */
+    --scaler-blue: 213 100% 60%;
+    --scaler-blue-mid: 211 100% 50%;
+  }
+
+  /* Opt-in light surface (used by navbar) */
+  .surface-light {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --muted-foreground: 215 16% 40%;
+    --border: 214 32% 91%;
+    color: hsl(222 47% 11%);
+    background-color: hsl(0 0% 100%);
   }
 }
 
@@ -67,13 +86,14 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Clash Grotesk', 'DM Sans', sans-serif;
     scroll-behavior: smooth;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 800;
+    font-family: 'Clash Grotesk', 'DM Sans', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
 }
 
