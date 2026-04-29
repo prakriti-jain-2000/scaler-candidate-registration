@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import scalerLogo from "@/assets/scaler-logo-white.png";
-import ParticleBackground from "@/components/ParticleBackground";
+
 
 const words = ["Turn", "conversations", "into", "careers."];
 
