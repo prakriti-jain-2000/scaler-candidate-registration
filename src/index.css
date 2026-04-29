@@ -68,15 +68,6 @@
     --scaler-blue-mid: 211 100% 50%;
   }
 
-  /* Opt-in light surface (used by navbar) */
-  .surface-light {
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
-    --muted-foreground: 215 16% 40%;
-    --border: 214 32% 91%;
-    color: hsl(222 47% 11%);
-    background-color: hsl(0 0% 100%);
-  }
 }
 
 @layer base {
