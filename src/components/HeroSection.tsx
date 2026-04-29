@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import scalerLogo from "@/assets/scaler-logo.svg";
+import scalerLogo from "@/assets/scaler-logo-white.png";
 import ParticleBackground from "@/components/ParticleBackground";
 
 const words = ["Turn", "conversations", "into", "careers."];
@@ -15,10 +15,9 @@ const steps = [
 const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden hero-dark">
-      {/* Aurora + drifting starfield + connected dots network */}
+      {/* Aurora + drifting starfield (constellation network is global) */}
       <div className="aurora" />
       <div className="starfield" />
-      <ParticleBackground color="120,170,255" linkDistance={140} dotOpacity={0.7} />
 
       {/* Soft mesh blobs for depth */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
