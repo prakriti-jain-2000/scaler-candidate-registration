@@ -7,21 +7,37 @@ import RegistrationForm from "@/components/RegistrationForm";
 import FloatingApplyButton from "@/components/FloatingApplyButton";
 import scalerLogo from "@/assets/scaler-logo.svg";
 
+import ParticleBackground from "@/components/ParticleBackground";
+
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+    <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
       <Navbar />
       <HeroSection />
-      <RolesSection />
-      <WhyScalerSection />
-      
-      <RegistrationForm />
+
+      {/* Subtle dot network behind the rest of the dark page */}
+      <div className="relative">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <ParticleBackground
+            className="absolute inset-0 pointer-events-none opacity-50"
+            color="120,170,255"
+            linkDistance={120}
+            dotOpacity={0.4}
+          />
+        </div>
+        <div className="relative z-10">
+          <RolesSection />
+          <WhyScalerSection />
+          <RegistrationForm />
+        </div>
+      </div>
+
       <FloatingApplyButton />
-      <footer className="py-12 px-6 text-center border-t border-border">
+      <footer className="relative z-10 py-12 px-6 text-center border-t border-border bg-background">
         <img
           src={scalerLogo}
           alt="Scaler"
-          className="h-10 w-auto mx-auto mb-4"
+          className="h-10 w-auto mx-auto mb-4 brightness-0 invert"
         />
         <p className="text-sm text-muted-foreground">
           © 2025 Scaler Academy. All rights reserved.
