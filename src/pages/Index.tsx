@@ -12,24 +12,22 @@ import ParticleBackground from "@/components/ParticleBackground";
 const Index = () => {
   return (
     <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
-      <Navbar />
-      <HeroSection />
+      {/* Global constellation background across the whole site */}
+      <div className="pointer-events-none fixed inset-0 z-0">
+        <ParticleBackground
+          className="absolute inset-0 pointer-events-none"
+          color="120,170,255"
+          linkDistance={140}
+          dotOpacity={0.7}
+        />
+      </div>
 
-      {/* Subtle dot network behind the rest of the dark page */}
-      <div className="relative">
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <ParticleBackground
-            className="absolute inset-0 pointer-events-none opacity-50"
-            color="120,170,255"
-            linkDistance={120}
-            dotOpacity={0.4}
-          />
-        </div>
-        <div className="relative z-10">
-          <RolesSection />
-          <WhyScalerSection />
-          <RegistrationForm />
-        </div>
+      <div className="relative z-10">
+        <Navbar />
+        <HeroSection />
+        <RolesSection />
+        <WhyScalerSection />
+        <RegistrationForm />
       </div>
 
       <FloatingApplyButton />

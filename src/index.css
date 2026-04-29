@@ -111,8 +111,7 @@
   .hero-dark {
     background:
       radial-gradient(ellipse at 20% 30%, hsl(220 100% 40% / 0.18), transparent 55%),
-      radial-gradient(ellipse at 80% 70%, hsl(213 100% 53% / 0.15), transparent 55%),
-      #000000;
+      radial-gradient(ellipse at 80% 70%, hsl(213 100% 53% / 0.15), transparent 55%);
     color: #ffffff;
   }
 
