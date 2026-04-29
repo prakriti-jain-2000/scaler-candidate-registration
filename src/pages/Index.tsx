@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import RolesSection from "@/components/RolesSection";
-import WhyScalerSection from "@/components/WhyScalerSection";
+import HustleGamesSection from "@/components/HustleGamesSection";
 
 import RegistrationForm from "@/components/RegistrationForm";
 import FloatingApplyButton from "@/components/FloatingApplyButton";
@@ -26,7 +26,7 @@ const Index = () => {
         <Navbar />
         <HeroSection />
         <RolesSection />
-        <WhyScalerSection />
+        <HustleGamesSection />
         <RegistrationForm />
       </div>
 
