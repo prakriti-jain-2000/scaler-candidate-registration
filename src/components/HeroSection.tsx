@@ -49,6 +49,16 @@ const HeroSection = () => {
           <span className="text-sm font-medium text-white">Now hiring · FY26 · AI-first EdTech</span>
         </motion.div>
 
+        {/* Event label */}
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="text-sm md:text-base font-semibold tracking-[0.2em] uppercase text-gradient-orange mb-4"
+        >
+          India's Biggest MEGA AI Hackathon
+        </motion.p>
+
         {/* Main heading - word by word */}
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight mb-6">
           {words.map((word, i) => {
