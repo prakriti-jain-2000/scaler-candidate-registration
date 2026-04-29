@@ -89,21 +89,31 @@ const step1Schema = z.object({
   mobile: z.string().regex(mobileRegex, "Enter a valid 10-digit Indian mobile number"),
 });
 
-const step2Schema = z.object({
-  college: z.string().trim().min(2, "College name is required").max(120),
-  degree: z.string().min(1, "Select a degree"),
-  specialisation: z.string().trim().min(2, "Specialisation is required").max(80),
-  scoreType: z.enum(["CGPA", "Percentage"]),
-  score: z
-    .string()
-    .min(1, "Please enter your percentage")
-    .regex(/^\d{1,3}(\.\d{1,2})?$/, "Enter a valid percentage (up to 2 decimals)")
-    .refine((v) => {
-      const n = Number(v);
-      return n >= 10 && n <= 100;
-    }, "Percentage must be between 10 and 100"),
-  graduationYear: z.string().min(1, "Select graduation year"),
-});
+const step2Schema = z
+  .object({
+    college: z.string().trim().min(2, "College name is required").max(120),
+    degree: z.string().min(1, "Select a degree"),
+    specialisation: z.string().trim().min(2, "Specialisation is required").max(80),
+    scoreType: z.enum(["CGPA", "Percentage"]),
+    score: z.string().min(1, "Please enter your score"),
+    graduationYear: z.string().min(1, "Select graduation year"),
+  })
+  .superRefine((val, ctx) => {
+    const n = Number(val.score);
+    if (Number.isNaN(n)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["score"], message: "Enter a valid number" });
+      return;
+    }
+    if (val.scoreType === "CGPA") {
+      if (!/^\d{1,2}(\.\d{1,2})?$/.test(val.score) || n < 1 || n > 10) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["score"], message: "CGPA must be between 1 and 10" });
+      }
+    } else {
+      if (!/^\d{1,3}(\.\d{1,2})?$/.test(val.score) || n < 10 || n > 100) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["score"], message: "Percentage must be between 10 and 100" });
+      }
+    }
+  });
 
 const step3Schema = z.object({
   yearsExperience: z.string().min(1, "Select your experience"),
