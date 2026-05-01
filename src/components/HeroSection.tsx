@@ -15,7 +15,27 @@ const pills = [
   { icon: <Users className="w-4 h-4 text-primary" />, label: "2026 Batch" },
 ];
 
+import { useEffect, useRef, useState } from "react";
+
 const HeroSection = () => {
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const [timelineInView, setTimelineInView] = useState(false);
+
+  useEffect(() => {
+    if (!timelineRef.current) return;
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setTimelineInView(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.25 }
+    );
+    obs.observe(timelineRef.current);
+    return () => obs.disconnect();
+  }, []);
+
   return (
     <section className="relative px-6 pt-16 md:pt-20 pb-20 border-t border-white/10">
       <div className="max-w-6xl mx-auto text-center">
