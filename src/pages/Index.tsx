@@ -23,7 +23,6 @@ const Index = () => {
       </div>
 
       <div className="relative z-10">
-        <Navbar />
         <PitchBattleHero />
         <HeroSection />
         <RolesSection />
