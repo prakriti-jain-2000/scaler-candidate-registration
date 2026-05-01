@@ -742,7 +742,7 @@ const RegistrationForm = () => {
               <div>
                 <label className={labelClasses}>Preferred joining location</label>
                 <div className="flex flex-wrap gap-3">
-                  {["Gurugram", "Bangalore", "Both"].map((loc) => {
+                  {["Gurugram", "Bangalore"].map((loc) => {
                     const active = formData.joiningLocations.includes(loc);
                     return (
                       <button
