@@ -135,7 +135,7 @@ const HeroSection = () => {
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 ${
                         active
-                          ? "bg-gradient-to-br from-cyan-300 to-teal-400 text-[#0a0f2c]"
+                          ? "bg-gradient-to-br from-cyan-300 to-teal-400 text-[#0a0f2c] animate-glow-pulse"
                           : "bg-primary text-primary-foreground"
                       }`}
                     >
