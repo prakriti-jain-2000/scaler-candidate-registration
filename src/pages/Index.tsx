@@ -24,9 +24,9 @@ const Index = () => {
 
       <div className="relative z-10">
         <Navbar />
+        <PitchBattleHero />
         <HeroSection />
         <RolesSection />
-        <HustleGamesSection />
         <RegistrationForm />
       </div>
 
