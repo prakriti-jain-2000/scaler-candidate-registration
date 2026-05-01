@@ -83,25 +83,31 @@ const HeroSection = () => {
         </motion.div>
 
         {/* Timeline */}
-        <div className="w-full max-w-5xl mx-auto">
+        <div ref={timelineRef} className="w-full max-w-5xl mx-auto">
           {/* Desktop */}
           <div className="hidden md:flex items-start justify-between relative">
-            <div className="absolute top-6 left-[10%] right-[10%] h-0.5 bg-white/15">
+            <div className="absolute top-6 left-[10%] right-[10%] h-0.5 bg-white/15 overflow-hidden">
               <motion.div
                 initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 1.4, ease: "easeOut", delay: 0.5 }}
+                animate={timelineInView ? { scaleX: 1 } : { scaleX: 0 }}
+                transition={{ duration: 1.4, ease: "easeOut", delay: 0.2 }}
                 className="h-full bg-gradient-to-r from-primary to-cyan-300 origin-left"
               />
             </div>
-            {steps.map((step) => {
+            {steps.map((step, idx) => {
               const active = step.num === 3;
               return (
-                <div key={step.num} className="relative flex flex-col items-center text-center w-1/5 px-2">
+                <motion.div
+                  key={step.num}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={timelineInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+                  transition={{ duration: 0.45, delay: 0.15 + idx * 0.18, ease: "easeOut" }}
+                  className="relative flex flex-col items-center text-center w-1/5 px-2"
+                >
                   <div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg mb-4 relative z-10 ${
+                    className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg mb-4 relative z-10 transition-transform duration-200 ${
                       active
-                        ? "bg-gradient-to-br from-cyan-300 to-teal-400 text-[#0a0f2c] shadow-[0_0_24px_hsl(180_80%_55%/0.55)]"
+                        ? "bg-gradient-to-br from-cyan-300 to-teal-400 text-[#0a0f2c] animate-glow-pulse"
                         : "bg-primary text-primary-foreground"
                     }`}
                   >
@@ -114,7 +120,7 @@ const HeroSection = () => {
                     </span>
                   )}
                   <p className="text-xs text-white/60 leading-relaxed">{step.desc}</p>
-                </div>
+                </motion.div>
               );
             })}
           </div>
