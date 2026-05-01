@@ -49,10 +49,6 @@ const RolesSection = () => {
               <div className="h-1 bg-primary w-full" />
 
               <div className="p-6 md:p-8">
-                {/* Tag */}
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${role.tagColor} mb-5`}>
-                  {role.tag}
-                </span>
 
                 <h3 className="text-xl md:text-2xl font-bold text-foreground mb-3">{role.title}</h3>
 
