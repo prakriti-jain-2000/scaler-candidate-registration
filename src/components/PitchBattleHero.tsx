@@ -9,12 +9,12 @@ const PitchBattleHero = () => {
       <img
         src={heroImage}
         alt="Scaler Pitch Battle — India's Biggest MEGA AI Hackathon"
-        className="block w-screen h-[55vh] min-h-[360px] object-cover object-center"
+        style={{ display: "block", width: "100%", height: "auto" }}
       />
-      {/* Transparent overlay link aligned with the baked-in 'Already applied?' text */}
+      {/* Overlay link aligned with the baked-in 'Already applied?' text */}
       <a
         href="https://candidate-dashboard-campus.lovable.app/login"
-        className="absolute top-0 right-0 h-16 w-[260px] z-20"
+        className="absolute top-0 right-0 h-[10%] w-[28%] z-20"
         aria-label="Already applied? Check status"
       />
     </section>
