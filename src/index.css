@@ -177,7 +177,6 @@
     animation: aurora-spin 40s linear infinite;
     opacity: 0.55;
   }
-}
 
   /* Fade hero image edges into the page background */
   .hero-fade-mask {
