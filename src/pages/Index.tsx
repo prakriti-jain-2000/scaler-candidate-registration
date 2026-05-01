@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
+import PitchBattleHero from "@/components/PitchBattleHero";
 import HeroSection from "@/components/HeroSection";
 import RolesSection from "@/components/RolesSection";
-import HustleGamesSection from "@/components/HustleGamesSection";
 
 import RegistrationForm from "@/components/RegistrationForm";
 import FloatingApplyButton from "@/components/FloatingApplyButton";
@@ -24,9 +24,9 @@ const Index = () => {
 
       <div className="relative z-10">
         <Navbar />
+        <PitchBattleHero />
         <HeroSection />
         <RolesSection />
-        <HustleGamesSection />
         <RegistrationForm />
       </div>
 
