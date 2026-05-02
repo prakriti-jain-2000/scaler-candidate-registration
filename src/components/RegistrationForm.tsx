@@ -169,8 +169,10 @@ const RegistrationForm = () => {
         const hasBoth = cities.every((c) => prev.joiningLocations.includes(c));
         next = hasBoth ? [] : [...cities];
       } else {
-        const current = prev.joiningLocations.filter((l) => l !== "Both");
-        next = current.includes(loc) ? current.filter((l) => l !== loc) : [...current, loc];
+        // Single-select between Gurugram and Bangalore.
+        // Clicking the already-selected city deselects it; clicking the other
+        // replaces the selection. "Both" is only reachable via the Both button.
+        next = prev.joiningLocations.length === 1 && prev.joiningLocations[0] === loc ? [] : [loc];
       }
       return { ...prev, joiningLocations: next };
     });
