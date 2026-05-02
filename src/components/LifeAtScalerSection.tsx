@@ -8,6 +8,7 @@ import photoGurgaonPark from "@/assets/life/photo-gurgaon-park.jpg";
 import photoBadminton from "@/assets/life/photo-badminton.jpeg";
 import photoGurgaonEvent from "@/assets/life/photo-gurgaon-event.jpeg";
 import photoTeam from "@/assets/life/photo-team.jpeg";
+import photoRewards from "@/assets/life/rewards-recognition.png";
 
 const TEAL = "hsl(220 100% 50%)";
 
@@ -20,6 +21,7 @@ const photos = [
   { src: photoBadminton, label: "Friday Badminton", h: 220 },
   { src: photoGurgaonPark, label: "Gurugram Team Day", h: 280 },
   { src: photoTeam, label: "Between the Sessions", h: 220 },
+  { src: photoRewards, label: "Rewards & Recognition", h: 280 },
 ];
 
 const news = [
@@ -28,6 +30,12 @@ const news = [
     headline: "Upskilling start-up Scaler acquires Applied Roots for $50 mn",
     excerpt: "Scaler doubles down on advanced tech education with a landmark acquisition of Applied Roots.",
     url: "https://www.businesstoday.in/entrepreneurship/news/story/upksilling-start-up-scaler-acquires-applied-roots-for-50-mn-324588-2022-03-03",
+  },
+  {
+    publication: "NewsBytes",
+    headline: "Scaler's new AI program blends business with tech skills",
+    excerpt: "A new program designed to equip professionals with the AI fluency needed to lead in modern, tech-driven businesses.",
+    url: "https://www.newsbytesapp.com/news/business/scalers-new-ai-program-blends-business-with-tech-skills/tldr",
   },
   {
     publication: "ANI News",
