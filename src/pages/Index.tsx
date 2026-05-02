@@ -1,4 +1,3 @@
-import Navbar from "@/components/Navbar";
 import PitchBattleHero from "@/components/PitchBattleHero";
 import HeroSection from "@/components/HeroSection";
 import LifeAtScalerSection from "@/components/LifeAtScalerSection";
