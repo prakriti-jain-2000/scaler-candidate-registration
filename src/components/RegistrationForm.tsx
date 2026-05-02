@@ -161,10 +161,19 @@ const RegistrationForm = () => {
   }, []);
 
   const toggleLocation = (loc: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      joiningLocations: prev.joiningLocations.includes(loc) ? [] : [loc],
-    }));
+    setFormData((prev) => {
+      const cities = ["Gurugram", "Bangalore"];
+      let next: string[];
+      if (loc === "Both") {
+        // Toggle Both: if already both selected, clear; else select both
+        const hasBoth = cities.every((c) => prev.joiningLocations.includes(c));
+        next = hasBoth ? [] : [...cities];
+      } else {
+        const current = prev.joiningLocations.filter((l) => l !== "Both");
+        next = current.includes(loc) ? current.filter((l) => l !== loc) : [...current, loc];
+      }
+      return { ...prev, joiningLocations: next };
+    });
     setErrors((prev) => {
       if (!prev.joiningLocations) return prev;
       const next = { ...prev };
