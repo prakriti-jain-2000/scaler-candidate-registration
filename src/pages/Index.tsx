@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import PitchBattleHero from "@/components/PitchBattleHero";
 import HeroSection from "@/components/HeroSection";
+import LifeAtScalerSection from "@/components/LifeAtScalerSection";
 import RolesSection from "@/components/RolesSection";
 
 import RegistrationForm from "@/components/RegistrationForm";
@@ -25,6 +26,7 @@ const Index = () => {
       <div className="relative z-10">
         <PitchBattleHero />
         <HeroSection />
+        <LifeAtScalerSection />
         <RolesSection />
         <RegistrationForm />
       </div>
