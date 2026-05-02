@@ -384,6 +384,35 @@ function FirstFold() {
                   }}
                 >
                   Pitch
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      verticalAlign: "top",
+                      marginLeft: "0.2em",
+                      transform: "translateY(0.2em)",
+                      background: "linear-gradient(135deg, #1565D8 0%, #0A3FA0 100%)",
+                      WebkitTextFillColor: "#fff",
+                      color: "#fff",
+                      fontSize: "0.22em",
+                      fontWeight: 800,
+                      fontStyle: "normal",
+                      padding: "0.5em 0.7em",
+                      borderRadius: "0.55em",
+                      lineHeight: 1.05,
+                      letterSpacing: "0.08em",
+                      textAlign: "center",
+                      boxShadow:
+                        "0 8px 24px rgba(21,101,216,0.45), inset 0 1px 0 rgba(255,255,255,0.2)",
+                      border: "1px solid rgba(40,231,224,0.4)",
+                    }}
+                  >
+                    FY
+                    <br />
+                    26
+                  </span>
                 </span>
                 <span
                   style={{
