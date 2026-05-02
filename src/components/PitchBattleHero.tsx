@@ -359,32 +359,7 @@ function FirstFold() {
             </div>
 
             {/* PITCH BATTLE — hi-tech typography */}
-            <div style={{ position: "relative", marginBottom: "8px" }}>
-              {/* FY26 badge — floats top-right of headline */}
-              <div
-                style={{
-                  position: "absolute",
-                  top: "-6px",
-                  right: "0",
-                  background: "linear-gradient(135deg, #1565D8 0%, #0A3FA0 100%)",
-                  color: "#fff",
-                  fontSize: "12px",
-                  fontWeight: 800,
-                  padding: "8px 12px",
-                  borderRadius: "8px",
-                  lineHeight: 1.1,
-                  textAlign: "center",
-                  fontFamily: "'DM Sans', sans-serif",
-                  letterSpacing: "0.08em",
-                  boxShadow: "0 8px 24px rgba(21,101,216,0.45), inset 0 1px 0 rgba(255,255,255,0.2)",
-                  border: "1px solid rgba(40,231,224,0.4)",
-                }}
-              >
-                FY
-                <br />
-                26
-              </div>
-
+            <div style={{ position: "relative", marginBottom: "8px", display: "inline-block" }}>
               <h1
                 style={{
                   fontSize: "clamp(56px, 8vw, 112px)",
