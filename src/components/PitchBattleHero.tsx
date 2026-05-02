@@ -386,36 +386,7 @@ function FirstFold() {
                     textShadow: "0 0 40px rgba(40,231,224,0.15)",
                   }}
                 >
-                  <span>Pitch</span>
-                  <span
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flex: "0 0 auto",
-                      marginTop: "0.05em",
-                      transform: "rotate(3deg)",
-                      background: "linear-gradient(135deg, #1565D8 0%, #0A3FA0 100%)",
-                      WebkitTextFillColor: "#fff",
-                      color: "#fff",
-                      fontSize: "0.2em",
-                      fontWeight: 800,
-                      fontStyle: "normal",
-                      padding: "0.48em 0.68em",
-                      borderRadius: "0.55em",
-                      lineHeight: 1.05,
-                      letterSpacing: "0.08em",
-                      textAlign: "center",
-                      boxShadow:
-                        "0 8px 24px rgba(21,101,216,0.45), inset 0 1px 0 rgba(255,255,255,0.2)",
-                      border: "1px solid rgba(40,231,224,0.4)",
-                    }}
-                  >
-                    FY
-                    <br />
-                    26
-                  </span>
+                <span>Pitch</span>
                 </span>
                 <span
                   style={{
@@ -475,34 +446,6 @@ function FirstFold() {
               >
                 POWERED BY&nbsp;
                 <strong style={{ color: "#28E7E0", letterSpacing: "0.12em" }}>SCALER</strong>
-              </div>
-              <div
-                style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                  borderRadius: "999px",
-                  padding: "8px 18px",
-                  fontSize: "12px",
-                  color: "#fff",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  fontFamily: "'DM Sans', sans-serif",
-                  backdropFilter: "blur(8px)",
-                  WebkitBackdropFilter: "blur(8px)",
-                }}
-              >
-                <span
-                  style={{
-                    width: "7px",
-                    height: "7px",
-                    borderRadius: "50%",
-                    background: "#1565D8",
-                    boxShadow: "0 0 10px #1565D8",
-                    display: "inline-block",
-                  }}
-                />
-                Now hiring · FY26 · AI-first EdTech
               </div>
             </div>
           </div>
