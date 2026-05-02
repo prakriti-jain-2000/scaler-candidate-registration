@@ -374,7 +374,10 @@ function FirstFold() {
               >
                 <span
                   style={{
-                    display: "block",
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "0.12em",
+                    position: "relative",
                     background:
                       "linear-gradient(180deg, #ffffff 0%, #b8c8ff 60%, #6890ff 100%)",
                     WebkitBackgroundClip: "text",
@@ -383,23 +386,23 @@ function FirstFold() {
                     textShadow: "0 0 40px rgba(40,231,224,0.15)",
                   }}
                 >
-                  Pitch
+                  <span>Pitch</span>
                   <span
                     style={{
-                      display: "inline-flex",
+                      display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
                       justifyContent: "center",
-                      verticalAlign: "top",
-                      marginLeft: "0.2em",
-                      transform: "translateY(0.2em)",
+                      flex: "0 0 auto",
+                      marginTop: "0.05em",
+                      transform: "rotate(3deg)",
                       background: "linear-gradient(135deg, #1565D8 0%, #0A3FA0 100%)",
                       WebkitTextFillColor: "#fff",
                       color: "#fff",
-                      fontSize: "0.22em",
+                      fontSize: "0.2em",
                       fontWeight: 800,
                       fontStyle: "normal",
-                      padding: "0.5em 0.7em",
+                      padding: "0.48em 0.68em",
                       borderRadius: "0.55em",
                       lineHeight: 1.05,
                       letterSpacing: "0.08em",
