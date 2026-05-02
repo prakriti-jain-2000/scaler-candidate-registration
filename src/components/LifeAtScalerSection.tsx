@@ -185,26 +185,15 @@ const LifeAtScalerSection = () => {
                   aspectRatio: "16 / 9",
                   background: "rgba(255,255,255,0.03)",
                   borderColor: "hsla(220, 100%, 50%, 0.25)",
-                  backdropFilter: "blur(10px)",
                 }}
               >
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <button
-                    type="button"
-                    aria-label="Play video"
-                    className="relative flex items-center justify-center w-20 h-20 rounded-full"
-                    style={{
-                      background: "hsla(220, 100%, 50%, 0.18)",
-                      border: `1px solid ${TEAL}`,
-                    }}
-                  >
-                    <span
-                      className="absolute inset-0 rounded-full animate-glow-pulse"
-                      style={{ boxShadow: `0 0 24px ${TEAL}` }}
-                    />
-                    <Play className="w-8 h-8 ml-1" style={{ color: TEAL }} fill={TEAL} />
-                  </button>
-                </div>
+                <video
+                  src="/video/life-at-scaler.mp4"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  controls
+                  playsInline
+                  preload="metadata"
+                />
               </div>
               <p className="mt-4 text-center text-sm text-muted-foreground">
                 Inside Scaler: Culture, chaos, and code.
