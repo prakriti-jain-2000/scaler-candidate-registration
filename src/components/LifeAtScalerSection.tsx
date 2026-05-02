@@ -245,11 +245,9 @@ const LifeAtScalerSection = () => {
               {[...photos, ...photos].map((p, i) => (
                 <div
                   key={i}
-                  className="group shrink-0 w-[260px] rounded-xl border flex flex-col justify-end transition-all duration-300"
+                  className="group relative shrink-0 w-[260px] rounded-xl border overflow-hidden flex flex-col justify-end transition-all duration-300"
                   style={{
                     height: p.h,
-                    background:
-                      "radial-gradient(circle at 1px 1px, hsla(220, 100%, 50%, 0.18) 1px, transparent 0) 0 0 / 18px 18px, rgba(255,255,255,0.03)",
                     borderColor: "hsla(220, 100%, 50%, 0.22)",
                   }}
                   onMouseEnter={(e) => {
@@ -261,11 +259,20 @@ const LifeAtScalerSection = () => {
                     e.currentTarget.style.boxShadow = "none";
                   }}
                 >
-                  <div className="flex-1 flex items-center justify-center">
-                    <ImageIcon className="w-10 h-10 opacity-30" style={{ color: TEAL }} />
-                  </div>
-                  <div className="px-4 py-3 border-t" style={{ borderColor: "hsla(220, 100%, 50%, 0.18)" }}>
-                    <p className="text-sm text-white/90 font-medium">{p.label}</p>
+                  <img
+                    src={p.src}
+                    alt={p.label}
+                    loading="lazy"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <div
+                    className="relative px-4 py-3"
+                    style={{
+                      background:
+                        "linear-gradient(to top, rgba(2,6,23,0.92) 0%, rgba(2,6,23,0.55) 60%, transparent 100%)",
+                    }}
+                  >
+                    <p className="text-sm text-white/95 font-medium">{p.label}</p>
                   </div>
                 </div>
               ))}
