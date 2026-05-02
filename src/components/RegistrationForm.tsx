@@ -443,7 +443,7 @@ const RegistrationForm = () => {
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4">Start your application</h2>
-          <p className="text-muted-foreground">Takes under 3 minutes. Saved automatically as you go.</p>
+          <p className="text-muted-foreground">Takes under 3 minutes.</p>
         </div>
 
         <div className="mb-10">
