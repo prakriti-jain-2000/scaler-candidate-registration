@@ -37,7 +37,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative px-6 pt-16 md:pt-20 pb-20 border-t border-white/10">
+    <section className="relative px-6 pt-[80px] pb-20 border-t border-white/10">
       <div className="max-w-6xl mx-auto text-center">
         {/* Heading */}
         <motion.h1
