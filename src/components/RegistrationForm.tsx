@@ -169,8 +169,10 @@ const RegistrationForm = () => {
         const hasBoth = cities.every((c) => prev.joiningLocations.includes(c));
         next = hasBoth ? [] : [...cities];
       } else {
-        const current = prev.joiningLocations.filter((l) => l !== "Both");
-        next = current.includes(loc) ? current.filter((l) => l !== loc) : [...current, loc];
+        // Single-select between Gurugram and Bangalore.
+        // Clicking the already-selected city deselects it; clicking the other
+        // replaces the selection. "Both" is only reachable via the Both button.
+        next = prev.joiningLocations.length === 1 && prev.joiningLocations[0] === loc ? [] : [loc];
       }
       return { ...prev, joiningLocations: next };
     });
@@ -441,7 +443,7 @@ const RegistrationForm = () => {
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4">Start your application</h2>
-          <p className="text-muted-foreground">Takes under 3 minutes. Saved automatically as you go.</p>
+          <p className="text-muted-foreground">Takes under 3 minutes.</p>
         </div>
 
         <div className="mb-10">
