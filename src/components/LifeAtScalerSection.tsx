@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Play, Image as ImageIcon, ArrowRight } from "lucide-react";
 
-const TEAL = "rgb(0,212,200)";
+const TEAL = "hsl(220 100% 50%)";
 
 const photos = [
   { label: "Hackathon 2024 🔥", h: 280 },
@@ -160,7 +160,7 @@ const LifeAtScalerSection = () => {
                 style={{
                   aspectRatio: "16 / 9",
                   background: "rgba(255,255,255,0.03)",
-                  borderColor: "rgba(0,212,200,0.18)",
+                  borderColor: "hsla(220, 100%, 50%, 0.25)",
                   backdropFilter: "blur(10px)",
                 }}
               >
@@ -170,7 +170,7 @@ const LifeAtScalerSection = () => {
                     aria-label="Play video"
                     className="relative flex items-center justify-center w-20 h-20 rounded-full"
                     style={{
-                      background: "rgba(0,212,200,0.12)",
+                      background: "hsla(220, 100%, 50%, 0.18)",
                       border: `1px solid ${TEAL}`,
                     }}
                   >
@@ -225,12 +225,12 @@ const LifeAtScalerSection = () => {
                   style={{
                     height: p.h,
                     background:
-                      "radial-gradient(circle at 1px 1px, rgba(0,212,200,0.12) 1px, transparent 0) 0 0 / 18px 18px, rgba(255,255,255,0.03)",
-                    borderColor: "rgba(0,212,200,0.15)",
+                      "radial-gradient(circle at 1px 1px, hsla(220, 100%, 50%, 0.18) 1px, transparent 0) 0 0 / 18px 18px, rgba(255,255,255,0.03)",
+                    borderColor: "hsla(220, 100%, 50%, 0.22)",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-6px)";
-                    e.currentTarget.style.boxShadow = "0 0 16px rgba(0,212,200,0.4)";
+                    e.currentTarget.style.boxShadow = "0 0 16px hsla(220, 100%, 50%, 0.5)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = "translateY(0)";
@@ -240,7 +240,7 @@ const LifeAtScalerSection = () => {
                   <div className="flex-1 flex items-center justify-center">
                     <ImageIcon className="w-10 h-10 opacity-30" style={{ color: TEAL }} />
                   </div>
-                  <div className="px-4 py-3 border-t" style={{ borderColor: "rgba(0,212,200,0.12)" }}>
+                  <div className="px-4 py-3 border-t" style={{ borderColor: "hsla(220, 100%, 50%, 0.18)" }}>
                     <p className="text-sm text-white/90 font-medium">{p.label}</p>
                   </div>
                 </div>
@@ -257,8 +257,8 @@ const LifeAtScalerSection = () => {
                   background: "transparent",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(0,212,200,0.1)";
-                  e.currentTarget.style.boxShadow = "0 0 16px rgba(0,212,200,0.4)";
+                  e.currentTarget.style.background = "hsla(220, 100%, 50%, 0.15)";
+                  e.currentTarget.style.boxShadow = "0 0 16px hsla(220, 100%, 50%, 0.5)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = "transparent";
@@ -296,12 +296,12 @@ const LifeAtScalerSection = () => {
                     className="h-full rounded-2xl p-6 flex flex-col transition-all duration-300"
                     style={{
                       background: "rgba(255,255,255,0.04)",
-                      border: "1px solid rgba(0,212,200,0.15)",
+                      border: "1px solid hsla(220, 100%, 50%, 0.22)",
                       backdropFilter: "blur(10px)",
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = "translateY(-6px)";
-                      e.currentTarget.style.boxShadow = "0 0 24px rgba(0,212,200,0.35)";
+                      e.currentTarget.style.boxShadow = "0 0 24px hsla(220, 100%, 50%, 0.45)";
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = "translateY(0)";
