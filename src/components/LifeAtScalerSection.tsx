@@ -1,33 +1,57 @@
 import { useEffect, useRef, useState } from "react";
-import { Play, Image as ImageIcon, ArrowRight } from "lucide-react";
+import { Play, ArrowRight } from "lucide-react";
+import photo1 from "@/assets/life/photo-1.jpeg";
+import photo2 from "@/assets/life/photo-2.jpeg";
+import photoBlr from "@/assets/life/photo-blr.jpeg";
+import photoHyd from "@/assets/life/photo-hyd.jpg";
+import photoGurgaonPark from "@/assets/life/photo-gurgaon-park.jpg";
+import photoBadminton from "@/assets/life/photo-badminton.jpeg";
+import photoGurgaonEvent from "@/assets/life/photo-gurgaon-event.jpeg";
+import photoTeam from "@/assets/life/photo-team.jpeg";
 
 const TEAL = "hsl(220 100% 50%)";
 
 const photos = [
-  { label: "Hackathon 2024 🔥", h: 280 },
-  { label: "Team Offsite", h: 220 },
-  { label: "Demo Day", h: 280 },
-  { label: "Friday Chaos", h: 220 },
-  { label: "AI Sprint Week", h: 280 },
-  { label: "New Batch Day 1", h: 220 },
-  { label: "The War Room", h: 280 },
-  { label: "Founders Fireside", h: 220 },
-  { label: "Late Night Deploys", h: 280 },
-  { label: "Graduation Day", h: 220 },
+  { src: photoBlr, label: "Bangalore HQ", h: 280 },
+  { src: photo1, label: "Team Offsite — Belur", h: 220 },
+  { src: photoGurgaonEvent, label: "Gurugram Fireside", h: 280 },
+  { src: photoHyd, label: "Sports Day", h: 220 },
+  { src: photo2, label: "Sunrise Trek", h: 280 },
+  { src: photoBadminton, label: "Friday Badminton", h: 220 },
+  { src: photoGurgaonPark, label: "Gurugram Team Day", h: 280 },
+  { src: photoTeam, label: "Hallway Conversations", h: 220 },
 ];
 
 const news = [
   {
-    headline: "Scaler raises $XX million to expand AI-first learning",
-    excerpt: "The edtech leader doubles down on AI-native curriculum and immersive cohorts for the next generation of builders.",
+    publication: "Business Today",
+    headline: "Upskilling start-up Scaler acquires Applied Roots for $50 mn",
+    excerpt: "Scaler doubles down on advanced tech education with a landmark acquisition of Applied Roots.",
+    url: "https://www.businesstoday.in/entrepreneurship/news/story/upksilling-start-up-scaler-acquires-applied-roots-for-50-mn-324588-2022-03-03",
   },
   {
-    headline: "Inside Scaler's bet on AI-first sales talent",
-    excerpt: "How a hackathon-driven hiring pipeline is rewriting the playbook for go-to-market teams across India.",
+    publication: "ANI News",
+    headline: "Scaler becomes India's first fully AI-native tech career platform",
+    excerpt: "New research finds only 19% of engineers are truly AI-ready as Scaler reinvents the career platform from the ground up.",
+    url: "https://www.aninews.in/news/business/scaler-becomes-indias-first-fully-ai-native-tech-career-platform-finds-only-19-of-engineers-are-truly-ai-ready20260416183113/",
   },
   {
-    headline: "Why top engineers are choosing Scaler in 2026",
-    excerpt: "A look at the culture, the comp, and the chaos behind one of India's fastest-growing learning platforms.",
+    publication: "Careers360",
+    headline: "IIM Tiruchirappalli & Scaler sign MoU for AI-MBA programs",
+    excerpt: "A first-of-its-kind partnership bringing AI tools and industry-grade tech into management education.",
+    url: "https://news.careers360.com/iim-tiruchirappalli-trichy-scaler-mou-ai-mba-management-courses-2025-industry-need-technology-tools",
+  },
+  {
+    publication: "Times of India",
+    headline: "Google for Startups & Scaler launch AI skilling program for Indian founders",
+    excerpt: "An ambitious program to equip India's next wave of founders with cutting-edge AI capabilities.",
+    url: "https://timesofindia.indiatimes.com/technology/tech-news/google-for-startups-and-scaler-launch-ai-skilling-program-for-indian-founders/articleshow/125226668.cms",
+  },
+  {
+    publication: "Times of India",
+    headline: "Scaler Academy sets records in tech education — highest package INR 1.5 Cr",
+    excerpt: "Scaler's professional learners land industry-leading offers, reshaping outcomes in tech education.",
+    url: "https://timesofindia.indiatimes.com/scaler-academy-sets-records-in-tech-education-to-professionals-sees-highest-package-of-inr-1-5-cr/articleshow/82289759.cms",
   },
 ];
 
