@@ -1,35 +1,274 @@
+import scalerLogo from "@/assets/scaler-logo.svg";
+
 function Navbar() {
   return (
-    <nav style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100%',
-      zIndex: 100,
-      height: '60px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '0 36px',
-      borderBottom: '1px solid rgba(255,255,255,0.08)',
-      background: 'rgba(2,11,30,0.96)',
-      backdropFilter: 'blur(10px)',
-      boxSizing: 'border-box',
-    }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '18px', fontWeight: 800, color: '#fff', letterSpacing: '0.16em', fontFamily: 'Inter, sans-serif' }}>SCALER</span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 20V7.5L12 3l8 4.5V20h-5V10.8l-6 3.4V20H4Z" stroke="white" strokeWidth="1.8" fill="none" strokeLinejoin="round"/>
-            <path d="M9.5 11L12 9.5l2.5 1.5" stroke="white" strokeWidth="1.8" fill="none"/>
-          </svg>
-        </div>
-        <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.55)', fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>By InterviewBit</span>
-      </div>
-      <a href="#status" style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', textDecoration: 'none', fontFamily: 'Inter, sans-serif' }}>
+    <nav
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        zIndex: 100,
+        height: "72px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "0 36px",
+        borderBottom: "1px solid rgba(255,255,255,0.08)",
+        background: "rgba(2,11,30,0.72)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        boxSizing: "border-box",
+      }}
+    >
+      <a href="#" aria-label="Scaler" style={{ display: "flex", alignItems: "center" }}>
+        <img
+          src={scalerLogo}
+          alt="Scaler"
+          style={{ height: "40px", width: "auto", filter: "brightness(0) invert(1)" }}
+        />
+      </a>
+      <a
+        href="#status"
+        style={{
+          fontSize: "13px",
+          color: "rgba(255,255,255,0.7)",
+          textDecoration: "none",
+          fontFamily: "'DM Sans', sans-serif",
+        }}
+      >
         Already applied? Check status →
       </a>
     </nav>
+  );
+}
+
+/**
+ * Animated tech-first hero illustration.
+ * - Rotating circuit/orbit ring
+ * - Glowing trophy core
+ * - Orbiting electrons
+ * - Hex grid scanlines
+ * Fully SVG, GPU-friendly transforms only.
+ */
+function TechOrb() {
+  return (
+    <div
+      style={{
+        position: "relative",
+        width: "100%",
+        maxWidth: "520px",
+        aspectRatio: "1 / 1",
+        margin: "0 auto",
+      }}
+    >
+      {/* Soft glow halo */}
+      <div
+        style={{
+          position: "absolute",
+          inset: "8%",
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle, rgba(40,231,224,0.22) 0%, rgba(21,101,216,0.18) 35%, transparent 70%)",
+          filter: "blur(20px)",
+          animation: "orb-pulse 4s ease-in-out infinite",
+        }}
+      />
+
+      <svg
+        viewBox="0 0 400 400"
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
+      >
+        <defs>
+          <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#28E7E0" />
+            <stop offset="50%" stopColor="#1565D8" />
+            <stop offset="100%" stopColor="#28E7E0" />
+          </linearGradient>
+          <linearGradient id="trophyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#F5C842" />
+            <stop offset="50%" stopColor="#E8A820" />
+            <stop offset="100%" stopColor="#A07010" />
+          </linearGradient>
+          <radialGradient id="coreGlow">
+            <stop offset="0%" stopColor="#28E7E0" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="#28E7E0" stopOpacity="0" />
+          </radialGradient>
+          <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        {/* Outer rotating dashed ring */}
+        <g style={{ transformOrigin: "200px 200px", animation: "spin-slow 30s linear infinite" }}>
+          <circle
+            cx="200"
+            cy="200"
+            r="180"
+            fill="none"
+            stroke="url(#ringGrad)"
+            strokeWidth="1"
+            strokeDasharray="2 8"
+            opacity="0.5"
+          />
+        </g>
+
+        {/* Mid rotating ring with arc segments */}
+        <g style={{ transformOrigin: "200px 200px", animation: "spin-rev 18s linear infinite" }}>
+          <circle
+            cx="200"
+            cy="200"
+            r="150"
+            fill="none"
+            stroke="url(#ringGrad)"
+            strokeWidth="1.5"
+            strokeDasharray="60 30 20 40"
+            opacity="0.7"
+          />
+          {/* Tick marks */}
+          {Array.from({ length: 24 }).map((_, i) => {
+            const angle = (i * 15 * Math.PI) / 180;
+            const x1 = 200 + Math.cos(angle) * 142;
+            const y1 = 200 + Math.sin(angle) * 142;
+            const x2 = 200 + Math.cos(angle) * 150;
+            const y2 = 200 + Math.sin(angle) * 150;
+            return (
+              <line
+                key={i}
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+                stroke="#28E7E0"
+                strokeWidth="1"
+                opacity={i % 3 === 0 ? 0.9 : 0.3}
+              />
+            );
+          })}
+        </g>
+
+        {/* Inner ring */}
+        <g style={{ transformOrigin: "200px 200px", animation: "spin-slow 12s linear infinite" }}>
+          <circle
+            cx="200"
+            cy="200"
+            r="120"
+            fill="none"
+            stroke="#1565D8"
+            strokeWidth="1"
+            opacity="0.5"
+          />
+          <circle cx="320" cy="200" r="3" fill="#28E7E0" filter="url(#softGlow)" />
+          <circle cx="80" cy="200" r="2" fill="#F5C842" filter="url(#softGlow)" />
+        </g>
+
+        {/* Orbiting electrons */}
+        <g style={{ transformOrigin: "200px 200px", animation: "spin-rev 8s linear infinite" }}>
+          <circle cx="200" cy="40" r="4" fill="#28E7E0" filter="url(#softGlow)" />
+        </g>
+        <g style={{ transformOrigin: "200px 200px", animation: "spin-slow 10s linear infinite" }}>
+          <circle cx="200" cy="360" r="3" fill="#F5C842" filter="url(#softGlow)" />
+        </g>
+
+        {/* Core glow disk */}
+        <circle cx="200" cy="200" r="90" fill="url(#coreGlow)" />
+
+        {/* Hex tech accents */}
+        <g opacity="0.4">
+          <polygon
+            points="200,90 220,100 220,120 200,130 180,120 180,100"
+            fill="none"
+            stroke="#28E7E0"
+            strokeWidth="1"
+          />
+          <polygon
+            points="200,270 220,280 220,300 200,310 180,300 180,280"
+            fill="none"
+            stroke="#28E7E0"
+            strokeWidth="1"
+          />
+        </g>
+
+        {/* Central trophy — pixel/tech inspired */}
+        <g style={{ animation: "trophy-float 3.5s ease-in-out infinite" }}>
+          {/* Base */}
+          <rect x="170" y="245" width="60" height="6" rx="1" fill="url(#trophyGrad)" />
+          <rect x="178" y="232" width="44" height="14" fill="url(#trophyGrad)" />
+          {/* Stem */}
+          <rect x="190" y="218" width="20" height="16" fill="#A07010" />
+          {/* Cup body */}
+          <rect x="160" y="160" width="80" height="60" rx="3" fill="url(#trophyGrad)" />
+          <rect x="160" y="160" width="80" height="6" fill="#F8DC60" />
+          {/* Handles */}
+          <path
+            d="M160 175 Q140 180 140 200 Q140 215 160 215"
+            fill="none"
+            stroke="url(#trophyGrad)"
+            strokeWidth="6"
+          />
+          <path
+            d="M240 175 Q260 180 260 200 Q260 215 240 215"
+            fill="none"
+            stroke="url(#trophyGrad)"
+            strokeWidth="6"
+          />
+          {/* Star on trophy */}
+          <polygon
+            points="200,178 204,188 215,188 206,195 209,205 200,199 191,205 194,195 185,188 196,188"
+            fill="#FFFFFF"
+            opacity="0.95"
+          />
+          {/* Trophy top crown */}
+          <rect x="178" y="148" width="44" height="12" rx="2" fill="#D4A020" />
+        </g>
+
+        {/* Connecting nodes */}
+        <g opacity="0.7">
+          <circle cx="60" cy="60" r="2.5" fill="#28E7E0" />
+          <circle cx="340" cy="60" r="2.5" fill="#28E7E0" />
+          <circle cx="60" cy="340" r="2.5" fill="#1565D8" />
+          <circle cx="340" cy="340" r="2.5" fill="#1565D8" />
+          <line x1="60" y1="60" x2="340" y2="340" stroke="#28E7E0" strokeWidth="0.5" opacity="0.2" />
+          <line x1="340" y1="60" x2="60" y2="340" stroke="#28E7E0" strokeWidth="0.5" opacity="0.2" />
+        </g>
+
+        {/* Scanline */}
+        <g style={{ animation: "scan-down 4s linear infinite" }}>
+          <line
+            x1="80"
+            y1="200"
+            x2="320"
+            y2="200"
+            stroke="#28E7E0"
+            strokeWidth="1"
+            opacity="0.6"
+          />
+        </g>
+      </svg>
+
+      <style>{`
+        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes spin-rev  { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+        @keyframes trophy-float {
+          0%, 100% { transform: translateY(0); }
+          50%      { transform: translateY(-6px); }
+        }
+        @keyframes orb-pulse {
+          0%, 100% { opacity: 0.7; transform: scale(1); }
+          50%      { opacity: 1;   transform: scale(1.04); }
+        }
+        @keyframes scan-down {
+          0%   { transform: translateY(-90px); opacity: 0; }
+          10%  { opacity: 0.8; }
+          90%  { opacity: 0.8; }
+          100% { transform: translateY(90px); opacity: 0; }
+        }
+      `}</style>
+    </div>
   );
 }
 
@@ -37,166 +276,227 @@ function FirstFold() {
   return (
     <>
       <Navbar />
-      <section style={{
-        width: '100%',
-        height: '100vh',
-        background: '#020B1E',
-        display: 'flex',
-        alignItems: 'center',
-        paddingTop: '60px',
-        boxSizing: 'border-box',
-        overflow: 'hidden',
-        position: 'relative',
-      }}>
+      <section
+        style={{
+          position: "relative",
+          width: "100%",
+          minHeight: "100vh",
+          paddingTop: "72px",
+          boxSizing: "border-box",
+          overflow: "hidden",
+        }}
+      >
+        {/* Subtle radial accent layered over the global constellation bg */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "radial-gradient(ellipse at 30% 50%, rgba(21,101,216,0.18) 0%, transparent 55%), radial-gradient(ellipse at 75% 60%, rgba(40,231,224,0.10) 0%, transparent 55%)",
+            pointerEvents: "none",
+          }}
+        />
 
-        {/* Constellation background dots */}
-        <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0 }} viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
-          <g opacity="0.45">
-            <circle cx="80"  cy="120" r="1.5" fill="#28E7E0"/>
-            <circle cx="240" cy="60"  r="1"   fill="#0A7CFF"/>
-            <circle cx="420" cy="100" r="1.5" fill="#28E7E0"/>
-            <circle cx="900" cy="80"  r="1"   fill="#0A7CFF"/>
-            <circle cx="1100" cy="140" r="1.5" fill="#28E7E0"/>
-            <circle cx="1360" cy="90" r="1"   fill="#0A7CFF"/>
-            <circle cx="160" cy="400" r="1"   fill="#0A7CFF"/>
-            <circle cx="1280" cy="600" r="1.5" fill="#28E7E0"/>
-            <line x1="80"  y1="120" x2="240" y2="60"  stroke="#237CFF" strokeWidth="0.5" opacity="0.35"/>
-            <line x1="240" y1="60"  x2="420" y2="100" stroke="#28E7E0" strokeWidth="0.5" opacity="0.3"/>
-            <line x1="900" y1="80"  x2="1100" y2="140" stroke="#237CFF" strokeWidth="0.5" opacity="0.35"/>
-            <line x1="1100" y1="140" x2="1360" y2="90" stroke="#28E7E0" strokeWidth="0.5" opacity="0.3"/>
-          </g>
-        </svg>
+        <div
+          style={{
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+            width: "100%",
+            minHeight: "calc(100vh - 72px)",
+            padding: "40px 48px",
+            boxSizing: "border-box",
+            gap: "32px",
+            flexWrap: "wrap",
+          }}
+          className="hero-row"
+        >
+          {/* LEFT — Animated Tech Orb */}
+          <div
+            style={{
+              flex: "1 1 420px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minWidth: 0,
+            }}
+          >
+            <TechOrb />
+          </div>
 
-        {/* LEFT COLUMN — Scene */}
-        <div style={{ flex: '0 0 48%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
-          <svg viewBox="0 0 340 400" style={{ width: '90%', maxWidth: '480px', height: 'auto' }} xmlns="http://www.w3.org/2000/svg">
-            <rect width="340" height="400" fill="#020B1E"/>
-            {/* Glow halo behind trophy */}
-            <ellipse cx="153" cy="155" rx="128" ry="118" fill="#0A4FBF" opacity="0.18"/>
-            <ellipse cx="153" cy="155" rx="82"  ry="78"  fill="#1060D8" opacity="0.16"/>
-            <ellipse cx="170" cy="375" rx="155" ry="24"  fill="#0A3080" opacity="0.2"/>
-            {/* Stars */}
-            <circle cx="20"  cy="22"  r="1"   fill="#fff" opacity="0.5"/>
-            <circle cx="65"  cy="12"  r="0.8" fill="#adf" opacity="0.55"/>
-            <circle cx="185" cy="18"  r="1.2" fill="#fff" opacity="0.4"/>
-            <circle cx="292" cy="24"  r="0.8" fill="#adf" opacity="0.5"/>
-            <circle cx="318" cy="58"  r="1"   fill="#fff" opacity="0.45"/>
-            <circle cx="14"  cy="165" r="1"   fill="#7ef" opacity="0.4"/>
-            {/* Floating cubes */}
-            <rect x="12"  y="88"  width="18" height="18" fill="#1A5090" rx="2" opacity="0.85"/>
-            <rect x="12"  y="88"  width="18" height="5"  fill="#2A6EB8" rx="1"/>
-            <rect x="21"  y="106" width="9"  height="5"  fill="#0E3868" rx="1"/>
-            <rect x="292" y="65"  width="22" height="22" fill="#1A5090" rx="2" opacity="0.8"/>
-            <rect x="292" y="65"  width="22" height="6"  fill="#2A6EB8" rx="1"/>
-            <rect x="303" y="87"  width="11" height="6"  fill="#0E3868" rx="1"/>
-            <rect x="274" y="160" width="15" height="15" fill="#0C8878" rx="2" opacity="0.75"/>
-            <rect x="274" y="160" width="15" height="5"  fill="#10B098" rx="1"/>
-            <rect x="46"  y="46"  width="13" height="13" fill="#0C8878" rx="2" opacity="0.65"/>
-            <rect x="308" y="198" width="12" height="12" fill="#1A5090" rx="1" opacity="0.6"/>
-            <rect x="16"  y="228" width="11" height="11" fill="#0C8878" rx="1" opacity="0.55"/>
-            {/* Staircase */}
-            <rect x="8"   y="348" width="292" height="30" fill="#0A1C3C"/>
-            <rect x="8"   y="348" width="292" height="5"  fill="#152E58"/>
-            <rect x="28"  y="322" width="252" height="28" fill="#0B2044"/>
-            <rect x="28"  y="322" width="252" height="5"  fill="#163252"/>
-            <rect x="50"  y="298" width="208" height="26" fill="#0C244C"/>
-            <rect x="50"  y="298" width="208" height="5"  fill="#173658"/>
-            <rect x="72"  y="276" width="164" height="24" fill="#0D2854"/>
-            <rect x="72"  y="276" width="164" height="5"  fill="#183A60"/>
-            <rect x="92"  y="255" width="124" height="23" fill="#0E2C5C"/>
-            <rect x="92"  y="255" width="124" height="5"  fill="#193E68"/>
-            <rect x="110" y="235" width="88"  height="22" fill="#0F3064"/>
-            <rect x="110" y="235" width="88"  height="5"  fill="#1A4270"/>
-            {/* Trophy */}
-            <rect x="97"  y="222" width="114" height="14" fill="#A07010" rx="1"/>
-            <rect x="97"  y="222" width="114" height="4"  fill="#D4A020" rx="1"/>
-            <rect x="129" y="192" width="50"  height="32" fill="#A07010"/>
-            <rect x="129" y="192" width="50"  height="5"  fill="#D4A020"/>
-            <rect x="87"  y="134" width="134" height="60" fill="#B07C10" rx="2"/>
-            <rect x="87"  y="134" width="134" height="9"  fill="#E8B820" rx="2"/>
-            <rect x="87"  y="185" width="134" height="9"  fill="#8A6008" rx="2"/>
-            <rect x="87"  y="134" width="14"  height="60" fill="#7A5408" rx="1" opacity="0.45"/>
-            <rect x="207" y="134" width="14"  height="60" fill="#7A5408" rx="1" opacity="0.45"/>
-            <rect x="112" y="140" width="84"  height="8"  fill="#F0CC30" rx="1" opacity="0.55"/>
-            <rect x="97"  y="96"  width="114" height="42" fill="#C08818" rx="2"/>
-            <rect x="97"  y="96"  width="114" height="8"  fill="#ECC020" rx="2"/>
-            <rect x="97"  y="130" width="114" height="8"  fill="#906010" rx="2"/>
-            <rect x="91"  y="88"  width="126" height="12" fill="#D09A18" rx="2"/>
-            <rect x="91"  y="88"  width="126" height="4"  fill="#F0C820" rx="2"/>
-            <rect x="103" y="68"  width="102" height="24" fill="#6A4A08" rx="2"/>
-            <rect x="103" y="68"  width="102" height="6"  fill="#C89010" rx="2"/>
-            <rect x="55"  y="138" width="34"  height="46" fill="#9A7010" rx="2"/>
-            <rect x="55"  y="138" width="34"  height="6"  fill="#D4A020" rx="2"/>
-            <rect x="44"  y="146" width="14"  height="30" fill="#806008" rx="2"/>
-            <rect x="219" y="138" width="34"  height="46" fill="#9A7010" rx="2"/>
-            <rect x="219" y="138" width="34"  height="6"  fill="#D4A020" rx="2"/>
-            <rect x="250" y="146" width="14"  height="30" fill="#806008" rx="2"/>
-            <rect x="125" y="116" width="58"  height="46" fill="#0A2030" rx="3" opacity="0.75"/>
-            <path d="M150 158 L150 145 L154 141 L158 145 L158 158 Z" fill="none" stroke="#28E7E0" strokeWidth="2"/>
-            <path d="M145 146 L154 138 L163 146" fill="none" stroke="#28E7E0" strokeWidth="2" strokeLinejoin="round"/>
-            <rect x="151" y="151" width="6"   height="7"  fill="#28E7E0" rx="0.5" opacity="0.9"/>
-            <circle cx="154" cy="58" r="3.5" fill="#F8D840" opacity="0.75"/>
-            <circle cx="168" cy="52" r="2"   fill="#fff"    opacity="0.5"/>
-            <circle cx="140" cy="54" r="1.8" fill="#F8D840" opacity="0.5"/>
-            {/* Pixel kid */}
-            <ellipse cx="245" cy="370" rx="19" ry="5" fill="#000" opacity="0.3"/>
-            <rect x="230" y="352" width="15" height="8" fill="#181828" rx="1"/>
-            <rect x="246" y="352" width="15" height="8" fill="#181828" rx="1"/>
-            <rect x="232" y="320" width="13" height="34" fill="#1A2660" rx="1"/>
-            <rect x="247" y="320" width="13" height="34" fill="#1A2660" rx="1"/>
-            <rect x="227" y="279" width="38" height="44" fill="#CC1A1A" rx="1"/>
-            <rect x="227" y="279" width="38" height="7"  fill="#E02828" rx="1"/>
-            <rect x="212" y="281" width="16" height="30" fill="#CC1A1A" rx="1"/>
-            <rect x="210" y="309" width="13" height="10" fill="#C89068" rx="1"/>
-            <rect x="264" y="285" width="14" height="28" fill="#CC1A1A" rx="1"/>
-            <rect x="239" y="269" width="14" height="12" fill="#C89068" rx="1"/>
-            <rect x="227" y="239" width="38" height="32" fill="#D4946A" rx="3"/>
-            <rect x="225" y="237" width="42" height="14" fill="#1A1010" rx="3"/>
-            <rect x="223" y="242" width="8"  height="14" fill="#1A1010" rx="2"/>
-            <rect x="231" y="253" width="7"  height="5"  fill="#1A0808" rx="1"/>
-            <rect x="244" y="253" width="7"  height="5"  fill="#1A0808" rx="1"/>
-            <rect x="232" y="254" width="2"  height="2"  fill="#fff"    rx="0.5" opacity="0.75"/>
-            <rect x="245" y="254" width="2"  height="2"  fill="#fff"    rx="0.5" opacity="0.75"/>
-            <circle cx="207" cy="355" r="2.5" fill="#28E7E0" opacity="0.4"/>
-            <circle cx="197" cy="358" r="1.8" fill="#28E7E0" opacity="0.25"/>
-            <circle cx="188" cy="361" r="1.2" fill="#28E7E0" opacity="0.15"/>
-          </svg>
-        </div>
-
-        {/* RIGHT COLUMN — Text */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingLeft: '24px', paddingRight: '48px', position: 'relative', zIndex: 1 }}>
-          {/* FY26 badge — top right of this column */}
-          <div style={{ position: 'absolute', top: '0', right: '48px', background: '#1565D8', color: '#fff', fontSize: '14px', fontWeight: 900, padding: '7px 12px', borderRadius: '6px', lineHeight: 1.3, textAlign: 'center', fontFamily: 'Inter, sans-serif' }}>
-            FY<br/>26
-          </div>
-          {/* SCALER label */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '7px', fontSize: '13px', fontWeight: 700, color: '#fff', letterSpacing: '0.18em', fontFamily: 'Inter, sans-serif', marginBottom: '8px', marginTop: '8px' }}>
-            SCALER
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-              <path d="M4 20V7.5L12 3l8 4.5V20h-5V10.8l-6 3.4V20H4Z" stroke="white" strokeWidth="2" fill="none" strokeLinejoin="round"/>
-              <path d="M9.5 11L12 9.5l2.5 1.5" stroke="white" strokeWidth="2" fill="none"/>
-            </svg>
-          </div>
-          {/* PITCH */}
-          <div style={{ fontSize: 'clamp(58px, 7vw, 96px)', fontWeight: 900, color: '#ffffff', lineHeight: 0.88, letterSpacing: '-3px', fontStyle: 'italic', fontFamily: 'Inter, sans-serif' }}>
-            PITCH
-          </div>
-          {/* BATTLE */}
-          <div style={{ fontSize: 'clamp(58px, 7vw, 96px)', fontWeight: 900, color: '#F5C842', lineHeight: 0.88, letterSpacing: '-3px', fontStyle: 'italic', fontFamily: 'Inter, sans-serif' }}>
-            BATTLE
-          </div>
-          {/* Tagline */}
-          <div style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.26em', marginTop: '16px', fontFamily: 'Inter, sans-serif' }}>
-            INDIA'S BIGGEST MEGA AI HACKATHON
-          </div>
-          {/* Pills */}
-          <div style={{ display: 'flex', gap: '10px', marginTop: '18px', flexWrap: 'wrap' }}>
-            <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '999px', padding: '7px 18px', fontSize: '12px', color: '#fff', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'Inter, sans-serif' }}>
-              POWERED BY&nbsp;<strong style={{ color: '#28E7E0', letterSpacing: '0.1em' }}>SCALER</strong>
+          {/* RIGHT — Typography */}
+          <div
+            style={{
+              flex: "1 1 480px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              minWidth: 0,
+            }}
+          >
+            {/* Eyebrow */}
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "10px",
+                fontSize: "12px",
+                fontWeight: 600,
+                color: "rgba(255,255,255,0.6)",
+                letterSpacing: "0.32em",
+                fontFamily: "'DM Sans', sans-serif",
+                marginBottom: "20px",
+              }}
+            >
+              <span
+                style={{
+                  width: "28px",
+                  height: "1px",
+                  background: "linear-gradient(90deg, transparent, #28E7E0)",
+                }}
+              />
+              POWERED BY SCALER
             </div>
-            <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '999px', padding: '7px 18px', fontSize: '12px', color: '#fff', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'Inter, sans-serif' }}>
-              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#1565D8', display: 'inline-block' }}/>
-              Now hiring · FY26 · AI-first EdTech
+
+            {/* PITCH BATTLE — hi-tech typography */}
+            <div style={{ position: "relative", marginBottom: "8px" }}>
+              {/* FY26 badge — floats top-right of headline */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: "-6px",
+                  right: "0",
+                  background: "linear-gradient(135deg, #1565D8 0%, #0A3FA0 100%)",
+                  color: "#fff",
+                  fontSize: "12px",
+                  fontWeight: 800,
+                  padding: "8px 12px",
+                  borderRadius: "8px",
+                  lineHeight: 1.1,
+                  textAlign: "center",
+                  fontFamily: "'DM Sans', sans-serif",
+                  letterSpacing: "0.08em",
+                  boxShadow: "0 8px 24px rgba(21,101,216,0.45), inset 0 1px 0 rgba(255,255,255,0.2)",
+                  border: "1px solid rgba(40,231,224,0.4)",
+                }}
+              >
+                FY
+                <br />
+                26
+              </div>
+
+              <h1
+                style={{
+                  fontSize: "clamp(56px, 8vw, 112px)",
+                  fontWeight: 900,
+                  lineHeight: 0.86,
+                  letterSpacing: "-0.04em",
+                  fontFamily: "'DM Sans', sans-serif",
+                  margin: 0,
+                  textTransform: "uppercase",
+                  fontStyle: "italic",
+                }}
+              >
+                <span
+                  style={{
+                    display: "block",
+                    background:
+                      "linear-gradient(180deg, #ffffff 0%, #b8c8ff 60%, #6890ff 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                    textShadow: "0 0 40px rgba(40,231,224,0.15)",
+                  }}
+                >
+                  Pitch
+                </span>
+                <span
+                  style={{
+                    display: "block",
+                    background:
+                      "linear-gradient(180deg, #28E7E0 0%, #1565D8 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                    filter: "drop-shadow(0 4px 24px rgba(40,231,224,0.35))",
+                  }}
+                >
+                  Battle
+                </span>
+              </h1>
+            </div>
+
+            {/* Tagline */}
+            <div
+              style={{
+                fontSize: "12px",
+                fontWeight: 600,
+                color: "rgba(255,255,255,0.55)",
+                letterSpacing: "0.28em",
+                marginTop: "20px",
+                fontFamily: "'DM Sans', sans-serif",
+                textTransform: "uppercase",
+              }}
+            >
+              India's Biggest Mega AI Hackathon
+            </div>
+
+            {/* Pills */}
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+                marginTop: "22px",
+                flexWrap: "wrap",
+              }}
+            >
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(40,231,224,0.25)",
+                  borderRadius: "999px",
+                  padding: "8px 18px",
+                  fontSize: "12px",
+                  color: "#fff",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  fontFamily: "'DM Sans', sans-serif",
+                  backdropFilter: "blur(8px)",
+                  WebkitBackdropFilter: "blur(8px)",
+                }}
+              >
+                POWERED BY&nbsp;
+                <strong style={{ color: "#28E7E0", letterSpacing: "0.12em" }}>SCALER</strong>
+              </div>
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  borderRadius: "999px",
+                  padding: "8px 18px",
+                  fontSize: "12px",
+                  color: "#fff",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  fontFamily: "'DM Sans', sans-serif",
+                  backdropFilter: "blur(8px)",
+                  WebkitBackdropFilter: "blur(8px)",
+                }}
+              >
+                <span
+                  style={{
+                    width: "7px",
+                    height: "7px",
+                    borderRadius: "50%",
+                    background: "#1565D8",
+                    boxShadow: "0 0 10px #1565D8",
+                    display: "inline-block",
+                  }}
+                />
+                Now hiring · FY26 · AI-first EdTech
+              </div>
             </div>
           </div>
         </div>
