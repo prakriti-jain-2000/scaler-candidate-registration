@@ -33,20 +33,22 @@ const PitchBattleHero = () => {
       }}
     >
       {/* Constellation decorations — behind everything */}
-      <ParticleBackground
-        className="absolute left-0 top-0 w-80 h-full opacity-50 pointer-events-none"
-        style={{ zIndex: 0 }}
-        color="120,170,255"
-        linkDistance={140}
-        dotOpacity={0.7}
-      />
-      <ParticleBackground
-        className="absolute right-0 top-0 w-80 h-full opacity-50 pointer-events-none"
-        style={{ zIndex: 0 }}
-        color="120,170,255"
-        linkDistance={140}
-        dotOpacity={0.7}
-      />
+      <div className="absolute left-0 top-0 w-80 h-full opacity-50 pointer-events-none" style={{ zIndex: 0 }}>
+        <ParticleBackground
+          className="absolute inset-0"
+          color="120,170,255"
+          linkDistance={140}
+          dotOpacity={0.7}
+        />
+      </div>
+      <div className="absolute right-0 top-0 w-80 h-full opacity-50 pointer-events-none" style={{ zIndex: 0 }}>
+        <ParticleBackground
+          className="absolute inset-0"
+          color="120,170,255"
+          linkDistance={140}
+          dotOpacity={0.7}
+        />
+      </div>
 
       {/* The actual Pitch Battle image — fills full viewport */}
       <div
