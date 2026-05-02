@@ -319,46 +319,55 @@ const LifeAtScalerSection = () => {
               </h3>
             </div>
 
-            {/* NEWS PLACEHOLDERS — replace with real article headlines, logos, and URLs */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {news.map((n, i) => (
-                <Reveal key={i} delay={0.1 + i * 0.1}>
-                  <article
-                    className="h-full rounded-2xl p-6 flex flex-col transition-all duration-300"
-                    style={{
-                      background: "rgba(255,255,255,0.04)",
-                      border: "1px solid hsla(220, 100%, 50%, 0.22)",
-                      backdropFilter: "blur(10px)",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "translateY(-6px)";
-                      e.currentTarget.style.boxShadow = "0 0 24px hsla(220, 100%, 50%, 0.45)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "translateY(0)";
-                      e.currentTarget.style.boxShadow = "none";
-                    }}
+                <Reveal key={i} delay={0.1 + (i % 3) * 0.1}>
+                  <a
+                    href={n.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block h-full"
                   >
-                    <div
-                      className="h-10 w-32 rounded-md mb-5 flex items-center justify-center text-[10px] tracking-widest text-white/50"
-                      style={{ background: "rgba(255,255,255,0.06)" }}
+                    <article
+                      className="h-full rounded-2xl p-6 flex flex-col transition-all duration-300"
+                      style={{
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid hsla(220, 100%, 50%, 0.22)",
+                        backdropFilter: "blur(10px)",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = "translateY(-6px)";
+                        e.currentTarget.style.boxShadow = "0 0 24px hsla(220, 100%, 50%, 0.45)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = "translateY(0)";
+                        e.currentTarget.style.boxShadow = "none";
+                      }}
                     >
-                      PUBLICATION LOGO
-                    </div>
-                    <h4 className="text-lg font-bold text-white leading-snug">
-                      {n.headline}
-                    </h4>
-                    <p className="mt-3 text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                      {n.excerpt}
-                    </p>
-                    <a
-                      href="#"
-                      className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium"
-                      style={{ color: TEAL }}
-                    >
-                      Read More <ArrowRight className="w-4 h-4" />
-                    </a>
-                  </article>
+                      <div
+                        className="h-10 px-4 rounded-md mb-5 inline-flex items-center self-start text-[11px] font-semibold tracking-[0.18em] uppercase"
+                        style={{
+                          background: "hsla(220, 100%, 50%, 0.12)",
+                          color: TEAL,
+                          border: "1px solid hsla(220, 100%, 50%, 0.25)",
+                        }}
+                      >
+                        {n.publication}
+                      </div>
+                      <h4 className="text-lg font-bold text-white leading-snug">
+                        {n.headline}
+                      </h4>
+                      <p className="mt-3 text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                        {n.excerpt}
+                      </p>
+                      <span
+                        className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium"
+                        style={{ color: TEAL }}
+                      >
+                        Read More <ArrowRight className="w-4 h-4" />
+                      </span>
+                    </article>
+                  </a>
                 </Reveal>
               ))}
             </div>
