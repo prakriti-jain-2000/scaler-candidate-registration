@@ -19,7 +19,7 @@ const photos = [
   { src: photo2, label: "Sunrise Trek", h: 280 },
   { src: photoBadminton, label: "Friday Badminton", h: 220 },
   { src: photoGurgaonPark, label: "Gurugram Team Day", h: 280 },
-  { src: photoTeam, label: "Hallway Conversations", h: 220 },
+  { src: photoTeam, label: "Between the Sessions", h: 220 },
 ];
 
 const news = [
