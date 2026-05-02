@@ -275,27 +275,6 @@ const LifeAtScalerSection = () => {
               ))}
             </div>
 
-            <div className="text-center mt-8">
-              <button
-                type="button"
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition-all"
-                style={{
-                  border: `1px solid ${TEAL}`,
-                  color: TEAL,
-                  background: "transparent",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "hsla(220, 100%, 50%, 0.15)";
-                  e.currentTarget.style.boxShadow = "0 0 16px hsla(220, 100%, 50%, 0.5)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "transparent";
-                  e.currentTarget.style.boxShadow = "none";
-                }}
-              >
-                View All Photos <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
           </div>
         </Reveal>
 
