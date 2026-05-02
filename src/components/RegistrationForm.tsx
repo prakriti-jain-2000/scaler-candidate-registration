@@ -143,6 +143,7 @@ const RegistrationForm = () => {
   const [rejected, setRejected] = useState(false);
   const [generatedPassword, setGeneratedPassword] = useState<string>("");
   const [submitEligible, setSubmitEligible] = useState<boolean>(true);
+  const [alreadyExists, setAlreadyExists] = useState<boolean>(false);
 
   useEffect(() => {
     // Don't persist the heavy base64 resume payload to localStorage
@@ -250,8 +251,11 @@ const RegistrationForm = () => {
       }
 
       if (json.status === "duplicate") {
-        setErrors({ personalEmail: "This email has already been used to apply." });
-        setStep(1);
+        // Take user to the success screen with a notice that the account already exists.
+        setAlreadyExists(true);
+        setGeneratedPassword(json.password || "");
+        setSubmitted(true);
+        localStorage.removeItem(STORAGE_KEY);
         setLoading(false);
         return;
       }
@@ -338,6 +342,11 @@ const RegistrationForm = () => {
     return (
       <section id="apply" className="py-24 md:py-32 px-6">
         <div className="max-w-2xl mx-auto text-center">
+          {alreadyExists && (
+            <div className="mb-6 mx-auto max-w-xl rounded-xl border border-primary/40 bg-primary/10 px-4 py-3 text-sm font-medium text-foreground">
+              Account already exists
+            </div>
+          )}
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", damping: 15 }}>
             <svg className="w-24 h-24 mx-auto mb-8" viewBox="0 0 100 100">
               <circle
