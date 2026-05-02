@@ -751,8 +751,12 @@ const RegistrationForm = () => {
               <div>
                 <label className={labelClasses}>Preferred joining location</label>
                 <div className="flex flex-wrap gap-3">
-                  {["Gurugram", "Bangalore"].map((loc) => {
-                    const active = formData.joiningLocations.includes(loc);
+                  {["Gurugram", "Bangalore", "Both"].map((loc) => {
+                    const bothSelected =
+                      formData.joiningLocations.includes("Gurugram") &&
+                      formData.joiningLocations.includes("Bangalore");
+                    const active =
+                      loc === "Both" ? bothSelected : formData.joiningLocations.includes(loc) && !bothSelected;
                     return (
                       <button
                         key={loc}
