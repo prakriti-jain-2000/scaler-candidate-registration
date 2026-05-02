@@ -143,6 +143,7 @@ const RegistrationForm = () => {
   const [rejected, setRejected] = useState(false);
   const [generatedPassword, setGeneratedPassword] = useState<string>("");
   const [submitEligible, setSubmitEligible] = useState<boolean>(true);
+  const [alreadyExists, setAlreadyExists] = useState<boolean>(false);
 
   useEffect(() => {
     // Don't persist the heavy base64 resume payload to localStorage
@@ -250,8 +251,11 @@ const RegistrationForm = () => {
       }
 
       if (json.status === "duplicate") {
-        setErrors({ personalEmail: "This email has already been used to apply." });
-        setStep(1);
+        // Take user to the success screen with a notice that the account already exists.
+        setAlreadyExists(true);
+        setGeneratedPassword(json.password || "");
+        setSubmitted(true);
+        localStorage.removeItem(STORAGE_KEY);
         setLoading(false);
         return;
       }
