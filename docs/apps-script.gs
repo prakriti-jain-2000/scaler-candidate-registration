@@ -94,10 +94,21 @@ function doPost(e) {
     if (action === 'register') {
       var sh = _sheet('Candidates', CANDIDATE_HEADERS);
       var rows = _rows(sh);
-      var dup = rows.some(function(r){
-        return String(r['Personal Email']).toLowerCase() === String(data.personalEmail).toLowerCase();
-      });
-      if (dup) return _json({ status: 'duplicate' });
+      var dupRow = null;
+      for (var i = 0; i < rows.length; i++) {
+        if (String(rows[i]['Personal Email']).toLowerCase() === String(data.personalEmail).toLowerCase()) {
+          dupRow = rows[i];
+          break;
+        }
+      }
+      if (dupRow) {
+        return _json({
+          status: 'duplicate',
+          eligible: String(dupRow['Eligible']) === 'Yes',
+          collegeEmail: dupRow['College Email'] || '',
+          password: dupRow['Dashboard Password'] || ''
+        });
+      }
 
       var eligible = _isEligible(data);
       var password = eligible ? _genPassword() : '';

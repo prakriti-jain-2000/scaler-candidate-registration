@@ -241,7 +241,13 @@ const RegistrationForm = () => {
       const rawText = await res.text();
       console.log("Apps Script raw response:", rawText);
 
-      let json: { status?: string; eligible?: boolean; password?: string; message?: string };
+      let json: {
+        status?: string;
+        eligible?: boolean;
+        password?: string;
+        collegeEmail?: string;
+        message?: string;
+      };
       try {
         json = JSON.parse(rawText);
       } catch {
@@ -251,9 +257,13 @@ const RegistrationForm = () => {
       }
 
       if (json.status === "duplicate") {
-        // Take user to the success screen with a notice that the account already exists.
+        // Existing account — route to success screen with a notice and the original credentials.
         setAlreadyExists(true);
         setGeneratedPassword(json.password || "");
+        if (json.collegeEmail) {
+          setFormData((prev) => ({ ...prev, collegeEmail: json.collegeEmail as string }));
+        }
+        setSubmitEligible(json.eligible !== false);
         setSubmitted(true);
         localStorage.removeItem(STORAGE_KEY);
         setLoading(false);
