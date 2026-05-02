@@ -371,13 +371,13 @@ const RegistrationForm = () => {
               />
             </svg>
           </motion.div>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4">You're shortlisted!</h2>
-          <p className="text-muted-foreground mb-6">
-            Your login credentials have been sent to your college email. Use them to access your candidate dashboard.
+          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4">You're in!</h2>
+          <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
+            Your application has been received and your candidate profile is ready. Here are your login credentials:
           </p>
 
           {generatedPassword && (
-            <div className="card-surface rounded-xl p-5 mb-8 text-left max-w-md mx-auto">
+            <div className="card-surface rounded-xl p-5 mb-6 text-left max-w-md mx-auto">
               <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Your dashboard credentials</p>
               <div className="space-y-1.5 text-sm">
                 <p className="text-foreground">
@@ -389,15 +389,29 @@ const RegistrationForm = () => {
                   <span className="font-mono font-bold text-primary">{generatedPassword}</span>
                 </p>
               </div>
-              <p className="text-xs text-muted-foreground mt-3">Save this password — you'll need it to log in.</p>
+              <p className="text-xs text-muted-foreground mt-3">
+                Please save these — you'll need them to access your dashboard.
+              </p>
             </div>
           )}
+
+          <div className="card-surface rounded-xl p-6 mb-8 text-left max-w-xl mx-auto">
+            <h3 className="text-lg font-bold text-foreground mb-2">What's next?</h3>
+            <p className="text-sm text-muted-foreground mb-2">
+              You've completed <span className="text-foreground font-semibold">Step 1 of 5 — Application</span>.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Log in to your Candidate Dashboard to unlock{" "}
+              <span className="text-foreground font-semibold">Step 2 — Dashboard Access</span>, where you'll find your
+              training material and the AI assessment. Completing the assessment is what moves your application forward.
+            </p>
+          </div>
 
           <a
             href="https://candidate-dashboard-campus.lovable.app/login"
             className="inline-block px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-bold mb-10 glow-orange-hover transition-all"
           >
-            Open candidate dashboard →
+            Login to Candidate Dashboard →
           </a>
           <div className="flex items-center justify-center gap-2 flex-wrap">
             {["Apply", "Dashboard", "AI Assessment", "Interview", "Offer"].map((s, i) => (
