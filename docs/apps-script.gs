@@ -103,7 +103,7 @@ function _sendCredentialsEmail(toEmail, ccEmail, fullName, password) {
       + '<div style="margin:18px 28px;padding:16px 18px;background:#fff7ef;border:1px solid #ffd9b8;border-radius:12px">'
       + '<p style="margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#7a5535">Your dashboard credentials</p>'
       + '<p style="margin:0;font-size:14px;color:#111"><strong>Email:</strong> <span style="font-family:monospace">' + toEmail + '</span></p>'
-      + '<p style="margin:4px 0 0;font-size:14px;color:#111"><strong>Password:</strong> <span style="font-family:monospace;color:#e6651e;font-weight:700">' + password + '</span></p>'
+      + '<p style="margin:4px 0 0;font-size:14px;color:#111"><strong>Password:</strong> <span style="font-family:monospace;color:#1e62e6;font-weight:700">' + password + '</span></p>'
       + '<p style="margin:10px 0 0;font-size:12px;color:#7a5535">Please save these — you\'ll need them to access your dashboard.</p>'
       + '</div>'
       + '<div style="margin:0 28px;padding:16px 18px;background:#fafafa;border:1px solid #eee;border-radius:12px">'
