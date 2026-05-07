@@ -158,7 +158,7 @@ function _sendOtpEmail(toEmail, code) {
   var html = '<div style="font-family:Arial,sans-serif;padding:24px;color:#111">'
     + '<h2 style="margin:0 0 12px">Verify your email</h2>'
     + '<p style="color:#555;font-size:14px">Use this code to verify your email address:</p>'
-    + '<p style="font-size:32px;font-weight:700;letter-spacing:6px;color:#e6651e;margin:16px 0">' + code + '</p>'
+    + '<p style="font-size:32px;font-weight:700;letter-spacing:6px;color:#1e62e6;margin:16px 0">' + code + '</p>'
     + '<p style="color:#888;font-size:12px">This code expires in 10 minutes. If you didn\'t request it, ignore this email.</p>'
     + '</div>';
   MailApp.sendEmail(toEmail, subject, 'Your verification code is: ' + code + ' (valid for 10 minutes).', { htmlBody: html, name: 'Scaler Campus Hiring' });
