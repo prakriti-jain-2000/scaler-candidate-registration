@@ -145,31 +145,20 @@ const RegistrationForm = () => {
   const [submitEligible, setSubmitEligible] = useState<boolean>(true);
   const [alreadyExists, setAlreadyExists] = useState<boolean>(false);
 
-  // OTP / verification state
+  // OTP / verification state (email only)
   const [showVerify, setShowVerify] = useState(false);
   const [emailOtp, setEmailOtp] = useState("");
-  const [phoneOtp, setPhoneOtp] = useState("");
   const [emailOtpSent, setEmailOtpSent] = useState(false);
-  const [phoneOtpSent, setPhoneOtpSent] = useState(false);
   const [emailVerified, setEmailVerified] = useState(false);
-  const [phoneVerified, setPhoneVerified] = useState(false);
   const [emailCooldown, setEmailCooldown] = useState(0);
-  const [phoneCooldown, setPhoneCooldown] = useState(0);
-  const [otpBusy, setOtpBusy] = useState<"" | "sendEmail" | "verifyEmail" | "sendPhone" | "verifyPhone">("");
+  const [otpBusy, setOtpBusy] = useState<"" | "sendEmail" | "verifyEmail">("");
   const [otpError, setOtpError] = useState("");
-
-  const phoneE164 = formData.mobile ? `+91${formData.mobile}` : "";
 
   useEffect(() => {
     if (emailCooldown <= 0) return;
     const t = setTimeout(() => setEmailCooldown((s) => s - 1), 1000);
     return () => clearTimeout(t);
   }, [emailCooldown]);
-  useEffect(() => {
-    if (phoneCooldown <= 0) return;
-    const t = setTimeout(() => setPhoneCooldown((s) => s - 1), 1000);
-    return () => clearTimeout(t);
-  }, [phoneCooldown]);
 
   const callAction = async (body: Record<string, unknown>) => {
     const res = await fetch(APPS_SCRIPT_URL, {
@@ -211,39 +200,6 @@ const RegistrationForm = () => {
       if (json.status !== "success") throw new Error(json.message || "Invalid code");
       setEmailVerified(true);
       toast.success("Email verified");
-    } catch (e) {
-      setOtpError(e instanceof Error ? e.message : String(e));
-    } finally {
-      setOtpBusy("");
-    }
-  };
-
-  const sendPhoneOtp = async () => {
-    if (otpBusy) return;
-    setOtpError("");
-    setOtpBusy("sendPhone");
-    try {
-      const json = await callAction({ action: "sendPhoneOtp", phone: phoneE164 });
-      if (json.status !== "success") throw new Error(json.message || "Could not send code");
-      setPhoneOtpSent(true);
-      setPhoneCooldown(30);
-      toast.success(`Code sent to ${phoneE164}`);
-    } catch (e) {
-      setOtpError(e instanceof Error ? e.message : String(e));
-    } finally {
-      setOtpBusy("");
-    }
-  };
-
-  const verifyPhoneOtp = async () => {
-    if (otpBusy) return;
-    setOtpError("");
-    setOtpBusy("verifyPhone");
-    try {
-      const json = await callAction({ action: "verifyPhoneOtp", phone: phoneE164, otp: phoneOtp });
-      if (json.status !== "success") throw new Error(json.message || "Invalid code");
-      setPhoneVerified(true);
-      toast.success("Phone verified");
     } catch (e) {
       setOtpError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -332,8 +288,8 @@ const RegistrationForm = () => {
       toast.error("Setup incomplete: deploy Apps Script and set APPS_SCRIPT_URL.");
       return;
     }
-    // Require email + phone OTP verification before sending the application.
-    if (!emailVerified || !phoneVerified) {
+    // Require email OTP verification before sending the application.
+    if (!emailVerified) {
       setShowVerify(true);
       return;
     }
@@ -1136,58 +1092,6 @@ const RegistrationForm = () => {
                 )}
               </div>
 
-              {/* Phone OTP */}
-              <div className="card-surface rounded-xl p-4 mb-3">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="text-sm">
-                    <p className="text-muted-foreground text-xs">Mobile number</p>
-                    <p className="font-mono text-foreground">{phoneE164}</p>
-                  </div>
-                  {phoneVerified && <span className="text-scaler-green text-sm font-bold">✓ Verified</span>}
-                </div>
-                {!phoneVerified && (
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <input
-                      className={inputClasses + " flex-1"}
-                      placeholder="6-digit code"
-                      value={phoneOtp}
-                      onChange={(e) => setPhoneOtp(e.target.value.replace(/\D/g, "").slice(0, 8))}
-                      disabled={!phoneOtpSent || otpBusy === "verifyPhone"}
-                      inputMode="numeric"
-                    />
-                    {!phoneOtpSent ? (
-                      <button
-                        type="button"
-                        onClick={sendPhoneOtp}
-                        disabled={otpBusy === "sendPhone"}
-                        className="px-4 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm disabled:opacity-50"
-                      >
-                        {otpBusy === "sendPhone" ? "Sending…" : "Send code"}
-                      </button>
-                    ) : (
-                      <>
-                        <button
-                          type="button"
-                          onClick={verifyPhoneOtp}
-                          disabled={phoneOtp.length < 4 || otpBusy === "verifyPhone"}
-                          className="px-4 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm disabled:opacity-50"
-                        >
-                          {otpBusy === "verifyPhone" ? "Verifying…" : "Verify"}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={sendPhoneOtp}
-                          disabled={phoneCooldown > 0 || otpBusy === "sendPhone"}
-                          className="px-3 py-3 rounded-xl card-surface text-foreground text-xs font-semibold disabled:opacity-50"
-                        >
-                          {phoneCooldown > 0 ? `Resend (${phoneCooldown}s)` : "Resend"}
-                        </button>
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
-
               {otpError && (
                 <p className="text-destructive text-xs mb-3">{otpError}</p>
               )}
@@ -1198,7 +1102,7 @@ const RegistrationForm = () => {
                   setShowVerify(false);
                   await handleSubmit();
                 }}
-                disabled={!emailVerified || !phoneVerified || loading}
+                disabled={!emailVerified || loading}
                 className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-bold disabled:opacity-40 disabled:cursor-not-allowed glow-orange-hover transition-all"
               >
                 {loading ? "Submitting…" : "Submit application →"}

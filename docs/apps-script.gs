@@ -164,56 +164,6 @@ function _sendOtpEmail(toEmail, code) {
   MailApp.sendEmail(toEmail, subject, 'Your verification code is: ' + code + ' (valid for 10 minutes).', { htmlBody: html, name: 'Scaler Campus Hiring' });
 }
 
-function _twilioCreds() {
-  var props = PropertiesService.getScriptProperties();
-  return {
-    sid:  props.getProperty('TWILIO_ACCOUNT_SID'),
-    auth: props.getProperty('TWILIO_AUTH_TOKEN'),
-    verifySid: props.getProperty('TWILIO_VERIFY_SID')
-  };
-}
-
-function _twilioVerificationStart(phone) {
-  var c = _twilioCreds();
-  if (!c.sid || !c.auth || !c.verifySid) {
-    return { ok: false, message: 'SMS service not configured. Please contact support.' };
-  }
-  var url = 'https://verify.twilio.com/v2/Services/' + c.verifySid + '/Verifications';
-  var resp = UrlFetchApp.fetch(url, {
-    method: 'post',
-    payload: { To: phone, Channel: 'sms' },
-    headers: { Authorization: 'Basic ' + Utilities.base64Encode(c.sid + ':' + c.auth) },
-    muteHttpExceptions: true
-  });
-  var code = resp.getResponseCode();
-  var body = resp.getContentText();
-  if (code >= 200 && code < 300) return { ok: true };
-  return { ok: false, message: 'Could not send SMS (' + code + '). ' + body.slice(0, 200) };
-}
-
-function _twilioVerificationCheck(phone, otp) {
-  var c = _twilioCreds();
-  if (!c.sid || !c.auth || !c.verifySid) return { ok: false, message: 'SMS service not configured.' };
-  var url = 'https://verify.twilio.com/v2/Services/' + c.verifySid + '/VerificationCheck';
-  var resp = UrlFetchApp.fetch(url, {
-    method: 'post',
-    payload: { To: phone, Code: otp },
-    headers: { Authorization: 'Basic ' + Utilities.base64Encode(c.sid + ':' + c.auth) },
-    muteHttpExceptions: true
-  });
-  var code = resp.getResponseCode();
-  if (code >= 200 && code < 300) {
-    try {
-      var json = JSON.parse(resp.getContentText());
-      if (json.status === 'approved') return { ok: true };
-      return { ok: false, message: 'Invalid or expired code.' };
-    } catch (err) {
-      return { ok: false, message: 'Unexpected response from SMS service.' };
-    }
-  }
-  return { ok: false, message: 'Verification failed (' + code + ').' };
-}
-
 function doPost(e) {
   try {
     var data = JSON.parse(e.postData.contents);
@@ -243,29 +193,6 @@ function doPost(e) {
       _cache().remove(key);
       // Mark verified for 30 min so register can trust it (optional)
       _cache().put('verified_email_' + email.toLowerCase(), '1', 1800);
-      return _json({ status: 'success' });
-    }
-
-    // ----- OTP: send phone code (Twilio Verify) -----
-    if (action === 'sendPhoneOtp') {
-      var phone = String(data.phone || '').trim();
-      if (!/^\+\d{10,15}$/.test(phone)) return _json({ status: 'error', message: 'Invalid phone number (expected E.164, e.g. +91xxxxxxxxxx).' });
-      var rate = _checkOtpRate('phone', phone);
-      if (!rate.allowed) return _json({ status: 'error', message: rate.message });
-      var r = _twilioVerificationStart(phone);
-      if (!r.ok) return _json({ status: 'error', message: r.message });
-      return _json({ status: 'success' });
-    }
-
-    // ----- OTP: verify phone code -----
-    if (action === 'verifyPhoneOtp') {
-      var phone = String(data.phone || '').trim();
-      var otp = String(data.otp || '').trim();
-      if (!/^\+\d{10,15}$/.test(phone)) return _json({ status: 'error', message: 'Invalid phone number.' });
-      if (!/^\d{4,8}$/.test(otp)) return _json({ status: 'error', message: 'Invalid code.' });
-      var r = _twilioVerificationCheck(phone, otp);
-      if (!r.ok) return _json({ status: 'error', message: r.message });
-      _cache().put('verified_phone_' + phone, '1', 1800);
       return _json({ status: 'success' });
     }
 
