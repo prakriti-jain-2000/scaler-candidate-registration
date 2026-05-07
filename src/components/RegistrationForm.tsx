@@ -1092,59 +1092,6 @@ const RegistrationForm = () => {
                 )}
               </div>
 
-              {/* Phone OTP */}
-              <div className="card-surface rounded-xl p-4 mb-3">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="text-sm">
-                    <p className="text-muted-foreground text-xs">Mobile number</p>
-                    <p className="font-mono text-foreground">{phoneE164}</p>
-                  </div>
-                  {phoneVerified && <span className="text-scaler-green text-sm font-bold">✓ Verified</span>}
-                </div>
-                {!phoneVerified && (
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <input
-                      className={inputClasses + " flex-1"}
-                      placeholder="6-digit code"
-                      value={phoneOtp}
-                      onChange={(e) => setPhoneOtp(e.target.value.replace(/\D/g, "").slice(0, 8))}
-                      disabled={!phoneOtpSent || otpBusy === "verifyPhone"}
-                      inputMode="numeric"
-                    />
-                    {!phoneOtpSent ? (
-                      <button
-                        type="button"
-                        onClick={sendPhoneOtp}
-                        disabled={otpBusy === "sendPhone"}
-                        className="px-4 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm disabled:opacity-50"
-                      >
-                        {otpBusy === "sendPhone" ? "Sending…" : "Send code"}
-                      </button>
-                    ) : (
-                      <>
-                        <button
-                          type="button"
-                          onClick={verifyPhoneOtp}
-                          disabled={phoneOtp.length < 4 || otpBusy === "verifyPhone"}
-                          className="px-4 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm disabled:opacity-50"
-                        >
-                          {otpBusy === "verifyPhone" ? "Verifying…" : "Verify"}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={sendPhoneOtp}
-                          disabled={phoneCooldown > 0 || otpBusy === "sendPhone"}
-                          className="px-3 py-3 rounded-xl card-surface text-foreground text-xs font-semibold disabled:opacity-50"
-                        >
-                          {phoneCooldown > 0 ? `Resend (${phoneCooldown}s)` : "Resend"}
-                        </button>
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {otpError && (
                 <p className="text-destructive text-xs mb-3">{otpError}</p>
               )}
 
