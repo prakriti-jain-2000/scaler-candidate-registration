@@ -72,6 +72,18 @@ const initialFormData: FormData = {
 
 const STORAGE_KEY = "scaler_registration_form_v2";
 
+const normalizeEmail = (email: unknown) => String(email || "").trim().toLowerCase();
+
+const findExistingCandidate = (candidates: Array<Record<string, unknown>>, personalEmail: string, collegeEmail: string) => {
+  const personalEmailLc = normalizeEmail(personalEmail);
+  const collegeEmailLc = normalizeEmail(collegeEmail);
+
+  return candidates.find((candidate) => {
+    const rowPersonalEmail = normalizeEmail(candidate["Personal Email"]);
+    const rowCollegeEmail = normalizeEmail(candidate["College Email"]);
+    return rowPersonalEmail === personalEmailLc || rowCollegeEmail === collegeEmailLc;
+  });
+};
 
 // Validation schemas per step
 const nameRegex = /^[A-Za-z]+(?:\s+[A-Za-z]+)+$/;
@@ -295,6 +307,32 @@ const RegistrationForm = () => {
     }
     setLoading(true);
     try {
+      const candidatesRes = await fetch(`${APPS_SCRIPT_URL}?action=getAllCandidates`);
+      const candidatesJson = await candidatesRes.json();
+      if (candidatesJson.status !== "success" || !Array.isArray(candidatesJson.candidates)) {
+        throw new Error("Could not validate existing applications. Please try again.");
+      }
+
+      const existingCandidate = findExistingCandidate(
+        candidatesJson.candidates,
+        formData.personalEmail,
+        formData.collegeEmail
+      );
+
+      if (existingCandidate) {
+        setAlreadyExists(true);
+        setGeneratedPassword(String(existingCandidate["Dashboard Password"] || ""));
+        const existingCollegeEmail = String(existingCandidate["College Email"] || formData.collegeEmail);
+        if (existingCollegeEmail) {
+          setFormData((prev) => ({ ...prev, collegeEmail: existingCollegeEmail }));
+        }
+        setSubmitEligible(String(existingCandidate["Eligible"] || "Yes") !== "No");
+        setSubmitted(true);
+        localStorage.removeItem(STORAGE_KEY);
+        setLoading(false);
+        return;
+      }
+
       // Apps Script web apps don't honour preflight; use text/plain to bypass CORS preflight.
       const res = await fetch(APPS_SCRIPT_URL, {
         method: "POST",
@@ -1179,12 +1217,26 @@ function doPost(e) {
 
     if (action === 'register') {
       var sh = _sheet('Candidates', CANDIDATE_HEADERS);
-      // Duplicate check on personal email
       var rows = _rows(sh);
-      var dup = rows.some(function(r){
-        return String(r['Personal Email']).toLowerCase() === String(data.personalEmail).toLowerCase();
-      });
-      if (dup) return _json({ status: 'duplicate' });
+      var dupRow = null;
+      var personalEmailLc = String(data.personalEmail || '').trim().toLowerCase();
+      var collegeEmailLc = String(data.collegeEmail || '').trim().toLowerCase();
+      for (var i = 0; i < rows.length; i++) {
+        var rowPersonalLc = String(rows[i]['Personal Email'] || '').trim().toLowerCase();
+        var rowCollegeLc = String(rows[i]['College Email'] || '').trim().toLowerCase();
+        if (rowPersonalLc === personalEmailLc || rowCollegeLc === collegeEmailLc) {
+          dupRow = rows[i];
+          break;
+        }
+      }
+      if (dupRow) {
+        return _json({
+          status: 'duplicate',
+          eligible: String(dupRow['Eligible']) === 'Yes',
+          collegeEmail: dupRow['College Email'] || '',
+          password: dupRow['Dashboard Password'] || ''
+        });
+      }
 
       var eligible = _isEligible(data);
       var password = eligible ? _genPassword() : '';
