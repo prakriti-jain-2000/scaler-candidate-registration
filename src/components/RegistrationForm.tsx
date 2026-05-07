@@ -145,31 +145,20 @@ const RegistrationForm = () => {
   const [submitEligible, setSubmitEligible] = useState<boolean>(true);
   const [alreadyExists, setAlreadyExists] = useState<boolean>(false);
 
-  // OTP / verification state
+  // OTP / verification state (email only)
   const [showVerify, setShowVerify] = useState(false);
   const [emailOtp, setEmailOtp] = useState("");
-  const [phoneOtp, setPhoneOtp] = useState("");
   const [emailOtpSent, setEmailOtpSent] = useState(false);
-  const [phoneOtpSent, setPhoneOtpSent] = useState(false);
   const [emailVerified, setEmailVerified] = useState(false);
-  const [phoneVerified, setPhoneVerified] = useState(false);
   const [emailCooldown, setEmailCooldown] = useState(0);
-  const [phoneCooldown, setPhoneCooldown] = useState(0);
-  const [otpBusy, setOtpBusy] = useState<"" | "sendEmail" | "verifyEmail" | "sendPhone" | "verifyPhone">("");
+  const [otpBusy, setOtpBusy] = useState<"" | "sendEmail" | "verifyEmail">("");
   const [otpError, setOtpError] = useState("");
-
-  const phoneE164 = formData.mobile ? `+91${formData.mobile}` : "";
 
   useEffect(() => {
     if (emailCooldown <= 0) return;
     const t = setTimeout(() => setEmailCooldown((s) => s - 1), 1000);
     return () => clearTimeout(t);
   }, [emailCooldown]);
-  useEffect(() => {
-    if (phoneCooldown <= 0) return;
-    const t = setTimeout(() => setPhoneCooldown((s) => s - 1), 1000);
-    return () => clearTimeout(t);
-  }, [phoneCooldown]);
 
   const callAction = async (body: Record<string, unknown>) => {
     const res = await fetch(APPS_SCRIPT_URL, {
@@ -211,39 +200,6 @@ const RegistrationForm = () => {
       if (json.status !== "success") throw new Error(json.message || "Invalid code");
       setEmailVerified(true);
       toast.success("Email verified");
-    } catch (e) {
-      setOtpError(e instanceof Error ? e.message : String(e));
-    } finally {
-      setOtpBusy("");
-    }
-  };
-
-  const sendPhoneOtp = async () => {
-    if (otpBusy) return;
-    setOtpError("");
-    setOtpBusy("sendPhone");
-    try {
-      const json = await callAction({ action: "sendPhoneOtp", phone: phoneE164 });
-      if (json.status !== "success") throw new Error(json.message || "Could not send code");
-      setPhoneOtpSent(true);
-      setPhoneCooldown(30);
-      toast.success(`Code sent to ${phoneE164}`);
-    } catch (e) {
-      setOtpError(e instanceof Error ? e.message : String(e));
-    } finally {
-      setOtpBusy("");
-    }
-  };
-
-  const verifyPhoneOtp = async () => {
-    if (otpBusy) return;
-    setOtpError("");
-    setOtpBusy("verifyPhone");
-    try {
-      const json = await callAction({ action: "verifyPhoneOtp", phone: phoneE164, otp: phoneOtp });
-      if (json.status !== "success") throw new Error(json.message || "Invalid code");
-      setPhoneVerified(true);
-      toast.success("Phone verified");
     } catch (e) {
       setOtpError(e instanceof Error ? e.message : String(e));
     } finally {
