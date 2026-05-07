@@ -112,7 +112,7 @@ function _sendCredentialsEmail(toEmail, ccEmail, fullName, password) {
       + '<p style="margin:0;font-size:13px;color:#555;line-height:1.55">Log in to your Candidate Dashboard to unlock <strong>Step 2 — Dashboard Access</strong>, where you\'ll find your training material and the AI assessment. Completing the assessment is what moves your application forward.</p>'
       + '</div>'
       + '<div style="text-align:center;padding:24px 28px 32px">'
-      + '<a href="' + loginUrl + '" style="display:inline-block;background:#e6651e;color:#fff;text-decoration:none;font-weight:700;padding:12px 22px;border-radius:10px">Login to Candidate Dashboard →</a>'
+      + '<a href="' + loginUrl + '" style="display:inline-block;background:#1e62e6;color:#fff;text-decoration:none;font-weight:700;padding:12px 22px;border-radius:10px">Login to Candidate Dashboard →</a>'
       + '</div>'
       + '<div style="padding:12px 28px 24px;border-top:1px solid #eee;color:#999;font-size:11px;text-align:center">Scaler Campus Hiring · Please do not reply to this email</div>'
       + '</div></div>';
