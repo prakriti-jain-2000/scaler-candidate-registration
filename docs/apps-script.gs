@@ -280,11 +280,18 @@ function doPost(e) {
         }
       }
       if (dupRow) {
+        var dupEmailSent = false;
+        if (dupRow['Dashboard Password']) {
+          dupEmailSent = _sendCredentialsEmail(
+            dupRow['College Email'], dupRow['Personal Email'], dupRow['Full Name'], dupRow['Dashboard Password']
+          );
+        }
         return _json({
           status: 'duplicate',
           eligible: String(dupRow['Eligible']) === 'Yes',
           collegeEmail: dupRow['College Email'] || '',
-          password: dupRow['Dashboard Password'] || ''
+          password: dupRow['Dashboard Password'] || '',
+          emailSent: dupEmailSent
         });
       }
 
@@ -305,7 +312,12 @@ function doPost(e) {
         data.hasBacklogs, locs, data.immediateJoining,
         data.resumeFileName, resumeUrl, eligible ? 'Yes' : 'No', stage, password
       ]);
-      return _json({ status: 'success', eligible: eligible, password: password, resumeUrl: resumeUrl });
+
+      var emailSent = false;
+      if (eligible && password) {
+        emailSent = _sendCredentialsEmail(data.collegeEmail, data.personalEmail, data.fullName, password);
+      }
+      return _json({ status: 'success', eligible: eligible, password: password, resumeUrl: resumeUrl, emailSent: emailSent });
     }
 
     if (action === 'logAttempt') {
