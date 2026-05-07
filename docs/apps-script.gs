@@ -200,11 +200,11 @@ function doPost(e) {
       var sh = _sheet('Candidates', CANDIDATE_HEADERS);
       var rows = _rows(sh);
       var dupRow = null;
-      var personalEmailLc = String(data.personalEmail || '').toLowerCase();
-      var collegeEmailLc = String(data.collegeEmail || '').toLowerCase();
+      var personalEmailLc = String(data.personalEmail || '').trim().toLowerCase();
+      var collegeEmailLc = String(data.collegeEmail || '').trim().toLowerCase();
       for (var i = 0; i < rows.length; i++) {
-        var rowPersonalLc = String(rows[i]['Personal Email']).toLowerCase();
-        var rowCollegeLc = String(rows[i]['College Email']).toLowerCase();
+        var rowPersonalLc = String(rows[i]['Personal Email'] || '').trim().toLowerCase();
+        var rowCollegeLc = String(rows[i]['College Email'] || '').trim().toLowerCase();
         if (rowPersonalLc === personalEmailLc || rowCollegeLc === collegeEmailLc) {
           dupRow = rows[i];
           break;
