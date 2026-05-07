@@ -93,12 +93,12 @@ function _sendCredentialsEmail(toEmail, ccEmail, fullName, password) {
   if (!toEmail || !password) return false;
   try {
     var firstName = String(fullName || '').split(' ')[0] || 'there';
-    var subject = "You're in! Your Scaler Candidate Dashboard credentials";
+  var subject = "Scaler Candidate Dashboard credentials";
     var loginUrl = 'https://candidate-dashboard-campus.lovable.app/login';
     var html = ''
       + '<div style="font-family:Arial,sans-serif;background:#f7f7f8;padding:24px;color:#111">'
       + '<div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #eee">'
-      + '<div style="padding:28px 28px 8px"><h1 style="margin:0;font-size:24px;color:#111">You\'re in, ' + firstName + '!</h1>'
+      + '<div style="padding:28px 28px 8px"><h1 style="margin:0;font-size:24px;color:#111">Hello ' + firstName + ',</h1>'
       + '<p style="color:#555;font-size:14px;line-height:1.55;margin:10px 0 0">Your application has been received and your candidate profile is ready. Here are your login credentials:</p></div>'
       + '<div style="margin:18px 28px;padding:16px 18px;background:#fff7ef;border:1px solid #ffd9b8;border-radius:12px">'
       + '<p style="margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#7a5535">Your dashboard credentials</p>'
