@@ -103,7 +103,7 @@ function _sendCredentialsEmail(toEmail, ccEmail, fullName, password) {
       + '<div style="margin:18px 28px;padding:16px 18px;background:#fff7ef;border:1px solid #ffd9b8;border-radius:12px">'
       + '<p style="margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#7a5535">Your dashboard credentials</p>'
       + '<p style="margin:0;font-size:14px;color:#111"><strong>Email:</strong> <span style="font-family:monospace">' + toEmail + '</span></p>'
-      + '<p style="margin:4px 0 0;font-size:14px;color:#111"><strong>Password:</strong> <span style="font-family:monospace;color:#e6651e;font-weight:700">' + password + '</span></p>'
+      + '<p style="margin:4px 0 0;font-size:14px;color:#111"><strong>Password:</strong> <span style="font-family:monospace;color:#1e62e6;font-weight:700">' + password + '</span></p>'
       + '<p style="margin:10px 0 0;font-size:12px;color:#7a5535">Please save these — you\'ll need them to access your dashboard.</p>'
       + '</div>'
       + '<div style="margin:0 28px;padding:16px 18px;background:#fafafa;border:1px solid #eee;border-radius:12px">'
@@ -112,7 +112,7 @@ function _sendCredentialsEmail(toEmail, ccEmail, fullName, password) {
       + '<p style="margin:0;font-size:13px;color:#555;line-height:1.55">Log in to your Candidate Dashboard to unlock <strong>Step 2 — Dashboard Access</strong>, where you\'ll find your training material and the AI assessment. Completing the assessment is what moves your application forward.</p>'
       + '</div>'
       + '<div style="text-align:center;padding:24px 28px 32px">'
-      + '<a href="' + loginUrl + '" style="display:inline-block;background:#e6651e;color:#fff;text-decoration:none;font-weight:700;padding:12px 22px;border-radius:10px">Login to Candidate Dashboard →</a>'
+      + '<a href="' + loginUrl + '" style="display:inline-block;background:#1e62e6;color:#fff;text-decoration:none;font-weight:700;padding:12px 22px;border-radius:10px">Login to Candidate Dashboard →</a>'
       + '</div>'
       + '<div style="padding:12px 28px 24px;border-top:1px solid #eee;color:#999;font-size:11px;text-align:center">Scaler Campus Hiring · Please do not reply to this email</div>'
       + '</div></div>';
@@ -158,7 +158,7 @@ function _sendOtpEmail(toEmail, code) {
   var html = '<div style="font-family:Arial,sans-serif;padding:24px;color:#111">'
     + '<h2 style="margin:0 0 12px">Verify your email</h2>'
     + '<p style="color:#555;font-size:14px">Use this code to verify your email address:</p>'
-    + '<p style="font-size:32px;font-weight:700;letter-spacing:6px;color:#e6651e;margin:16px 0">' + code + '</p>'
+    + '<p style="font-size:32px;font-weight:700;letter-spacing:6px;color:#1e62e6;margin:16px 0">' + code + '</p>'
     + '<p style="color:#888;font-size:12px">This code expires in 10 minutes. If you didn\'t request it, ignore this email.</p>'
     + '</div>';
   MailApp.sendEmail(toEmail, subject, 'Your verification code is: ' + code + ' (valid for 10 minutes).', { htmlBody: html, name: 'Scaler Campus Hiring' });
