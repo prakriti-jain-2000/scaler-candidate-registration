@@ -86,10 +86,188 @@ function _uploadResume(base64, fileName, mimeType, candidateName) {
   }
 }
 
+// ============================================================
+// CREDENTIALS EMAIL
+// ============================================================
+function _sendCredentialsEmail(toEmail, ccEmail, fullName, password) {
+  if (!toEmail || !password) return false;
+  try {
+    var firstName = String(fullName || '').split(' ')[0] || 'there';
+    var subject = "You're in! Your Scaler Candidate Dashboard credentials";
+    var loginUrl = 'https://candidate-dashboard-campus.lovable.app/login';
+    var html = ''
+      + '<div style="font-family:Arial,sans-serif;background:#f7f7f8;padding:24px;color:#111">'
+      + '<div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #eee">'
+      + '<div style="padding:28px 28px 8px"><h1 style="margin:0;font-size:24px;color:#111">You\'re in, ' + firstName + '!</h1>'
+      + '<p style="color:#555;font-size:14px;line-height:1.55;margin:10px 0 0">Your application has been received and your candidate profile is ready. Here are your login credentials:</p></div>'
+      + '<div style="margin:18px 28px;padding:16px 18px;background:#fff7ef;border:1px solid #ffd9b8;border-radius:12px">'
+      + '<p style="margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#7a5535">Your dashboard credentials</p>'
+      + '<p style="margin:0;font-size:14px;color:#111"><strong>Email:</strong> <span style="font-family:monospace">' + toEmail + '</span></p>'
+      + '<p style="margin:4px 0 0;font-size:14px;color:#111"><strong>Password:</strong> <span style="font-family:monospace;color:#e6651e;font-weight:700">' + password + '</span></p>'
+      + '<p style="margin:10px 0 0;font-size:12px;color:#7a5535">Please save these — you\'ll need them to access your dashboard.</p>'
+      + '</div>'
+      + '<div style="margin:0 28px;padding:16px 18px;background:#fafafa;border:1px solid #eee;border-radius:12px">'
+      + '<h3 style="margin:0 0 6px;font-size:16px;color:#111">What\'s next?</h3>'
+      + '<p style="margin:0 0 8px;font-size:13px;color:#555;line-height:1.55">You\'ve completed <strong>Step 1 of 5 — Application</strong>.</p>'
+      + '<p style="margin:0;font-size:13px;color:#555;line-height:1.55">Log in to your Candidate Dashboard to unlock <strong>Step 2 — Dashboard Access</strong>, where you\'ll find your training material and the AI assessment. Completing the assessment is what moves your application forward.</p>'
+      + '</div>'
+      + '<div style="text-align:center;padding:24px 28px 32px">'
+      + '<a href="' + loginUrl + '" style="display:inline-block;background:#e6651e;color:#fff;text-decoration:none;font-weight:700;padding:12px 22px;border-radius:10px">Login to Candidate Dashboard →</a>'
+      + '</div>'
+      + '<div style="padding:12px 28px 24px;border-top:1px solid #eee;color:#999;font-size:11px;text-align:center">Scaler Campus Hiring · Please do not reply to this email</div>'
+      + '</div></div>';
+    var opts = { htmlBody: html, name: 'Scaler Campus Hiring' };
+    if (ccEmail && ccEmail !== toEmail) opts.cc = ccEmail;
+    MailApp.sendEmail(toEmail, subject, 'Your dashboard password is: ' + password + '. Login: ' + loginUrl, opts);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+// ============================================================
+// OTP HELPERS (Email + Phone)
+// ============================================================
+function _otpCode() {
+  var n = Math.floor(100000 + Math.random() * 900000);
+  return String(n);
+}
+function _cache() { return CacheService.getScriptCache(); }
+function _otpKey(kind, target) {
+  return 'otp_' + kind + '_' + String(target).toLowerCase().replace(/[^a-z0-9+@.]/g, '');
+}
+function _otpRateKey(kind, target) { return _otpKey(kind, target) + '_rate'; }
+
+// Returns { allowed, remainingMs }
+function _checkOtpRate(kind, target) {
+  var key = _otpRateKey(kind, target);
+  var raw = _cache().get(key);
+  var now = Date.now();
+  var arr = raw ? JSON.parse(raw) : [];
+  arr = arr.filter(function(t){ return now - t < 15 * 60 * 1000; });
+  if (arr.length >= 3) {
+    return { allowed: false, message: 'Too many attempts. Please wait a few minutes and try again.' };
+  }
+  arr.push(now);
+  _cache().put(key, JSON.stringify(arr), 900); // 15 min
+  return { allowed: true };
+}
+
+function _sendOtpEmail(toEmail, code) {
+  var subject = 'Your Scaler verification code: ' + code;
+  var html = '<div style="font-family:Arial,sans-serif;padding:24px;color:#111">'
+    + '<h2 style="margin:0 0 12px">Verify your email</h2>'
+    + '<p style="color:#555;font-size:14px">Use this code to verify your email address:</p>'
+    + '<p style="font-size:32px;font-weight:700;letter-spacing:6px;color:#e6651e;margin:16px 0">' + code + '</p>'
+    + '<p style="color:#888;font-size:12px">This code expires in 10 minutes. If you didn\'t request it, ignore this email.</p>'
+    + '</div>';
+  MailApp.sendEmail(toEmail, subject, 'Your verification code is: ' + code + ' (valid for 10 minutes).', { htmlBody: html, name: 'Scaler Campus Hiring' });
+}
+
+function _twilioCreds() {
+  var props = PropertiesService.getScriptProperties();
+  return {
+    sid:  props.getProperty('TWILIO_ACCOUNT_SID'),
+    auth: props.getProperty('TWILIO_AUTH_TOKEN'),
+    verifySid: props.getProperty('TWILIO_VERIFY_SID')
+  };
+}
+
+function _twilioVerificationStart(phone) {
+  var c = _twilioCreds();
+  if (!c.sid || !c.auth || !c.verifySid) {
+    return { ok: false, message: 'SMS service not configured. Please contact support.' };
+  }
+  var url = 'https://verify.twilio.com/v2/Services/' + c.verifySid + '/Verifications';
+  var resp = UrlFetchApp.fetch(url, {
+    method: 'post',
+    payload: { To: phone, Channel: 'sms' },
+    headers: { Authorization: 'Basic ' + Utilities.base64Encode(c.sid + ':' + c.auth) },
+    muteHttpExceptions: true
+  });
+  var code = resp.getResponseCode();
+  var body = resp.getContentText();
+  if (code >= 200 && code < 300) return { ok: true };
+  return { ok: false, message: 'Could not send SMS (' + code + '). ' + body.slice(0, 200) };
+}
+
+function _twilioVerificationCheck(phone, otp) {
+  var c = _twilioCreds();
+  if (!c.sid || !c.auth || !c.verifySid) return { ok: false, message: 'SMS service not configured.' };
+  var url = 'https://verify.twilio.com/v2/Services/' + c.verifySid + '/VerificationCheck';
+  var resp = UrlFetchApp.fetch(url, {
+    method: 'post',
+    payload: { To: phone, Code: otp },
+    headers: { Authorization: 'Basic ' + Utilities.base64Encode(c.sid + ':' + c.auth) },
+    muteHttpExceptions: true
+  });
+  var code = resp.getResponseCode();
+  if (code >= 200 && code < 300) {
+    try {
+      var json = JSON.parse(resp.getContentText());
+      if (json.status === 'approved') return { ok: true };
+      return { ok: false, message: 'Invalid or expired code.' };
+    } catch (err) {
+      return { ok: false, message: 'Unexpected response from SMS service.' };
+    }
+  }
+  return { ok: false, message: 'Verification failed (' + code + ').' };
+}
+
 function doPost(e) {
   try {
     var data = JSON.parse(e.postData.contents);
     var action = data.action || 'register';
+
+    // ----- OTP: send email code -----
+    if (action === 'sendEmailOtp') {
+      var email = String(data.email || '').trim();
+      if (!email || email.indexOf('@') === -1) return _json({ status: 'error', message: 'Invalid email' });
+      var rate = _checkOtpRate('email', email);
+      if (!rate.allowed) return _json({ status: 'error', message: rate.message });
+      var code = _otpCode();
+      _cache().put(_otpKey('email', email), code, 600); // 10 min
+      try { _sendOtpEmail(email, code); }
+      catch (err) { return _json({ status: 'error', message: 'Could not send email: ' + err.toString() }); }
+      return _json({ status: 'success' });
+    }
+
+    // ----- OTP: verify email code -----
+    if (action === 'verifyEmailOtp') {
+      var email = String(data.email || '').trim();
+      var otp = String(data.otp || '').trim();
+      var key = _otpKey('email', email);
+      var stored = _cache().get(key);
+      if (!stored) return _json({ status: 'error', message: 'Code expired. Please request a new one.' });
+      if (stored !== otp) return _json({ status: 'error', message: 'Invalid code.' });
+      _cache().remove(key);
+      // Mark verified for 30 min so register can trust it (optional)
+      _cache().put('verified_email_' + email.toLowerCase(), '1', 1800);
+      return _json({ status: 'success' });
+    }
+
+    // ----- OTP: send phone code (Twilio Verify) -----
+    if (action === 'sendPhoneOtp') {
+      var phone = String(data.phone || '').trim();
+      if (!/^\+\d{10,15}$/.test(phone)) return _json({ status: 'error', message: 'Invalid phone number (expected E.164, e.g. +91xxxxxxxxxx).' });
+      var rate = _checkOtpRate('phone', phone);
+      if (!rate.allowed) return _json({ status: 'error', message: rate.message });
+      var r = _twilioVerificationStart(phone);
+      if (!r.ok) return _json({ status: 'error', message: r.message });
+      return _json({ status: 'success' });
+    }
+
+    // ----- OTP: verify phone code -----
+    if (action === 'verifyPhoneOtp') {
+      var phone = String(data.phone || '').trim();
+      var otp = String(data.otp || '').trim();
+      if (!/^\+\d{10,15}$/.test(phone)) return _json({ status: 'error', message: 'Invalid phone number.' });
+      if (!/^\d{4,8}$/.test(otp)) return _json({ status: 'error', message: 'Invalid code.' });
+      var r = _twilioVerificationCheck(phone, otp);
+      if (!r.ok) return _json({ status: 'error', message: r.message });
+      _cache().put('verified_phone_' + phone, '1', 1800);
+      return _json({ status: 'success' });
+    }
 
     if (action === 'register') {
       var sh = _sheet('Candidates', CANDIDATE_HEADERS);
