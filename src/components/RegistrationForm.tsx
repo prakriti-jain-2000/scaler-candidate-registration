@@ -288,8 +288,8 @@ const RegistrationForm = () => {
       toast.error("Setup incomplete: deploy Apps Script and set APPS_SCRIPT_URL.");
       return;
     }
-    // Require email + phone OTP verification before sending the application.
-    if (!emailVerified || !phoneVerified) {
+    // Require email OTP verification before sending the application.
+    if (!emailVerified) {
       setShowVerify(true);
       return;
     }
