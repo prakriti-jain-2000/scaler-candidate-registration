@@ -145,6 +145,112 @@ const RegistrationForm = () => {
   const [submitEligible, setSubmitEligible] = useState<boolean>(true);
   const [alreadyExists, setAlreadyExists] = useState<boolean>(false);
 
+  // OTP / verification state
+  const [showVerify, setShowVerify] = useState(false);
+  const [emailOtp, setEmailOtp] = useState("");
+  const [phoneOtp, setPhoneOtp] = useState("");
+  const [emailOtpSent, setEmailOtpSent] = useState(false);
+  const [phoneOtpSent, setPhoneOtpSent] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [phoneVerified, setPhoneVerified] = useState(false);
+  const [emailCooldown, setEmailCooldown] = useState(0);
+  const [phoneCooldown, setPhoneCooldown] = useState(0);
+  const [otpBusy, setOtpBusy] = useState<"" | "sendEmail" | "verifyEmail" | "sendPhone" | "verifyPhone">("");
+  const [otpError, setOtpError] = useState("");
+
+  const phoneE164 = formData.mobile ? `+91${formData.mobile}` : "";
+
+  useEffect(() => {
+    if (emailCooldown <= 0) return;
+    const t = setTimeout(() => setEmailCooldown((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [emailCooldown]);
+  useEffect(() => {
+    if (phoneCooldown <= 0) return;
+    const t = setTimeout(() => setPhoneCooldown((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [phoneCooldown]);
+
+  const callAction = async (body: Record<string, unknown>) => {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(body),
+    });
+    const text = await res.text();
+    try {
+      return JSON.parse(text);
+    } catch {
+      throw new Error(`Server returned non-JSON: ${text.slice(0, 120)}`);
+    }
+  };
+
+  const sendEmailOtp = async () => {
+    if (otpBusy) return;
+    setOtpError("");
+    setOtpBusy("sendEmail");
+    try {
+      const json = await callAction({ action: "sendEmailOtp", email: formData.collegeEmail });
+      if (json.status !== "success") throw new Error(json.message || "Could not send code");
+      setEmailOtpSent(true);
+      setEmailCooldown(30);
+      toast.success(`Code sent to ${formData.collegeEmail}`);
+    } catch (e) {
+      setOtpError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setOtpBusy("");
+    }
+  };
+
+  const verifyEmailOtp = async () => {
+    if (otpBusy) return;
+    setOtpError("");
+    setOtpBusy("verifyEmail");
+    try {
+      const json = await callAction({ action: "verifyEmailOtp", email: formData.collegeEmail, otp: emailOtp });
+      if (json.status !== "success") throw new Error(json.message || "Invalid code");
+      setEmailVerified(true);
+      toast.success("Email verified");
+    } catch (e) {
+      setOtpError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setOtpBusy("");
+    }
+  };
+
+  const sendPhoneOtp = async () => {
+    if (otpBusy) return;
+    setOtpError("");
+    setOtpBusy("sendPhone");
+    try {
+      const json = await callAction({ action: "sendPhoneOtp", phone: phoneE164 });
+      if (json.status !== "success") throw new Error(json.message || "Could not send code");
+      setPhoneOtpSent(true);
+      setPhoneCooldown(30);
+      toast.success(`Code sent to ${phoneE164}`);
+    } catch (e) {
+      setOtpError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setOtpBusy("");
+    }
+  };
+
+  const verifyPhoneOtp = async () => {
+    if (otpBusy) return;
+    setOtpError("");
+    setOtpBusy("verifyPhone");
+    try {
+      const json = await callAction({ action: "verifyPhoneOtp", phone: phoneE164, otp: phoneOtp });
+      if (json.status !== "success") throw new Error(json.message || "Invalid code");
+      setPhoneVerified(true);
+      toast.success("Phone verified");
+    } catch (e) {
+      setOtpError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setOtpBusy("");
+    }
+  };
+
   useEffect(() => {
     // Don't persist the heavy base64 resume payload to localStorage
     const { resumeBase64: _b, resumeMimeType: _m, ...persistable } = formData;
@@ -224,6 +330,11 @@ const RegistrationForm = () => {
     }
     if ((APPS_SCRIPT_URL as string) === "PASTE_DEPLOYED_URL_HERE") {
       toast.error("Setup incomplete: deploy Apps Script and set APPS_SCRIPT_URL.");
+      return;
+    }
+    // Require email + phone OTP verification before sending the application.
+    if (!emailVerified || !phoneVerified) {
+      setShowVerify(true);
       return;
     }
     setLoading(true);
@@ -409,7 +520,7 @@ const RegistrationForm = () => {
                 </p>
               </div>
               <p className="text-xs text-muted-foreground mt-3">
-                Please save these — you'll need them to access your dashboard.
+                Please save these — you'll need them to access your dashboard. We've also emailed these to your college email.
               </p>
             </div>
           )}
@@ -938,6 +1049,164 @@ const RegistrationForm = () => {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Verification modal — Email + Phone OTP before final submit */}
+      <AnimatePresence>
+        {showVerify && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => !loading && setShowVerify(false)}
+          >
+            <motion.div
+              className="card-surface rounded-2xl w-full max-w-md p-6 relative"
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h3 className="text-xl font-extrabold text-foreground">Verify to submit</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Confirm your email and phone — takes 30 seconds.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => !loading && setShowVerify(false)}
+                  className="text-muted-foreground hover:text-foreground text-xl leading-none"
+                  aria-label="Close"
+                >
+                  ×
+                </button>
+              </div>
+
+              {/* Email OTP */}
+              <div className="card-surface rounded-xl p-4 mb-3">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-sm">
+                    <p className="text-muted-foreground text-xs">College email</p>
+                    <p className="font-mono text-foreground break-all">{formData.collegeEmail}</p>
+                  </div>
+                  {emailVerified && <span className="text-scaler-green text-sm font-bold">✓ Verified</span>}
+                </div>
+                {!emailVerified && (
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <input
+                      className={inputClasses + " flex-1"}
+                      placeholder="6-digit code"
+                      value={emailOtp}
+                      onChange={(e) => setEmailOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                      disabled={!emailOtpSent || otpBusy === "verifyEmail"}
+                      inputMode="numeric"
+                    />
+                    {!emailOtpSent ? (
+                      <button
+                        type="button"
+                        onClick={sendEmailOtp}
+                        disabled={otpBusy === "sendEmail"}
+                        className="px-4 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm disabled:opacity-50"
+                      >
+                        {otpBusy === "sendEmail" ? "Sending…" : "Send code"}
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          onClick={verifyEmailOtp}
+                          disabled={emailOtp.length !== 6 || otpBusy === "verifyEmail"}
+                          className="px-4 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm disabled:opacity-50"
+                        >
+                          {otpBusy === "verifyEmail" ? "Verifying…" : "Verify"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={sendEmailOtp}
+                          disabled={emailCooldown > 0 || otpBusy === "sendEmail"}
+                          className="px-3 py-3 rounded-xl card-surface text-foreground text-xs font-semibold disabled:opacity-50"
+                        >
+                          {emailCooldown > 0 ? `Resend (${emailCooldown}s)` : "Resend"}
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Phone OTP */}
+              <div className="card-surface rounded-xl p-4 mb-3">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-sm">
+                    <p className="text-muted-foreground text-xs">Mobile number</p>
+                    <p className="font-mono text-foreground">{phoneE164}</p>
+                  </div>
+                  {phoneVerified && <span className="text-scaler-green text-sm font-bold">✓ Verified</span>}
+                </div>
+                {!phoneVerified && (
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <input
+                      className={inputClasses + " flex-1"}
+                      placeholder="6-digit code"
+                      value={phoneOtp}
+                      onChange={(e) => setPhoneOtp(e.target.value.replace(/\D/g, "").slice(0, 8))}
+                      disabled={!phoneOtpSent || otpBusy === "verifyPhone"}
+                      inputMode="numeric"
+                    />
+                    {!phoneOtpSent ? (
+                      <button
+                        type="button"
+                        onClick={sendPhoneOtp}
+                        disabled={otpBusy === "sendPhone"}
+                        className="px-4 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm disabled:opacity-50"
+                      >
+                        {otpBusy === "sendPhone" ? "Sending…" : "Send code"}
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          onClick={verifyPhoneOtp}
+                          disabled={phoneOtp.length < 4 || otpBusy === "verifyPhone"}
+                          className="px-4 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm disabled:opacity-50"
+                        >
+                          {otpBusy === "verifyPhone" ? "Verifying…" : "Verify"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={sendPhoneOtp}
+                          disabled={phoneCooldown > 0 || otpBusy === "sendPhone"}
+                          className="px-3 py-3 rounded-xl card-surface text-foreground text-xs font-semibold disabled:opacity-50"
+                        >
+                          {phoneCooldown > 0 ? `Resend (${phoneCooldown}s)` : "Resend"}
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {otpError && (
+                <p className="text-destructive text-xs mb-3">{otpError}</p>
+              )}
+
+              <button
+                type="button"
+                onClick={async () => {
+                  setShowVerify(false);
+                  await handleSubmit();
+                }}
+                disabled={!emailVerified || !phoneVerified || loading}
+                className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-bold disabled:opacity-40 disabled:cursor-not-allowed glow-orange-hover transition-all"
+              >
+                {loading ? "Submitting…" : "Submit application →"}
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
