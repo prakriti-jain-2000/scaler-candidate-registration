@@ -520,7 +520,7 @@ const RegistrationForm = () => {
                 </p>
               </div>
               <p className="text-xs text-muted-foreground mt-3">
-                Please save these — you'll need them to access your dashboard.
+                Please save these — you'll need them to access your dashboard. We've also emailed these to your college email.
               </p>
             </div>
           )}
