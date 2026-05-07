@@ -246,29 +246,6 @@ function doPost(e) {
       return _json({ status: 'success' });
     }
 
-    // ----- OTP: send phone code (Twilio Verify) -----
-    if (action === 'sendPhoneOtp') {
-      var phone = String(data.phone || '').trim();
-      if (!/^\+\d{10,15}$/.test(phone)) return _json({ status: 'error', message: 'Invalid phone number (expected E.164, e.g. +91xxxxxxxxxx).' });
-      var rate = _checkOtpRate('phone', phone);
-      if (!rate.allowed) return _json({ status: 'error', message: rate.message });
-      var r = _twilioVerificationStart(phone);
-      if (!r.ok) return _json({ status: 'error', message: r.message });
-      return _json({ status: 'success' });
-    }
-
-    // ----- OTP: verify phone code -----
-    if (action === 'verifyPhoneOtp') {
-      var phone = String(data.phone || '').trim();
-      var otp = String(data.otp || '').trim();
-      if (!/^\+\d{10,15}$/.test(phone)) return _json({ status: 'error', message: 'Invalid phone number.' });
-      if (!/^\d{4,8}$/.test(otp)) return _json({ status: 'error', message: 'Invalid code.' });
-      var r = _twilioVerificationCheck(phone, otp);
-      if (!r.ok) return _json({ status: 'error', message: r.message });
-      _cache().put('verified_phone_' + phone, '1', 1800);
-      return _json({ status: 'success' });
-    }
-
     if (action === 'register') {
       var sh = _sheet('Candidates', CANDIDATE_HEADERS);
       var rows = _rows(sh);
