@@ -200,8 +200,12 @@ function doPost(e) {
       var sh = _sheet('Candidates', CANDIDATE_HEADERS);
       var rows = _rows(sh);
       var dupRow = null;
+      var personalEmailLc = String(data.personalEmail || '').toLowerCase();
+      var collegeEmailLc = String(data.collegeEmail || '').toLowerCase();
       for (var i = 0; i < rows.length; i++) {
-        if (String(rows[i]['Personal Email']).toLowerCase() === String(data.personalEmail).toLowerCase()) {
+        var rowPersonalLc = String(rows[i]['Personal Email']).toLowerCase();
+        var rowCollegeLc = String(rows[i]['College Email']).toLowerCase();
+        if (rowPersonalLc === personalEmailLc || rowCollegeLc === collegeEmailLc) {
           dupRow = rows[i];
           break;
         }
