@@ -1092,6 +1092,7 @@ const RegistrationForm = () => {
                 )}
               </div>
 
+              {otpError && (
                 <p className="text-destructive text-xs mb-3">{otpError}</p>
               )}
 
@@ -1101,7 +1102,7 @@ const RegistrationForm = () => {
                   setShowVerify(false);
                   await handleSubmit();
                 }}
-                disabled={!emailVerified || !phoneVerified || loading}
+                disabled={!emailVerified || loading}
                 className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-bold disabled:opacity-40 disabled:cursor-not-allowed glow-orange-hover transition-all"
               >
                 {loading ? "Submitting…" : "Submit application →"}
