@@ -495,7 +495,7 @@ const RegistrationForm = () => {
               />
             </svg>
           </motion.div>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4">You're in!</h2>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4">Application received!</h2>
           <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
             Your application has been received and your candidate profile is ready. Here are your login credentials:
           </p>
