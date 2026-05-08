@@ -535,7 +535,7 @@ const RegistrationForm = () => {
             href="https://candidate-dashboard-campus.lovable.app/login"
             className="inline-block px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-bold mb-10 glow-orange-hover transition-all"
           >
-            Login to Candidate Dashboard →
+            Already applied? Check status →
           </a>
           <div className="flex items-center justify-center gap-2 flex-wrap">
             {["Apply", "Dashboard", "AI Assessment", "Interview", "Offer"].map((s, i) => (
