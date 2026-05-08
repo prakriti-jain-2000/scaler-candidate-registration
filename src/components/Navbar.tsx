@@ -7,7 +7,9 @@ const Navbar = () => {
         <img src={scalerLogo} alt="Scaler" className="h-10 md:h-12 w-auto brightness-0 invert" />
       </a>
       <a
-        href="https://candidate-dashboard-campus.lovable.app/login"
+        href="https://candidate-dashboard-campus.lovable.app"
+        target="_blank"
+        rel="noopener noreferrer"
         className="text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
         Already applied? Check status →
