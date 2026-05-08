@@ -29,7 +29,9 @@ function Navbar() {
         />
       </a>
       <a
-        href="#status"
+        href="https://candidate-dashboard-campus.lovable.app"
+        target="_blank"
+        rel="noopener noreferrer"
         style={{
           fontSize: "13px",
           color: "rgba(255,255,255,0.7)",
