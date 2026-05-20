@@ -583,7 +583,7 @@ const RegistrationForm = () => {
           <h2 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4">Start your application</h2>
           <p className="text-muted-foreground">Takes under 3 minutes.</p>
           <a
-            href="https://docs.google.com/document/d/11TvqgkBaiqIzGCYD4yL1I1yIoJYzuDL_5BOMuWmXzYc/export?format=pdf"
+            href="https://docs.google.com/gview?url=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F11TvqgkBaiqIzGCYD4yL1I1yIoJYzuDL_5BOMuWmXzYc%2Fexport%3Fformat%3Dpdf&embedded=false"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 mt-3 text-sm text-primary hover:underline font-medium"
