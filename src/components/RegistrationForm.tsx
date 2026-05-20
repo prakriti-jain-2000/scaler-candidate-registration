@@ -582,6 +582,14 @@ const RegistrationForm = () => {
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4">Start your application</h2>
           <p className="text-muted-foreground">Takes under 3 minutes.</p>
+          <a
+            href="/how-to-apply.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 mt-3 text-sm text-primary hover:underline font-medium"
+          >
+            How to apply →
+          </a>
         </div>
 
         <div className="mb-10">
