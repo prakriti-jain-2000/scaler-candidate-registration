@@ -1,6 +1,21 @@
+import { useEffect, useState } from "react";
 import scalerLogo from "@/assets/scaler-logo.svg";
 
 const Navbar = () => {
+  const [applied, setApplied] = useState(false);
+
+  useEffect(() => {
+    const check = () =>
+      setApplied(localStorage.getItem("scaler_application_submitted") === "1");
+    check();
+    window.addEventListener("scaler_application_submitted", check);
+    window.addEventListener("storage", check);
+    return () => {
+      window.removeEventListener("scaler_application_submitted", check);
+      window.removeEventListener("storage", check);
+    };
+  }, []);
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 h-20 bg-background/80 backdrop-blur-xl border-b border-border">
       <a href="#" className="flex items-center" aria-label="Scaler">
@@ -12,7 +27,7 @@ const Navbar = () => {
         rel="noopener noreferrer"
         className="text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
-        Already applied? Check status →
+        {applied ? "Login to candidate dashboard →" : "Already applied? Check status →"}
       </a>
     </nav>
   );
