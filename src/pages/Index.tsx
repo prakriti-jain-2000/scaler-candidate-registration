@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { track } from "@/lib/analytics";
 import PitchBattleHero from "@/components/PitchBattleHero";
 import HeroSection from "@/components/HeroSection";
 import LifeAtScalerSection from "@/components/LifeAtScalerSection";
@@ -10,6 +12,7 @@ import scalerLogo from "@/assets/scaler-logo.svg";
 import ParticleBackground from "@/components/ParticleBackground";
 
 const Index = () => {
+  useEffect(() => { track("landing_viewed"); }, []);
   return (
     <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
       {/* Global constellation background across the whole site */}

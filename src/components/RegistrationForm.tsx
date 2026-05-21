@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { z } from "zod";
 import { toast } from "sonner";
+import { track } from "@/lib/analytics";
 
 /**
  * ============================================================
@@ -165,6 +166,7 @@ const RegistrationForm = () => {
   const [emailCooldown, setEmailCooldown] = useState(0);
   const [otpBusy, setOtpBusy] = useState<"" | "sendEmail" | "verifyEmail">("");
   const [otpError, setOtpError] = useState("");
+  const startedRef = useRef(false);
 
   useEffect(() => {
     if (emailCooldown <= 0) return;
@@ -226,6 +228,10 @@ const RegistrationForm = () => {
   }, [formData]);
 
   const update = useCallback(<K extends keyof FormData>(field: K, value: FormData[K]) => {
+    if (!startedRef.current) {
+      startedRef.current = true;
+      track("registration_form_started");
+    }
     setFormData((prev) => ({ ...prev, [field]: value }));
     setErrors((prev) => {
       if (!prev[field as string]) return prev;
@@ -387,6 +393,10 @@ const RegistrationForm = () => {
       } else {
         setSubmitted(true);
         localStorage.removeItem(STORAGE_KEY);
+        track("registration_form_submitted", {
+          email: formData.collegeEmail,
+          props: { eligible: !!json.eligible },
+        });
       }
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
