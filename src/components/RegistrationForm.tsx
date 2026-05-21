@@ -393,6 +393,8 @@ const RegistrationForm = () => {
       } else {
         setSubmitted(true);
         localStorage.removeItem(STORAGE_KEY);
+        localStorage.setItem("scaler_application_submitted", "1");
+        window.dispatchEvent(new Event("scaler_application_submitted"));
         track("registration_form_submitted", {
           email: formData.collegeEmail,
           props: { eligible: !!json.eligible },
