@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { track } from "@/lib/analytics";
 import PitchBattleHero from "@/components/PitchBattleHero";
 import HeroSection from "@/components/HeroSection";
 import LifeAtScalerSection from "@/components/LifeAtScalerSection";
