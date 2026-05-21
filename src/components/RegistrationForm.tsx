@@ -393,8 +393,6 @@ const RegistrationForm = () => {
       } else {
         setSubmitted(true);
         localStorage.removeItem(STORAGE_KEY);
-        localStorage.setItem("scaler_application_submitted", "1");
-        window.dispatchEvent(new Event("scaler_application_submitted"));
         track("registration_form_submitted", {
           email: formData.collegeEmail,
           props: { eligible: !!json.eligible },
@@ -547,7 +545,7 @@ const RegistrationForm = () => {
             href="https://candidate-dashboard-campus.lovable.app/login"
             className="inline-block px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-bold mb-10 glow-orange-hover transition-all"
           >
-            Already applied? Check status →
+            Login to candidate dashboard →
           </a>
           <div className="flex items-center justify-center gap-2 flex-wrap">
             {["Apply", "Dashboard", "AI Assessment", "Interview", "Offer"].map((s, i) => (
