@@ -542,7 +542,7 @@ const RegistrationForm = () => {
           </div>
 
           <a
-            href="https://candidate-dashboard-campus.lovable.app/sales-hiring-home"
+            href="https://candidate-dashboard-campus.lovable.app/sales-hiring-dashboard"
             className="inline-block px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-bold mb-10 glow-orange-hover transition-all"
           >
             Login to candidate dashboard →
