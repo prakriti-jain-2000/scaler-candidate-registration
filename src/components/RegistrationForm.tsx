@@ -1112,44 +1112,36 @@ const RegistrationForm = () => {
                   <div className="flex flex-col sm:flex-row gap-2">
                     <input
                       className={inputClasses + " flex-1"}
-                      placeholder="6-digit code"
+                      placeholder={otpBusy === "sendEmail" && !emailOtpSent ? "Sending code…" : "6-digit code"}
                       value={emailOtp}
                       onChange={(e) => setEmailOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                      disabled={!emailOtpSent || otpBusy === "verifyEmail"}
+                      disabled={otpBusy === "verifyEmail"}
                       inputMode="numeric"
                     />
-                    {!emailOtpSent ? (
-                      <button
-                        type="button"
-                        onClick={sendEmailOtp}
-                        disabled={otpBusy === "sendEmail"}
-                        className="px-4 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm disabled:opacity-50"
-                      >
-                        {otpBusy === "sendEmail" ? "Sending…" : "Send code"}
-                      </button>
-                    ) : (
-                      <>
-                        <button
-                          type="button"
-                          onClick={verifyEmailOtp}
-                          disabled={emailOtp.length !== 6 || otpBusy === "verifyEmail"}
-                          className="px-4 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm disabled:opacity-50"
-                        >
-                          {otpBusy === "verifyEmail" ? "Verifying…" : "Verify"}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={sendEmailOtp}
-                          disabled={emailCooldown > 0 || otpBusy === "sendEmail"}
-                          className="px-3 py-3 rounded-xl card-surface text-foreground text-xs font-semibold disabled:opacity-50"
-                        >
-                          {emailCooldown > 0 ? `Resend (${emailCooldown}s)` : "Resend"}
-                        </button>
-                      </>
-                    )}
+                    <button
+                      type="button"
+                      onClick={verifyEmailOtp}
+                      disabled={emailOtp.length !== 6 || otpBusy === "verifyEmail" || !emailOtpSent}
+                      className="px-4 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm disabled:opacity-50"
+                    >
+                      {otpBusy === "verifyEmail" ? "Verifying…" : "Verify"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={sendEmailOtp}
+                      disabled={emailCooldown > 0 || otpBusy === "sendEmail"}
+                      className="px-3 py-3 rounded-xl card-surface text-foreground text-xs font-semibold disabled:opacity-50"
+                    >
+                      {otpBusy === "sendEmail"
+                        ? "Sending…"
+                        : emailCooldown > 0
+                        ? `Resend (${emailCooldown}s)`
+                        : "Resend"}
+                    </button>
                   </div>
                 )}
               </div>
+
 
               {otpError && (
                 <p className="text-destructive text-xs mb-3">{otpError}</p>
