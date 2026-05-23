@@ -309,6 +309,9 @@ const RegistrationForm = () => {
     // Require email OTP verification before sending the application.
     if (!emailVerified) {
       setShowVerify(true);
+      if (!emailOtpSent && !otpBusy) {
+        sendEmailOtp();
+      }
       return;
     }
     setLoading(true);
