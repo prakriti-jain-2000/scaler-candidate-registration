@@ -29,7 +29,7 @@ function Navbar() {
         />
       </a>
       <a
-        href="https://candidate-dashboard-campus.lovable.app"
+        href="https://candidate-dashboard-campus.lovable.app/sales-hiring-home"
         target="_blank"
         rel="noopener noreferrer"
         style={{
