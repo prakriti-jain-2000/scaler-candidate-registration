@@ -6,28 +6,27 @@ import { componentTagger } from "lovable-tagger";
 
 const BASE_PATH = "sales-hiring-home";
 
-// After build, move the entire dist output into a `sales-hiring-home/` subfolder
-// so that hosting serves files at /sales-hiring-home/assets/... (matches Vite `base`).
-// Also drops a tiny root index.html that redirects to /sales-hiring-home/ so the
-// bare lovable.app URL still resolves to the app.
-function nestUnderBasePath(): Plugin {
+// After build, ALSO expose the assets directory at /sales-hiring-home/assets/
+// so URLs referenced by index.html (which uses Vite `base`) resolve to real files
+// — both on lovable.app and when proxied through CloudFront at scaler.com/sales-hiring-home.
+// index.html stays at the build root so the SPA fallback can serve it for any route.
+function mirrorAssetsUnderBasePath(): Plugin {
   return {
-    name: "nest-under-base-path",
+    name: "mirror-assets-under-base-path",
     apply: "build",
     closeBundle() {
       const distDir = path.resolve(__dirname, "dist");
-      if (!fs.existsSync(distDir)) return;
+      const assetsSrc = path.join(distDir, "assets");
+      if (!fs.existsSync(assetsSrc)) return;
+
       const targetDir = path.join(distDir, BASE_PATH);
+      const assetsDest = path.join(targetDir, "assets");
       fs.mkdirSync(targetDir, { recursive: true });
-
-      for (const entry of fs.readdirSync(distDir)) {
-        if (entry === BASE_PATH) continue;
-        fs.renameSync(path.join(distDir, entry), path.join(targetDir, entry));
+      if (fs.existsSync(assetsDest)) {
+        fs.rmSync(assetsDest, { recursive: true, force: true });
       }
-
-      // Root redirect so `/` still lands on the app on the lovable.app domain.
-      const redirectHtml = `<!doctype html><meta charset="utf-8"><title>Redirecting…</title><meta http-equiv="refresh" content="0; url=/${BASE_PATH}/"><link rel="canonical" href="/${BASE_PATH}/"><script>location.replace('/${BASE_PATH}/' + location.search + location.hash)</script>`;
-      fs.writeFileSync(path.join(distDir, "index.html"), redirectHtml);
+      // Recursive copy (Node 16.7+)
+      fs.cpSync(assetsSrc, assetsDest, { recursive: true });
     },
   };
 }
@@ -45,7 +44,7 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     mode === "development" && componentTagger(),
-    mode !== "development" && nestUnderBasePath(),
+    mode !== "development" && mirrorAssetsUnderBasePath(),
   ].filter(Boolean),
   resolve: {
     alias: {
