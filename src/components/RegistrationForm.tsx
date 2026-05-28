@@ -316,31 +316,10 @@ const RegistrationForm = () => {
     }
     setLoading(true);
     try {
-      const candidatesRes = await fetch(`${APPS_SCRIPT_URL}?action=getAllCandidates`);
-      const candidatesJson = await candidatesRes.json();
-      if (candidatesJson.status !== "success" || !Array.isArray(candidatesJson.candidates)) {
-        throw new Error("Could not validate existing applications. Please try again.");
-      }
+      // Always call register on the backend. The Apps Script handles duplicates
+      // and re-sends the credentials email on every submission (including duplicates),
+      // so we must NOT short-circuit on the client.
 
-      const existingCandidate = findExistingCandidate(
-        candidatesJson.candidates,
-        formData.personalEmail,
-        formData.collegeEmail
-      );
-
-      if (existingCandidate) {
-        setAlreadyExists(true);
-        setGeneratedPassword(String(existingCandidate["Dashboard Password"] || ""));
-        const existingCollegeEmail = String(existingCandidate["College Email"] || formData.collegeEmail);
-        if (existingCollegeEmail) {
-          setFormData((prev) => ({ ...prev, collegeEmail: existingCollegeEmail }));
-        }
-        setSubmitEligible(String(existingCandidate["Eligible"] || "Yes") !== "No");
-        setSubmitted(true);
-        localStorage.removeItem(STORAGE_KEY);
-        setLoading(false);
-        return;
-      }
 
       // Apps Script web apps don't honour preflight; use text/plain to bypass CORS preflight.
       const res = await fetch(APPS_SCRIPT_URL, {
