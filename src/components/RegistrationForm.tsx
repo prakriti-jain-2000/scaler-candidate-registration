@@ -20,7 +20,7 @@ import { track } from "@/lib/analytics";
  * ------------------------------------------------------------
  */
 const APPS_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxZg3tGvxjq3oRZ29MrfY4UuS7tmwRWlRveFMQNTY3a-aasn3Wr7RavhRCCwyU_9GcP/exec";
+  "https://script.google.com/macros/s/AKfycbwWV1v2t5Vhr__YH_F5pFxI3QOjs7x-tCNN45uDk3W-lJMIyjKFktKtIAXnAMXqyhN_7A/exec";
 
 interface FormData {
   // Step 1
@@ -73,9 +73,16 @@ const initialFormData: FormData = {
 
 const STORAGE_KEY = "scaler_registration_form_v2";
 
-const normalizeEmail = (email: unknown) => String(email || "").trim().toLowerCase();
+const normalizeEmail = (email: unknown) =>
+  String(email || "")
+    .trim()
+    .toLowerCase();
 
-const findExistingCandidate = (candidates: Array<Record<string, unknown>>, personalEmail: string, collegeEmail: string) => {
+const findExistingCandidate = (
+  candidates: Array<Record<string, unknown>>,
+  personalEmail: string,
+  collegeEmail: string,
+) => {
   const personalEmailLc = normalizeEmail(personalEmail);
   const collegeEmailLc = normalizeEmail(collegeEmail);
 
@@ -123,7 +130,11 @@ const step2Schema = z
       }
     } else {
       if (!/^\d{1,3}(\.\d{1,2})?$/.test(val.score) || n < 10 || n > 100) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["score"], message: "Percentage must be between 10 and 100" });
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["score"],
+          message: "Percentage must be between 10 and 100",
+        });
       }
     }
   });
@@ -320,7 +331,6 @@ const RegistrationForm = () => {
       // and re-sends the credentials email on every submission (including duplicates),
       // so we must NOT short-circuit on the client.
 
-
       // Apps Script web apps don't honour preflight; use text/plain to bypass CORS preflight.
       const res = await fetch(APPS_SCRIPT_URL, {
         method: "POST",
@@ -345,7 +355,7 @@ const RegistrationForm = () => {
         json = JSON.parse(rawText);
       } catch {
         throw new Error(
-          `Apps Script returned non-JSON (HTTP ${res.status}). Likely the deployment URL is stale or access isn't set to "Anyone". First 120 chars: ${rawText.slice(0, 120)}`
+          `Apps Script returned non-JSON (HTTP ${res.status}). Likely the deployment URL is stale or access isn't set to "Anyone". First 120 chars: ${rawText.slice(0, 120)}`,
         );
       }
 
@@ -506,7 +516,8 @@ const RegistrationForm = () => {
                 </p>
               </div>
               <p className="text-xs text-muted-foreground mt-3">
-                Please save these — you'll need them to access your dashboard. We've also emailed these to your college email.
+                Please save these — you'll need them to access your dashboard. We've also emailed these to your college
+                email.
               </p>
             </div>
           )}
@@ -865,7 +876,8 @@ const RegistrationForm = () => {
                     <div className="flex-1">
                       <p className="text-sm text-foreground">Do you have any active backlogs?</p>
                       <p className="text-xs text-muted-foreground mt-1.5">
-                        A backlog means a subject or paper you have not yet cleared from a previous semester. If all your exams are cleared, select No.
+                        A backlog means a subject or paper you have not yet cleared from a previous semester. If all
+                        your exams are cleared, select No.
                       </p>
                     </div>
                     <div className="flex gap-2 shrink-0">
@@ -893,8 +905,7 @@ const RegistrationForm = () => {
                 <div className="flex flex-wrap gap-3">
                   {["Gurugram", "Bangalore", "Both"].map((loc) => {
                     const bothSelected =
-                      formData.joiningLocations.includes("Gurugram") &&
-                      formData.joiningLocations.includes("Bangalore");
+                      formData.joiningLocations.includes("Gurugram") && formData.joiningLocations.includes("Bangalore");
                     const active =
                       loc === "Both" ? bothSelected : formData.joiningLocations.includes(loc) && !bothSelected;
                     return (
@@ -1064,9 +1075,7 @@ const RegistrationForm = () => {
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <h3 className="text-xl font-extrabold text-foreground">Verify to submit</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Confirm your email and phone — takes 30 seconds.
-                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">Confirm your email and phone — takes 30 seconds.</p>
                 </div>
                 <button
                   type="button"
@@ -1114,17 +1123,14 @@ const RegistrationForm = () => {
                       {otpBusy === "sendEmail"
                         ? "Sending…"
                         : emailCooldown > 0
-                        ? `Resend (${emailCooldown}s)`
-                        : "Resend"}
+                          ? `Resend (${emailCooldown}s)`
+                          : "Resend"}
                     </button>
                   </div>
                 )}
               </div>
 
-
-              {otpError && (
-                <p className="text-destructive text-xs mb-3">{otpError}</p>
-              )}
+              {otpError && <p className="text-destructive text-xs mb-3">{otpError}</p>}
 
               <button
                 type="button"
